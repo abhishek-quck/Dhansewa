@@ -1,0 +1,65 @@
+@import "variables";
+
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons.scss";
+@import "./layout/sidebar";
+@import "./layout/container";
+
+.bg-gray-300{
+    background-color: #dee2e6;
+}
+.sl-spinner3{
+    position: absolute;
+    left: 50%;
+    top: 45%;
+}
+.sl-circle{
+    --bg: #fff!important;
+    --border: #4b4a4a!important;
+}
+.item
+{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgb(0, 0, 0, 0.5);
+    z-index: 99999;
+}
+video{
+    transform: rotate(270deg); 
+}
+
+table > thead{
+    background-color: aliceblue!important;
+}
+.table-bordered td{
+  height: 10px!important;
+  padding: 3px 10px 3px 10px!important;
+}
+.dropdown-item:active, .dropdown-item a:active{
+    background-color: blue!important;
+	color:white!important
+}
+.light-theme.dropdown-item:hover{
+    background-color: lightgray;
+}
+
+.card-custom-header{
+	background:linear-gradient(45deg, #ffff8f, #ff7800);
+	border-bottom: 2px solid white!important;
+}
+.light-theme{
+	background-color: #fff!important;
+}
+.navbar-light{
+	background-color: #e7e7f9!important;
+}
+.dark-theme{
+	background-color: #35363b;
+	a.dropdown-item, a.nav-link, .card-title, h3{
+		color: #fff!important;
+	} 
+	.navbar{
+		background-color:#d1e3e7!important
+	}
+}
