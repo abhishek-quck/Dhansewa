@@ -22,7 +22,10 @@ const initialState = {
     success: false, 
     companyID: localStorage.getItem('companyID'),  
     companyName: localStorage.getItem('companyName'),  
-	search:''
+	search:'',
+    enrollTerm:null,
+    enrollBranch:'',
+    GRTs:{},
 }
 
 const authReducer = (state=initialState,action) => {
@@ -41,8 +44,14 @@ const authReducer = (state=initialState,action) => {
                 myInfo:action.payload
             }
         case 'LOGOUT':
-            localStorage.removeItem('auth-token')
-            localStorage.removeItem('companyID')
+            axios.post('/logout').then(({data})=>{
+                console.log(data)
+                if(data)
+                {
+                    localStorage.removeItem('auth-token')
+                    localStorage.removeItem('companyID')
+                }
+            })
             return {
                 ...state,
                 myInfo:null,
@@ -60,8 +69,8 @@ const authReducer = (state=initialState,action) => {
             axios.post('/set-company',{id:action.payload.id, name:action.payload.name}).then(resp=>{
                 if(resp.status===200)
                 {  
-                   localStorage.setItem(`companyID`, resp.data['companyID'])
-                   localStorage.setItem(`companyName`, resp.data['companyName'])
+                   localStorage.setItem(`companyID`, action.payload.id)
+                   localStorage.setItem(`companyName`, action.payload.name)
                 }
             })
             return {
@@ -85,6 +94,29 @@ const authReducer = (state=initialState,action) => {
 				...state,
 				search:action.payload
 			}
+            
+		case 'SEARCH_ENROLLED':
+			return {
+				...state,
+				enrollTerm:action.payload.term,
+				enrollBranch:action.payload.branch
+			}
+        
+		case 'PUT_GRTs':
+			return {
+				...state,
+				GRTs:action.payload
+			}
+
+        case 'UPDATE_GRT':
+			return {
+				...state, 
+                GRTs:{
+                    ...state.GRTs,
+                    [action.payload.id]:action.payload
+                }
+			}
+        
         default : return state
     }
 }

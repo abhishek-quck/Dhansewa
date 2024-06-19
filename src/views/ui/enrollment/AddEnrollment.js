@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react"; 
+import React, { useEffect, useState } from "react"; 
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -13,53 +13,61 @@ import {
   Row,
   Col,
   CardFooter,
-  CardHeader, 
+  CardHeader 
 } from "reactstrap";
 
 const AddEnrollment = () => { 
 	const dispatch = useDispatch()
+	const [submitted, hit]=useState(false)
 	const [fields, setFields] = useState({
-		name:'',
-		branch:'',
+		applicant_name:'',
+		branchName:'',
 		aadhaar:'',
 		phone:'',
 		district:'',
 		state:'',
-		dateOfBirth:'',
-		voterID:'',
-		sonOf:'',
+		date_of_birth:'',
+		verification_type:'',
+		verification:'',
+		relation:'',
+		relative_name:'',
 		gender:'',
 		group:'',
-		pan:'',
-		pin:'',
-		areaName:'',
-		bank:'',
+		PAN:'',
+		postal_pin:'',
+		village:'',
 		advDetails:'',
 		nomineeDetails:'',
-		creditReport:''
+		creditReport:'',
 	})
 	const onChange = e => {
 		const {name, value} = e.target;
 		setFields({...fields, [name]:value})
 	}
 
+	
 	const handleSubmit = ev => {
 		ev.preventDefault()
 		dispatch({type:'LOADING'})
-		axios.post('/add-enrollment', fields)
+ 
+		axios.post('/add-enrollment', fields )
 		.then(({data})=>{ 
 			toast.success(data.message)
-			for(let field in fields)
-			{ 
-				setFields({...fields, [field]:''})
-			}
+			reset()
+			hit(!submitted)
 		}).catch(({response})=> {
 			console.log(response.data);	
 			toast.error('Something went wrong')
 		}).finally(()=> {  
-			// dispatch({type:'STOP_LOADING'}) 
+			dispatch({type:'STOP_LOADING'}) 
 		})
 	}
+	const reset = () => {
+		let state = fields
+		Object.keys(state).forEach(key=>state[key]='')
+		setFields(state)
+	}
+	useEffect(()=>{},[submitted])
 	return (
 	<div> 
 		<Card className="col-7">
@@ -77,7 +85,7 @@ const AddEnrollment = () => {
 						</Label>
 						<Input
 							id="branch" 
-							name="branch"
+							name="branchName"
 							type="select"
 							onChange={onChange}
 						>
@@ -108,10 +116,21 @@ const AddEnrollment = () => {
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4" size={'sm'} for="voterID" > Voter ID </Label>
+						<div className="col-4">
+							<select 
+								type="select" 
+								className={'xs'} 
+								style={{width:90}}
+								name="verification_type"
+							>
+							<option value={'voterID'}> Voter ID </option>
+							<option value={'passBook'}> Passbook </option>
+							<option value={'aadhaar'}> Aadhaar </option>
+							</select>
+						</div>
 						<Input
 							id="voterID" 
-							name="voterID"
+							name="verification"
 							type="text"
 							onChange={onChange}
 							placeholder="Enter other KYC No"
@@ -125,7 +144,7 @@ const AddEnrollment = () => {
 						<Label className="col-4"  size={'sm'} for="name">Applicant Name</Label>
 						<Input
 							id="name" 
-							name="name"
+							name="applicant_name"
 							type="text"
 							onChange={onChange}
 							placeholder="Enter applicant name"
@@ -137,10 +156,15 @@ const AddEnrollment = () => {
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4"  size={'sm'} for="sonOf">S/O</Label>
+						<div className="col-4">
+							<select type="select" name="relation" className={'xs'} style={{width:90}}>
+							<option value={'S/O'}> S/O </option>
+							<option value={'W/O'}> W/O </option>
+							</select>
+						</div>
 						<Input
-							id="sonOf" 
-							name="sonOf"
+							id="relation" 
+							name="relative_name"
 							type="text"
 							onChange={onChange}
 							placeholder="Enter name"
@@ -198,7 +222,7 @@ const AddEnrollment = () => {
 						<Label className="col-4"  size={'sm'} for="exampleEmail">Village/City Name</Label>
 						<Input
 							id="exampleSelectMulti" 
-							name="areaName"
+							name="village"
 							type="text"
 							onChange={onChange}
 							placeholder="Enter village/city name" 
@@ -246,7 +270,7 @@ const AddEnrollment = () => {
 						<Label className="col-4"  size={'sm'} for="DOB"> Date of Birth (Today) </Label>
 						<Input
 							id="DOB" 
-							name="dateOfBirth"
+							name="date_of_birth"
 							type="date"
 							onChange={onChange}
 							placeholder="Enter Date of Birth"
@@ -282,25 +306,11 @@ const AddEnrollment = () => {
 					</div>
 					</Col > 
 				</Row>
+				
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4" size={'sm'} for="bank&others"> 
-							Bank & Others (YES/NO) 
-						</Label>
-						<Input
-							id="bank&others" 
-							name="bank"
-							type="checkbox" 
-							onChange={onChange}
-						/>
-					</div>
-					</Col > 
-				</Row>
-				<Row className="mt-2">
-					<Col md="12">
-					<div className="d-flex">
-						<Label className="col-4"  size={'sm'} for="advDetails"> Advance Details </Label>
+						<Label className="col-4" size={'sm'} for="advDetails"> Advance Details </Label>
 						<Input
 							id="advDetails" 
 							name="advDetails"
@@ -313,7 +323,7 @@ const AddEnrollment = () => {
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4"  size={'sm'} for="nomineeDetails"> Nominee Details </Label>
+						<Label className="col-4" size={'sm'} for="nomineeDetails"> Nominee Details </Label>
 						<Input
 							id="nomineeDetails" 
 							name="nomineeDetails"
@@ -326,7 +336,7 @@ const AddEnrollment = () => {
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4"  size={'sm'} for="creditReport"> Credit Report & Upload </Label>
+						<Label className="col-4" size={'sm'} for="creditReport"> Credit Report & Upload </Label>
 						<Input
 							id="creditReport" 
 							name="creditReport"
@@ -342,8 +352,8 @@ const AddEnrollment = () => {
 		</CardBody>
 		<CardFooter>
 			<Row className="d-flex" style={{justifyContent:'space-between'}}>
-			<button className="col-3 btn btn-success" style={{marginLeft:'5px'}}> Save & Process </button>
-			<Link to={`/dashboard`} className="col-2 btn bg-gray-300" style={{marginRight:'5px'}}> Home </Link>
+				<button className="col-3 btn btn-success" style={{marginLeft:'5px'}}> Save & Process </button>
+				<Link to={`/dashboard`} className="col-2 btn bg-gray-300" style={{marginRight:'5px'}}> Home </Link>
 			</Row>
 		</CardFooter>
 		</Form>

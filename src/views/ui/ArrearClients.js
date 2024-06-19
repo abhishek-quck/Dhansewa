@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import $ from 'jquery'
-import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, Label, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Label, Row, Table } from 'reactstrap'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import ReactSelect from 'react-select'
@@ -11,8 +10,7 @@ function ArrearClients() {
 	const [fields, setFields]=useState({
 		branch:'',
 	})
-	const [data, setData] = useState([])
-	const handleChange = e => setFields({ ...fields, [e.target.name]:e.target.value })
+	const [responseData, setData] = useState([])
 	const cStyle = {border:'1px solid lightgray',padding:'10px',borderRadius:'5px'}
 
 	const handleSubmit = e => {
@@ -33,14 +31,7 @@ function ArrearClients() {
 		{value:'andBand',label:'andBand'}
 	]
 
-	useEffect(()=>{
-	// [...document.getElementsByTagName('select')].forEach(element => {         
-	// 	$(element).select2({
-	// 		placeholder:'Select an option',
-	// 		width:'80%'
-	// 	})
-	// });
-	},[])
+	useEffect(()=>{},[])
 	return (
 	<>
 	<Card> 
@@ -112,6 +103,13 @@ function ArrearClients() {
 				</tr>
 				</thead>
 				<tbody> 
+					{responseData.map((row,index)=>{
+						return <tr key={index}> 
+							{Object.values(row).map((key,col)=>{
+								return <td key={key}> {col} </td>
+							}) }
+						</tr>
+					})}
 				</tbody>
 			</Table> 
 			</Col>

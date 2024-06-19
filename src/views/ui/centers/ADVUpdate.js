@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { Button, Card, CardBody, CardHeader, CardText, CardTitle, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardText, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 
 function ADVUpdate() {
 	const dispatch = useDispatch()
@@ -68,9 +68,7 @@ function ADVUpdate() {
         <>
         <Card>
             <CardHeader> 
-                <CardTitle>
 				<b> CENTER ADVANCE UPDATE </b>
-                </CardTitle>
             </CardHeader>
             <CardBody>
                 <CardText>
@@ -217,7 +215,7 @@ function ADVUpdate() {
                                  
                                         <Row className="mt-2">
                                         <Col md="12">
-                                            <button type='submit' className='btn btn-primary btn-sm btn-rounded w-100 mt-2'> Update </button>
+                                            <Button type='submit' color='success' className='w-100 mt-2'> Update </Button>
                                         </Col > 
                                         </Row> 
                                     </FormGroup> 
@@ -286,7 +284,7 @@ function ADVUpdate() {
                                  
                                         <Row className="mt-2">
                                         <Col md="12">
-                                            <button type='submit' className='btn btn-primary btn-sm btn-rounded w-100 mt-2'> Update </button>
+                                            <Button color='success' type='submit' className='w-100 mt-2'> Update </Button>
                                         </Col > 
                                         </Row> 
                                     </FormGroup> 

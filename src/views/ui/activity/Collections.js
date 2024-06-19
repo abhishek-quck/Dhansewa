@@ -1,5 +1,5 @@
 import React from 'react'
-import {  Card, CardBody, CardTitle, Col, Row, Table } from 'reactstrap';
+import {  Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
 
 function Collections() {
 
@@ -7,11 +7,11 @@ function Collections() {
         <Row>
            <Col lg="12">
             <Card>
-            <CardTitle tag="h6" className="border-bottom p-3 mb-0">
-                BRANCH COLLECTION
-            </CardTitle>
+            <CardHeader>
+                <b> BRANCH COLLECTION </b>
+            </CardHeader>
             <CardBody className="">
-                <Table bordered hover>
+                <Table bordered dashed hover>
                 <thead>
                     <tr>
                     <th> S.No </th>
@@ -51,19 +51,20 @@ function Collections() {
                     <td>@fat</td>
                     <td>@mdo</td>
                     </tr> 
-                    <tr>
-                    <td colSpan={2} className='fw-bold'> Total </td>
-                     
-                    <td>''</td>
-                    <td>''</td>
-                    <td>''</td>
-                    <td>''</td>
-                    <td>''</td>
-                    <td>''</td>
-                    <td>''</td>
-                    <td></td>
-                    </tr>
                 </tbody>
+                <tfoot>
+                   <tr>
+                        <td colSpan={2} className='fw-bold'> Total </td>
+                        <td>''</td>
+                        <td>''</td>
+                        <td>''</td>
+                        <td>''</td>
+                        <td>''</td>
+                        <td>''</td>
+                        <td>''</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
                 </Table>
             </CardBody>
             </Card>

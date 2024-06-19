@@ -92,8 +92,6 @@ const Header = () => {
              <i className="fa-solid fa-desktop" /> General
             </DropdownToggle>
             <DropdownMenu end>
-              <DropdownItem>Option 1</DropdownItem>
-              <DropdownItem>Option 2</DropdownItem>
               <DropdownItem>Reset</DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -102,9 +100,6 @@ const Header = () => {
             <i className={`bi-people`}></i> Members
             </DropdownToggle>
             <DropdownMenu end>
-              <DropdownItem>Option 1</DropdownItem>
-              <DropdownItem>Option 2</DropdownItem>
-              
               <DropdownItem>Reset</DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -113,9 +108,14 @@ const Header = () => {
             &#x20B9; Loan
             </DropdownToggle>
             <DropdownMenu end>
-              <DropdownItem>Option 1</DropdownItem>
-              <DropdownItem>Option 2</DropdownItem>
-              <DropdownItem>Reset</DropdownItem>
+              <DropdownItem>
+                <Link to={'/client-disbursement'} className={'text-decoration-none text-dark'}>
+                  Client Disbursement
+                </Link>
+              </DropdownItem>
+              <DropdownItem> Center Disbursement </DropdownItem>
+              <DropdownItem> Branch Disbursement </DropdownItem>
+              <DropdownItem> Reset </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
           <UncontrolledDropdown inNavbar nav>
@@ -138,8 +138,6 @@ const Header = () => {
              <i className={`fa-solid fa-signal`} /> Collections
             </DropdownToggle>
             <DropdownMenu end>
-              <DropdownItem>Option 1</DropdownItem>
-              <DropdownItem>Option 2</DropdownItem>
               <DropdownItem>Reset</DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -148,9 +146,6 @@ const Header = () => {
              <i className={`bi bi-speedometer2`} /> Advance
             </DropdownToggle>
             <DropdownMenu end>
-              <DropdownItem>Option 1</DropdownItem>
-              <DropdownItem>Option 2</DropdownItem>
-              
               <DropdownItem>Reset</DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -159,8 +154,6 @@ const Header = () => {
               <i className={"fa-solid bi-gear"} /> HR
             </DropdownToggle>
             <DropdownMenu end>
-              <DropdownItem>Option 1</DropdownItem>
-              <DropdownItem>Option 2</DropdownItem> 
               <DropdownItem>Reset</DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -203,25 +196,33 @@ const Header = () => {
           {/* Profile dropdown */}
           <DropdownMenu> 
             <DropdownItem>
-				<i className="fa-solid fa-file-invoice-dollar" /> &nbsp; My Account 
-			</DropdownItem>
+				      <i className="fa-solid fa-file-invoice-dollar" /> &nbsp; My Account 
+			      </DropdownItem>
             <DropdownItem>
-				<i className="fa-regular fa-pen-to-square"/> &nbsp;Edit Profile 
-			</DropdownItem>
+              <i className="fa-regular fa-pen-to-square"/> &nbsp;Edit Profile 
+            </DropdownItem>
             <DropdownItem onClick={changeTheme}>
-				<i className={`fa-solid ${theme==='Light'?'bi-moon':'bi-sun'}`}/>&nbsp;{theme==='Light'?'Dark':'Light'} Mode 
-			</DropdownItem>
+              <i className={`fa-solid ${theme==='Light'?'bi-moon':'bi-sun'}`}/>&nbsp;{theme==='Light'?'Dark':'Light'} Mode 
+            </DropdownItem>
             <DropdownItem>
-				<i className="fa-solid fa-indian-rupee-sign"/> &nbsp;My Balance
-			</DropdownItem>
+              <i className="fa-solid fa-indian-rupee-sign"/> &nbsp;My Balance
+            </DropdownItem>
             <DropdownItem>
-				<i className="fa-regular fa-envelope"/> &nbsp;Inbox
-			</DropdownItem>
+              <i className="fa-regular fa-envelope"/> &nbsp;Inbox
+            </DropdownItem>
+            <DropdownItem>
+              <Link 
+                to={'/print-documents'} 
+                className="text-decoration-none text-dark"
+              >
+                <i className="fa fa-print"/> &nbsp;Print Documents 
+              </Link>
+            </DropdownItem>
             <DropdownItem onClick={logout}>
-				<i className="fa-solid fa-arrow-right-from-bracket"/>&nbsp;Logout
-			</DropdownItem>
+              <i className="fa-solid fa-arrow-right-from-bracket"/>&nbsp;Logout
+            </DropdownItem>
           </DropdownMenu>
-        </Dropdown>
+      </Dropdown>
       </Collapse>
     </Navbar>
   );

@@ -25,6 +25,10 @@ import LoanProducts from "../views/ui/management/LoanProducts.js";
 import ArrearCollection from "../views/ui/activity/ArrearCollection.js";
 import ArrearClients from "../views/ui/ArrearClients.js";
 import LoanChartMaster from "../views/ui/management/LoanChartMaster.js";
+import ClientDisbursement from "../views/ui/ClientDisbursement.js";
+import AddGRT from "../views/ui/centers/GRT/AddGRT.js"; 
+import BranchMaster from "../views/ui/management/BranchMaster.js";
+import PrintDocs from "../views/PrintDocs.js";
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
@@ -63,8 +67,11 @@ const ThemeRoutes = [
       { path: "/center-adv-update", exact: true, element: <ADVUpdate /> },
       { path: "/client-adv-update", exact: true, element: <ClientADV /> },
       { path: "/client-grt", exact: true, element: <ClientGRT /> },
+      { path: "/review-client/:id", exact: true, element: <AddGRT /> },
+      { path: "/client-disbursement", exact: true, element: <ClientDisbursement /> },
       { path: "/speed-loan-disburse", exact: true, element: <SpeedLoanDisburse /> },
       { path: "/ledger-revise", exact: true, element: <LedgerRevise /> },
+      { path: "/branches-master", exact: true, element: <BranchMaster /> },
       { path: "/account-head", exact: true, element: <AccountHead /> },
       { path: "/accounts-master", exact: true, element: <AccountMaster /> },
       { path: "/accounts-ledger-view", exact: true, element: <AccountLedger /> },
@@ -85,6 +92,7 @@ const ThemeRoutes = [
       { path: "/day-close", exact: true, element: <DayClose /> },
       { path: "/credit-report", exact: true, element: <CreditReport /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
+      { path: "/print-documents", exact: true, element: <PrintDocs /> },
     ],
   },
 ];

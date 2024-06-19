@@ -1,9 +1,12 @@
-import { data } from 'jquery'
-import React, { useState } from 'react'
-import { Button, Card, CardBody, CardHeader, CardTitle, Col, Input, Label, Row, Table } from 'reactstrap'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { Button, Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from 'reactstrap'
 
 function MeetingHandover() {
-	const [responseData,setData] = useState([])
+	const [responseData, setData] = useState([])
+	useEffect(()=>{
+		 
+	},[])
 	return (
 	<>
 	<Card>

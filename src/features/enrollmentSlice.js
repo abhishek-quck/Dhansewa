@@ -2,10 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 
-export const commonApiSlice = createApi({
-	reducerPath:'commonApi',
+export const enrollmentApiSlice = createApi({
+	reducerPath:'enrollmentApi',
 	baseQuery: fetchBaseQuery({ baseUrl:process.env.REACT_APP_BACKEND_URI ,
-	  prepareHeaders: ( headers, { getState }) => {   
+	  prepareHeaders: ( headers ) => {   
 		headers.set('Accept','application/json' ) 
 		headers.set('Content-Type', 'application/json') 
 		headers.set('Authorization', `Bearer ${localStorage.getItem('auth-token')}`) 
@@ -13,23 +13,12 @@ export const commonApiSlice = createApi({
 	  }
 	}),  
 	endpoints: builder => ({
-	  getCenters: builder.query({
-		query:()=>'/get-center'
-	  }),
-	  searchCenters:builder.query({
-		query:term =>{
-			return {
-				url:`/get-center?search=${term}`,
-				credentials:"include"
-			}
-		}
-	  }),
 	  searchEnrollments:builder.query({
-		query:({branch, term})=>{
+		query:(term)=>{
 			return {
 				url:`/search-enrolled`,
 				method: 'POST',
-				body:{branch,term}
+				body:{term}
 			}
 		}
 	  })
@@ -42,31 +31,27 @@ const initialState = {
 	error:''
 }
 
-const fetchCenter = createAsyncThunk('centers/fetchCenter', ()=> axios.get('/get-center').then(res=> res.data))
+const fetchEnrolled = createAsyncThunk('enrollments/fetchEnrolled', ()=> axios.get('/search-enrolled').then(res=> res.data))
 
-const centerSlice = createSlice({
+const enrollmentSlice = createSlice({
     name:'center',
     initialState,
     reducers:{},
     extraReducers:builder=>{
-        builder.addCase(fetchCenter.pending, state => {
+        builder.addCase(fetchEnrolled.pending, state => {
             state.loading=true
         })
-        builder.addCase(fetchCenter.fulfilled, (state,action)=>{   
+        builder.addCase(fetchEnrolled.fulfilled, (state,action)=>{   
             state.loading=false
             state.data = action.payload.data
         })
-        builder.addCase(fetchCenter.rejected, (state,action)=>{
+        builder.addCase(fetchEnrolled.rejected, (state,action)=>{
             state.loading=false
             state.error=action.error.message
         })
     }
 })
  
-export default centerSlice.reducer
-export const { 
-	useGetCentersQuery, 
-	useSearchCentersQuery,
-	useSearchEnrollmentsQuery,
-} = commonApiSlice  
-export { fetchCenter }
+export default enrollmentSlice.reducer
+export const {  useSearchEnrollmentsQuery } = enrollmentApiSlice  
+export { fetchEnrolled }

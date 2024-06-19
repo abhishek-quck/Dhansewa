@@ -36,7 +36,7 @@ const Sidebar = () => {
     <div className={`p-3 ${theme.toLowerCase()}-theme`} >
       <div className="d-flex align-items-left" style={{flexDirection:'column'}}>
         <Logo />  
-        <CardTitle>Micro Foundation</CardTitle>
+        <CardTitle>Micro Foundations</CardTitle>
         <span className="ms-auto d-lg-none">
         <Button
           close
@@ -50,7 +50,7 @@ const Sidebar = () => {
         <Nav vertical className="sidebarNav"  >
           {navigation.map((navi, index) => (
             <NavItem key={index} 
-            className= {`mt-1 sidenav-bg ${location.pathname === navi.href || 
+              className={`mt-1 sidenav-bg ${location.pathname === navi.href || 
               navi.links?.includes(location.pathname) ? 'nav-link-active':''}`}
             >
               <Link
@@ -67,7 +67,7 @@ const Sidebar = () => {
                 <span className="ms-3 d-inline-block">{navi.title}</span>
               </Link>
               <Collapse isOpen={toggler[navi.name] || navi.links?.includes(location.pathname)} 
-                className={`list-group ${toggler[navi.name] ?'show':null}`}>
+                className={`list-group ${toggler[navi.name] ?'show':null} ${toggler[navi.name] || navi.links?.includes(location.pathname)?'nav-link-active':''}`}>
                 <List className={`sidebar-ul`} style={{marginLeft:'-31px'}} >
                 {navi.sub?.length ? (
                   navi.sub.map((sub,key)=>{

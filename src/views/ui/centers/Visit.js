@@ -5,8 +5,8 @@ function Visit() {
     return (
         <div> 
           <Card className="col-7">
-            <CardHeader tag="h6" className="border-bottom d-flex">
-              <b className='mt-2 mb-2'> VISIT REPORTING </b>
+            <CardHeader className="d-flex">
+              <b> VISIT REPORTING </b>
             </CardHeader>
             <CardBody className="bg-gray-300">
                 <Form>

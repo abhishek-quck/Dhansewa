@@ -22,7 +22,7 @@ const FullLayout = () => {
   },[isLoading])
 
   return (
-    <main className={``}>
+    <main className={``} style={{backgroundColor:state.theme==='Dark'?'#848989':''}}>
 	  <Toaster/>	 
       <div className="pageWrapper d-lg-flex">
         <div className={`${loading?'item':"item d-none"}`}> 

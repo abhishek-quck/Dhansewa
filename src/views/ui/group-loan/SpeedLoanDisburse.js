@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"; 
+import React, { useEffect, useState } from "react"; 
 import $ from 'jquery'
 import { 
   Card,
@@ -11,27 +11,64 @@ import {
   Row,
   Col,
   CardFooter,
-  CardHeader, 
+  CardHeader,
+  Button, 
 } from "reactstrap";
+import ReactSelect from "react-select";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 const SpeedLoanDisburse = () => { 
+    const dispatch = useDispatch()
+    const clientOptions=[];
+    const [fields, setFields] = useState({
+        
+    })
+
+    const centerOptions = [
+        {value:'patupur',  label:'Patupur'  },
+        {value:'Ajamgarh', label:'Ajamgadh' },
+        {value:'Firozabad',label:'Firozabad'},
+        {value:'Rampur',   label:'Rampur'   },
+        {value:'Allahabad',label:'Allahabad'},
+        {value:'Basti',    label:'Basti'    }
+    ]
+
+    const handleSubmit = e => {
+        dispatch({type:'LOADING'})
+        e.preventDefault()
+        axios.post('/speed-loan-disburse',fields)
+        .then(({data})=>{
+            console.log(data) 
+            toast.success('Records added successfully!')
+        })
+        .catch(err=>{
+            console.log(err)
+            toast.error(err.message)
+        })
+        .finally((res)=>{
+            dispatch({type:'STOP_LOADING'})
+            console.log(res)
+        })
+    }
+
 	useEffect(()=>{
 		[...document.getElementsByClassName('select2')].forEach(element => {
 			$(element).select2({
 				placeholder:element.getAttribute('placeholder')
 			})
-		});
-		
+		}); 
 	},[])
 
   return (
     <div> 
       <Card className="col-12">
-        <CardHeader tag="h6" className="border-bottom d-flex" >
+        <CardHeader tag="h6" className=" d-flex" >
           <b className="mt-2 mb-2"> SPEED LOAN DISBURSEMENT SYSTEM </b>
         </CardHeader>
         <CardBody className="bg-gray-300">
-            <Form>
+            <Form onSubmit={handleSubmit}>
               <FormGroup>
                 <Row className="">
                  <Col md="3">
@@ -40,7 +77,6 @@ const SpeedLoanDisburse = () => {
                             id="branches" 
                             name="branch"
                             type="select"
-							className="select2"
                         >
                             <option> --SELECT BRANCH-- </option>
                             <option> Enrollment </option>  
@@ -48,42 +84,23 @@ const SpeedLoanDisburse = () => {
                  </Col > 
                  <Col md="3">
                         <Label size={'sm'} for="center"> Centers </Label>
-                        <Input
-                            id="center" 
-                            name="center"
-                            type="select"
-							placeholder="Select center"
-							className="select2"
-                        >
-							<option></option>
-                            <option> --SELECT CENTER-- </option>
-                            <option> Patupur </option>
-                            <option> Basti </option> 
-                            <option> Ajamgadh </option> 
-                            <option> Firozabad </option> 
-                            <option> Rampur </option> 
-                            <option> Allahabad </option> 
-                        </Input>
+                        <ReactSelect
+                            options={centerOptions}
+                        /> 
                  </Col > 
                  <Col md="5">
                     <Label size={'sm'} for="branchID"> Client ID </Label>
                     <div className="d-flex">
-                        <Input
-                            id="branchID" 
-                            name="branch"
-                            type="select"
-                            className="col-1 select2" 
-							placeholder="Client ID"
-                        > 
-						<option></option> 
-						<option> --SELECT CLIENT-- </option>
-                        </Input>
+                        <ReactSelect
+                            options={clientOptions}
+                            className="w-100"
+                        /> 
                     </div>
                  </Col > 
                 </Row>   
               </FormGroup> 
               <div className="d-flex"> 
-                <div className="col-md-7">
+                <div className="col-md-8">
                     <Card>
                         <CardHeader>
                             <CardTitle> New Loan Disbursement For </CardTitle>
@@ -102,7 +119,7 @@ const SpeedLoanDisburse = () => {
                                     /> 
                                 </Col>
                                 <Col sm="4" md="4">
-                                    <Label  size={'sm'} >
+                                    <Label size={'sm'} >
                                         Loan Products
                                     </Label>
                                     <Input
@@ -232,7 +249,7 @@ const SpeedLoanDisburse = () => {
                 <div className="col-md-4 mx-1">
                     <Card className="mx-1">
                         <CardHeader>
-                            <CardTitle> New Loan Disbursement For </CardTitle>
+                            <CardTitle> Other Info </CardTitle>
                         </CardHeader>
                         <CardBody>
                             <Row className="container">
@@ -258,7 +275,7 @@ const SpeedLoanDisburse = () => {
                                  <option> None </option>
                                 </Input>
                             </Row>
-                            <Row className="mt-2 container">
+                            <Row className="mt-2 container mb-3">
                                 <Label  size={'sm'} >
                                     Cross Sale Products
                                 </Label>
@@ -271,11 +288,9 @@ const SpeedLoanDisburse = () => {
                             </Row> 
                         </CardBody>
                         <CardFooter>
-                            <Row>
-                                <button className="btn btn-primary mt-2 w-100">
-                                    Save & Disburse
-                                </button>
-                            </Row>
+                            <Button type="submit" color="success" className="mt-2 w-100">
+                                Save & Disburse
+                            </Button>
                         </CardFooter>
                     </Card>
                 </div>

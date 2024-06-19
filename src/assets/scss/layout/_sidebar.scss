@@ -12,7 +12,7 @@
     }
   }
   .dark-theme .sidenav-bg:hover, .dark-theme .nav-link-active {
-	background:linear-gradient(360deg, black, transparent);   
+	background:linear-gradient(360deg, black, #2a3d3f);   
 	color:white; 
 	border-radius: $border-radius;
   } 
@@ -21,6 +21,11 @@
 
 .light-theme li.nav-link:hover, .sub-nav-link{ 
   background-color: #dce4e5;   
+  color:white;
+  border-radius: $border-radius; 
+}
+.dark-theme li.nav-link:hover, .dark-theme .sub-nav-link{ 
+  background-color:#3c5255;   
   color:white;
   border-radius: $border-radius; 
 }

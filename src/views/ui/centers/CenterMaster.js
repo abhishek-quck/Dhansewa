@@ -9,24 +9,15 @@ import { Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Lab
 import { useSearchCentersQuery } from '../../../features/centerSlice';
 
 function CenterMaster() {
-	// return 
 	const dispatch = useDispatch();
 	const search = useSelector(state=>state.auth.search)
-	const getInfo = (e) => { 
-		// dispatch({type:'LOADING'})
-		// axios.post('/get-centers', {term:e.target.value})
-		// .then(({data})=>{
-		// 	setCenters(data)
-		// }).catch(()=>{
-		// 	dispatch({type:'STOP_LOADING'})
-		// })
-		// onChange(e) 
+	const getInfo = (e) => {  
 		dispatch({type:'SEARCH', payload:e.target.value})
 	}
  
 	const debouncedSearchQuery = useDebounce(search, 500);
 	const { data, isLoading } = useSearchCentersQuery(debouncedSearchQuery,{skip:search===''})
-	console.log(data, isLoading)
+
 	const [fields, setFields] = useState({
 		branch:'',
 		center:'',
@@ -44,6 +35,7 @@ function CenterMaster() {
 		centerLeaderPhone:'',
 		advisor:''
 	});
+	// eslint-disable-next-line
 	const [centers, populateCenter] = useState([])
 	
 	const onChange = e => {
@@ -56,6 +48,7 @@ function CenterMaster() {
 		e.preventDefault();
 		axios.post('/add-center',fields)
 		.then(({data})=> {
+			console.log(data)
 			if(data.status) toast.success(data.message);
 		})
 		.catch(({response})=> {
@@ -66,7 +59,7 @@ function CenterMaster() {
 	}
 
 	useEffect(()=>{
-		
+		console.log(data)
 	},[search])
 
 	return (
@@ -141,12 +134,12 @@ function CenterMaster() {
 												type="select"
 												onChange={getInfo}
 											>
-												<option> Benipur </option>
-												<option> Basti </option> 
-												<option> Ajamgadh </option> 
-												<option> Firozabad </option> 
-												<option> Rampur </option> 
-												<option> Allahabad </option> 
+												<option value={'benipur'}> Benipur </option>
+												<option value={'basti'}> Basti </option> 
+												<option value={'ajamgadh'}> Ajamgadh </option> 
+												<option value={'firozabad'}> Firozabad </option> 
+												<option value={'rampur'}> Rampur </option> 
+												<option value={'allahabad'}> Allahabad </option> 
 											</Input>
 										</div>
 									</Col > 
@@ -189,8 +182,8 @@ function CenterMaster() {
 												type="select"
 												onChange={onChange} 
 											>   
-												<option> Benipur </option>
-												<option> Basti </option> 
+												<option value={'benipur'}> Benipur </option>
+												<option value={'basti'}> Basti </option> 
 											</Input>
 											
 										</div>
@@ -205,7 +198,7 @@ function CenterMaster() {
 												type="select"
 												onChange={onChange} 
 											>
-												<option> Bihar </option>
+												<option value={'bihar'}> Bihar </option>
 											</Input>   
 										</div>
 									</Col > 
@@ -235,12 +228,12 @@ function CenterMaster() {
 												type="select" 
 												onChange={onChange}
 											>
-												<option> Monday </option>
-												<option> Tuesday </option>
-												<option> Wednesday </option>
-												<option> Thursday </option>
-												<option> Friday </option>
-												<option> Saturday </option>
+												<option value={'monday'}> Monday </option>
+												<option value={'tuesdays'}> Tuesday </option>
+												<option value={'wednesday'}> Wednesday </option>
+												<option value={'thursday'}> Thursday </option>
+												<option value={'friday'}> Friday </option>
+												<option value={'saturday'}> Saturday </option>
 											</Input>
 										</div>
 									</Col > 
@@ -368,7 +361,7 @@ function CenterMaster() {
 									</Row> 
 									<Row className="mt-2">
 									<Col md="12">
-										<button type='button' className='btn btn-success btn-sm btn-rounded'> Create </button>
+										<button type='submit' className='btn btn-success btn-sm btn-rounded'> Create </button>
 									</Col > 
 									</Row> 
 								</FormGroup> 

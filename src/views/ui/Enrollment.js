@@ -1,6 +1,5 @@
-import axios from "axios";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { 
   Card,
@@ -12,31 +11,31 @@ import {
   Row,
   Col,
   CardHeader,
-  Table, 
+  Table,
+  Spinner,
 } from "reactstrap";
+import { useSearchEnrollmentsQuery } from "../../features/centerSlice";
+import toast from "react-hot-toast";
 
-const Enrollment = () => {  
+const Enrollment = () => {
 	const dispatch = useDispatch()
-	const [fields, setFields] = useState({term:'',branch:''})
-	// eslint-disable-next-line
-	const [responseData, setResponse] = useState([])
+	const [searched, hitSearch]= useState(false)
+	const enrollTerm= useSelector(state=>state.auth.enrollTerm)
+	const [fields, setFields] = useState({ term:enrollTerm||'',branch:'' })
 
-	const handleChange = e => {
-		setFields({...fields,[e.target.name]:e.target.value})
+	const { data, error, isLoading } = useSearchEnrollmentsQuery(fields, {
+		skip:enrollTerm === null|''
+	})
+
+	if(error)
+	{
+		toast.error('An error occurred')
+		console.log(error);
 	}
 	const handleSearch = ev => {
 		ev.preventDefault()
-		dispatch({type:'LOADING'})
-
-		axios.post('/search-enrolled',fields )
-		.then(({data})=>{ 
-			console.log(data);
-			setResponse(data) 
-		}).catch(({response})=>{
-			console.log(response);
-		}).finally(()=>{
-			dispatch({type:'STOP_LOADING'})
-		})
+		hitSearch(a=>!a)
+		dispatch({type:'SEARCH_ENROLLED', payload:fields})
 	}
 	return (
 	<div> 
@@ -57,7 +56,7 @@ const Enrollment = () => {
 						id="branch" 
 						name="branch"
 						type="select"
-						onChange={handleChange}
+						onChange={e=>setFields({...fields,[e.target.name]:e.target.value})}
 					>
 						<option value={'all'}>All</option>
 						<option value={'0'} >2</option> 
@@ -71,7 +70,8 @@ const Enrollment = () => {
 							name="term"
 							placeholder="Search name/phone/KYC"
 							type="text"
-							onChange={handleChange}
+							value={fields.term}
+							onChange={e=>setFields({...fields,[e.target.name]:e.target.value})}
 						/>
 						<button type="submit" className="btn btn-primary">
 							<i className="fa fa-search" />
@@ -98,17 +98,21 @@ const Enrollment = () => {
 					</tr>
 				</thead>
 				<tbody> 
-				{ responseData.length ? 
-					responseData.map((row,key)=>{
-						return (<tr key={key} > 
-							<td> {key+1} </td>
-							{ Object.keys(row).map((td,index) => {
-								return <td key={index}> {row[td]??''} </td>
-							})
-						}
+				{isLoading? <tr><td colSpan={6} className="text-center"><Spinner/></td></tr> :
+					data?.length ? data.map((row,index)=>{
+						return (<tr key={index}>
+							<td>{index+1}</td>
+							{ Object.keys(row).map((key,td)=>{
+								return (<td key={key}>{row[key]}</td>)
+							})}
 						</tr>)
-					})
-				: null}
+					}):
+					searched && <tr>
+						<td colSpan={6} className="text-center text-danger">
+							No records found!
+						</td>
+					</tr> 
+				}
 				</tbody>
 				</Table> 
 			</div>

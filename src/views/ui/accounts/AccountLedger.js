@@ -14,6 +14,7 @@ function AccountLedger() {
 		e.preventDefault()
 		getLedgerData()
 	}
+
 	const getLedgerData = () => {
 		axios.post('/get-account-ledger', fields )
 		.then(({data})=> {
@@ -23,6 +24,30 @@ function AccountLedger() {
 		})
 		.catch(err=>console.log(err))
 	}
+
+    // Generate EXCEL
+    const downloadExcel = async() => {
+
+        dispatch({type:'LOADING'})
+        return axios.get('/test',{
+            responseType:'blob',
+            headers:{
+            "Content-Type": "multipart/form-data",
+            "Authorization":"Bearer "+localStorage.getItem('auth-token')
+        }})
+        .then(({data})=>{
+            const href= URL.createObjectURL(data)
+            const link = document.createElement('a')
+            link.href = href 
+            link.download='_blank.txt' // Don't ignore <3
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(href)
+        })
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
+
+    }
 
 	// const columns = [ ]; in DataTable.js
 
@@ -39,7 +64,7 @@ function AccountLedger() {
                             <Card>
                                 <CardHeader tag="h6" className="border-bottom mb-0 d-flex" style={{justifyContent:'space-between'}}>
                                     <b className='mt-1'> Ledger Statement </b>
-                                    <button className={'btn-sm btn d-flex btn-primary'}>
+                                    <button className={'btn-sm btn d-flex btn-primary'} onClick={downloadExcel}>
                                         <i className='fa-solid fa-download' /> &nbsp; 
                                         Export 
                                     </button>

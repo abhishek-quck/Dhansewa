@@ -11,7 +11,7 @@ function SaleProducts() {
         <CardBody className="">
             <Row>
                 <Col>
-                    <Table bordered hover>
+                    <Table bordered hover style={{fontSize:'small'}}>
                         <thead>
                             <tr>
                                 <th> CATEGORY </th>
