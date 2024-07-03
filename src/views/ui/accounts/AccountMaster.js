@@ -1,17 +1,55 @@
-import React, { useState } from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody, CardFooter, CardHeader, CardText, Col, Form, Input, Label, Row, Spinner, Table } from 'reactstrap'
 
+let initial = {
+    name:'',
+    phone:'',
+    full_address:'',
+    ob_type:'',
+    ob_balance:'',
+    ob_head:'',
+}
 function AccountMaster() {
-  const [loading,setLoading] = useState(false)
-  const handleAccount = e => { 
-    e.preventDefault();
-    setLoading(!loading)
+  const dispatch = useDispatch()
+  const [fields, setFields] = useState(initial)
+  const [formSubmitted, trigger] = useState(false)
+  const app = useSelector(state=>state.auth)
+
+  const change = e => {
+    console.log(e?.target)
   }
+
+  const handleSubmit = e => {
+    trigger(!formSubmitted)  // use `!` instead `true|false` for proper use of useEffect
+    dispatch({type:'LOADING'})
+    e.preventDefault();
+    axios.post('create-account',fields)
+    .then(({data})=>{
+        console.log(data)
+        toast.success(data.message)
+        setFields(()=>initial) // reset here
+    })
+    .catch(err=>{
+        console.log(err)
+        toast.error('Something went wrong!')
+    })
+    .finally(()=>{
+        dispatch({type:'STOP_LOADING'})
+    })
+  }
+
+  useEffect(()=>{
+    return ()=>null
+  },[formSubmitted])
+
   return (
     <>
         <Col className='d-flex'>
             <Col md={6}>
-                <Form onSubmit={handleAccount}> 
+                <Form onSubmit={handleSubmit}> 
                 <Card>
                     <CardHeader>
                         <b> ACCOUNTS MASTER </b>
@@ -20,11 +58,20 @@ function AccountMaster() {
                         <Row>
                             <Col md={6}>
                                 <Label> Account Name </Label>
-                                <Input type='text' placeholder='Enter Head Name' />
+                                <Input 
+                                    type='text' 
+                                    placeholder='Enter Name' 
+                                    onChange={change}
+                                />
                             </Col>
                             <Col md={6}>
                                 <Label> Mobile </Label>
-                                <Input type='text' name='mobile' placeholder='+91 0000000000' />
+                                <Input 
+                                    type='text' 
+                                    name='mobile' 
+                                    placeholder='+91 0000000000' 
+                                    onChange={change}
+                                />
                             </Col>
                         </Row>
                         <Row className='mt-3' >
@@ -32,7 +79,7 @@ function AccountMaster() {
                                 <Label> Head Name </Label>
                                 <Input type='select' name='headNature'>
                                     <option> Branch & Division </option>
-                                    <option></option>
+                                    {<option></option>}
                                 </Input>
                             </Col>
                             <Col md={6}>
@@ -68,9 +115,9 @@ function AccountMaster() {
                             <Col md={4}>
                                 <Label> Details </Label>
                                 <Input type='select' placeholder='Details' >
-                                    <option> Dr. </option>
-                                    <option> Mr. </option>
-                                    <option> Mrs. </option>
+                                    <option value={'Dr.'}> Dr. </option>
+                                    <option value={'Mr.'}> Mr. </option>
+                                    <option value={'Mrs.'}> Mrs. </option>
                                 </Input>
                             </Col>
                             <Col md={4}>
@@ -85,7 +132,7 @@ function AccountMaster() {
                     </CardBody>
                     <CardFooter>
                         <button className='btn btn-success mt-2 w-100 mb-2'> 
-                        {loading ? <Spinner size={'sm'} />: 'Submit'} 
+                        {app.loading ? <Spinner size={'sm'} />: 'Submit'} 
                         </button>
                     </CardFooter>
                 </Card>

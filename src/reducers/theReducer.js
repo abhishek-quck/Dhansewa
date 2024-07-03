@@ -16,7 +16,7 @@ async function getUserDetails ()
 const initialState = {
     loading:false,
     myInfo:null,
-	theme:'Light',
+	theme:localStorage.getItem('theme')??'Light',
     userToken,
     error: null,
     success: false, 
@@ -85,6 +85,7 @@ const authReducer = (state=initialState,action) => {
                 loading:false
             } 
 		case 'THEME' :
+            localStorage.setItem('theme', action.payload)
 			return {
 				...state,
 				theme: action.payload

@@ -11,7 +11,7 @@ function Collections() {
                 <b> BRANCH COLLECTION </b>
             </CardHeader>
             <CardBody className="">
-                <Table bordered dashed hover>
+                <Table bordered dashed={''} hover>
                 <thead>
                     <tr>
                     <th> S.No </th>

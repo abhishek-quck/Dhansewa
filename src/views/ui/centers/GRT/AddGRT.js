@@ -4,39 +4,31 @@ import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
+import { preview } from '../../../../attachments'
 
 const AddGRT = () => {
     const dispatch = useDispatch()
     const navigateTo = useNavigate()
+    const [docs, setDocuments] = useState([])
     const [doc, setDocument] = useState(null)
+	const [districts, fillDistricts] = useState([])
+	const [centers, fillCenters] = useState([])
     let {id}= useParams()
     let thisUser = useSelector(state=>state.auth.GRTs[id]??{}) 
+	const previousDocument = thisUser?.latest_document?.file_name??'' 
 
     const [fields,setFields] = useState({
         applicant_name:thisUser['applicant_name'] ??'',
-		branchName:thisUser['branch'] ??'',
+		branch:thisUser['branch_id'] ??'',
+		center:thisUser['center_id'] ??'',
 		aadhaar:thisUser['aadhaar'] ??'',
-		PAN:thisUser['PAN'] ??'',
-		phone:thisUser['phone'] ??'',
-		date_of_birth:thisUser['date_of_birth'] ??'',
 		verification_type:thisUser['verification_type'] ??'',
-		verification:thisUser['verification'] ??'',
-		village:thisUser['village'] ??'',
-		district:thisUser['district'] ??'',
-		state:thisUser['state'] ??'',
-		relation:thisUser['relation'] ??'',
-		relative_name:thisUser['relative_name'] ??'',
-		gender:thisUser['gender'] ??'',
-		group:thisUser['group'] ??'',
-		postal_pin:thisUser['postal_pin'] ??'',
-		advance_details:thisUser['advance_details'] ??'',
-		nominee_details:thisUser['nominee_details'] ??'',
-		credit_report:thisUser['credit_report'] ??'',
+		verification:thisUser['verification'] ??'', 
+		phone:thisUser['phone'] ??'', 
+		district:thisUser['district'] ??'', 
+		created_at:thisUser['created_at'] ??'',
     })
-
-    const onChange = e => {
-        setFields({...fields, [e.target.name]:e.target.value})
-    }
+    const onChange = e => setFields({...fields, [e.target.name]:e.target.value})
     
     const handleSubmit = e => {
         e.preventDefault()
@@ -68,61 +60,92 @@ const AddGRT = () => {
 			console.log( response );
 		})
     }
+	const init = () =>{ 
+		axios.get('get-options/all')
+		.then(({data})=>{ 
+			if(data.district) fillDistricts(data.district)
+			if(data.centers) fillCenters(data.centers)
+		})
+		axios.get('documents')
+		.then(({data})=>{
+			setDocuments(data)
+		})
+	}
 
+	const previewDoc = () => {
+		let data = thisUser?.latest_document?.data
+		preview(id,thisUser.verification_type, 'preview-document', data!==undefined?[data]:false)
+	}
+	
     useEffect(()=>{
-        if(Object.keys(thisUser).length)
-        {
-            thisUser = thisUser[id]
-        }else{
-            axios.get(`get-client-details/${id}`)
-            .then(({data})=>{
+		
+		if(Object.keys(thisUser).length)
+		{
+			thisUser = thisUser[id]
+		}else{
+			axios.get(`get-client-details/${id}`)
+			.then(({data})=>{
 				if(typeof data==='object' && Object.keys(data).length)
 				{
 					let object = {}
-                    object[data.id]=data
-                    setFields(data)
-                    dispatch({type:'PUT_GRTs',payload:object})
-                }
-            })    
-        }
-    },[fields])
+					object[data.id]=data
+					setFields(data)
+					dispatch({type:'PUT_GRTs',payload:object})
+				}
+			})    
+		}
+		 
+		init()
+
+		return ()=>null
+
+    },[])
 
     return (
         <div> 
 		<Card className="col-7">
 		<Form onSubmit={handleSubmit}>
 		<CardHeader tag="h6" className="mb-0 d-flex" >
-			<b className="mb-2 mt-2"> BASIC INFORMATION </b>
+			<b className="mb-2 mt-2"> CLIENT INFORMATION: ENROLLMENT </b>
 		</CardHeader>
 		<CardBody className="bg-gray-300">
 			<FormGroup>
 			<Row className="mt-2">
 				<Col md="12">
 				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="branch">
-						Branch Name
+					<Label className="col-4" size={'sm'} for="id">
+						Enroll ID
 					</Label>
 					<Input
-						id="branch" 
-						name="branchName"
-						type="select" 
-						onChange={onChange}
-						defaultValue={fields.branchName}
-					>
-						<option value='benipur'> Benipur </option>
-						<option value='Basti' > Basti </option> 
-						<option value='azamgarh'> Azamgarh </option> 
-						<option value='firozabad'> Firozabad </option> 
-						<option value='rampur'> Rampur </option> 
-						<option value='allahabad'> Allahabad </option> 
-					</Input>
+						id="id" 
+						type="text"  
+						value={id}
+						readOnly
+						disabled
+					/>
 				</div>
 				</Col > 
 			</Row>
 			<Row className="mt-2">
 				<Col md="12">
 				<div className="d-flex">
-					<Label className="col-4"  size={'sm'} for="aadhaar">Aadhar (UID)</Label>
+					<Label className="col-4" size={'sm'} for="enrollDate">
+						Enroll Date
+					</Label>
+					<Input
+						id="enrollDate" 
+						type="text"  
+						value={fields.created_at}
+						readOnly
+						disabled
+					/>
+				</div>
+				</Col > 
+			</Row>
+			<Row className="mt-2">
+				<Col md="12">
+				<div className="d-flex">
+					<Label className="col-4"  size={'sm'} for="aadhaar"> Aadhaar </Label>
 					<Input
 						id="aadhaar" 
 						name="aadhaar"
@@ -137,35 +160,7 @@ const AddGRT = () => {
 			<Row className="mt-2">
 				<Col md="12">
 				<div className="d-flex">
-					<div className="col-4">
-						<Input 
-							type='select'
-							className={''} 
-							name='verification_type'
-							onChange={onChange}
-							defaultValue={fields.verification_type}
-							style={{width:90}}
-						>
-							<option value={'voterID'}> Voter ID </option>
-							<option value={'passBook'}> Passbook </option>
-							<option value={'aadhaar'}> Aadhaar </option>
-						</Input>
-					</div>
-					<Input
-						id="verification" 
-						name="verification"
-						type="text"
-						value={fields.verification}
-						onChange={onChange}
-						placeholder="Enter other KYC No"
-					/>
-				</div>
-				</Col> 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4"  size={'sm'} for="name">Applicant Name</Label>
+					<Label className="col-4"  size={'sm'} for="name"> Client Name </Label>
 					<Input
 						id="name" 
 						name="applicant_name"
@@ -180,95 +175,27 @@ const AddGRT = () => {
 			<Row className="mt-2">
 				<Col md="12">
 				<div className="d-flex">
-					<div className="col-4">
-						<Input 
-							type='select'
-							name="relation" 
-							className={''} 
-							defaultValue={fields.relation}
-							style={{width:90}}
-						>
-							<option value={'S/O'}> S/O </option>
-							<option value={'W/O'}> W/O </option>
-						</Input>
-					</div>
+					<Label className="col-4"  size={'sm'} for="name"> Center ID </Label>
 					<Input
-						id="relation" 
-						name="relative_name"
-						value={fields.relative_name}
-						type="text"
-						onChange={onChange}
-						placeholder="Enter name"
-					/>   
-				</div>
-				</Col> 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="gender"> Gender </Label>
-					<Input
-						id="gender" 
-						name="gender"
+						id="name" 
+						name="center"
 						type="select"
+						defaultValue={fields.center}
 						onChange={onChange}
-						defaultValue={fields.gender}
-					>
-						<option value="male">Male</option>
-						<option value="female">Female</option> 
-					</Input>
+					> 
+						<option> Select Center </option>
+						{centers.map((option,i)=>{
+							return <option value={option.value} key={i}>{option.label}</option>
+						})}
+					</Input> 
 				</div>
 				</Col> 
 			</Row>
+			       
 			<Row className="mt-2">
 				<Col md="12">
 				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="pan">PAN</Label>
-					<Input
-						id="pan" 
-						name="PAN"
-						type="text"
-						value={fields.PAN}
-						onChange={onChange}
-						placeholder="Enter PAN No"
-					/>
-				</div>
-				</Col > 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="pin">Postal PIN</Label>
-					<Input
-						id="pin" 
-						name="postal_pin"
-						type="text"
-						value={fields.postal_pin}
-						onChange={onChange}
-						placeholder="Enter PIN"
-					/>
-				</div>
-				</Col > 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="village">Village/City Name</Label>
-					<Input
-						id="village" 
-						name="village"
-						type="text"
-						value={fields.village}
-						onChange={onChange}
-						placeholder="Enter village/city name" 
-					/>
-				</div>
-				</Col> 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="district">Districts </Label>
+					<Label className="col-4" size={'sm'} for="district"> Address </Label>
 					<Input
 						id="district" 
 						name="district"
@@ -276,10 +203,9 @@ const AddGRT = () => {
 						onChange={onChange}
 						defaultValue={fields.district}
 					>
-						<option value={'darbhanga'}> Darbhanga </option>
-						<option value={'gonda'}> Gonda </option> 
-						<option value={'ballia'}> Ballia </option> 
-						<option value={'Basti'}> Basti </option> 
+						{districts.map((option,i)=>{
+							return <option key={i} value={option.value}>{option.label}</option>
+						})}
 					</Input>
 				</div>
 				</Col > 
@@ -287,107 +213,31 @@ const AddGRT = () => {
 			<Row className="mt-2">
 				<Col md="12">
 				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="exampleEmail">State Name </Label>
+					<div className="col-3">
+						<Input 
+							type='select'
+							className={''} 
+							name='verification_type'
+							onChange={onChange}
+							defaultValue={fields.verification_type}
+						>
+							<option> Select KYC </option>
+							{docs.map((option,i)=>{
+								return <option key={i} value={option.id}>{option.name}</option>
+							})} 
+						</Input>
+					</div>
 					<Input
-						id="state" 
-						name="state"
-						type="select"
+						id="verification" 
+						name="verification"
+						type="text"
+						className='form-control offset-1'
+						value={fields.verification}
 						onChange={onChange}
-						defaultValue={fields.state}
-					>
-						<option value={'bihar'}> Bihar </option>
-						<option value={'Uttar-Pradesh'}> UP </option> 
-					</Input>
-				</div>
-				</Col > 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="DOB"> Date of Birth (Today) </Label>
-					<Input
-						id="DOB" 
-						name="date_of_birth"
-						type="date"
-						onChange={onChange}
-						value={fields.date_of_birth}
-						placeholder="Enter Date of Birth"
+						placeholder="Enter other KYC No"
 					/>
 				</div>
 				</Col> 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="phone"> Phone </Label>
-					<Input
-						id="phone" 
-						name="phone"
-						type="text"
-						value={fields.phone}
-						onChange={onChange}
-						placeholder="Enter phone"
-					/>
-				</div>
-				</Col > 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="exampleEmail"> Group </Label>
-					<Input
-						id="group" 
-						name="group"
-						type="text"
-						onChange={onChange}
-						value={fields.group}
-						placeholder="Enter group no"
-					/>
-				</div>
-				</Col> 
-			</Row>
-			
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="advance_details"> Advance Details </Label>
-					<Input
-						id="advance_details" 
-						name="advance_details"
-						type="checkbox" 
-						defaultChecked={fields.advance_details}
-						onChange={onChange}
-					/>
-				</div>
-				</Col > 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="nominee_details"> Nominee Details </Label>
-					<Input
-						id="nominee_details" 
-						name="nominee_details"
-						type="checkbox" 
-						defaultChecked={fields.nominee_details}
-						onChange={onChange}
-					/>
-				</div>
-				</Col > 
-			</Row>
-			<Row className="mt-2">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="credit_report"> Credit Report & Upload </Label>
-					<Input
-						id="credit_report" 
-						name="credit_report"
-						type="checkbox" 
-						defaultChecked={fields.credit_report}
-						onChange={onChange}
-					/>
-				</div>
-				</Col > 
 			</Row>
 			<Row className="mt-2">
 				<Col md="12">
@@ -399,6 +249,15 @@ const AddGRT = () => {
 						type="file" 
 						onChange={e=>setDocument(e.target.files[0])}
 					/>
+				</div>
+				</Col > 
+			</Row>
+			<Row className="mt-4">
+				<Col md="12">
+				<div className="d-flex">
+					<Label className="col-4" size={'sm'} for="doc"> Previous Document </Label>
+					<i className='fa fa-paperclip' onClick={previewDoc} />
+					<small className='mx-4'>{previousDocument}</small>
 				</div>
 				</Col > 
 			</Row>

@@ -23,7 +23,21 @@ function ClientADV() {
 	
     const [responseData, setResponse] = useState([])
     const [Option, setOption] = useState('')
+    const [branches, setBranches] = useState([])
+    const [centers, setCenters] = useState([])
     const [transferLoading, setLoading] = useState(false)
+    const init = () => {
+        dispatch({type:'LOADING'})
+        axios.get('get-options/all')
+		.then(({data})=>{
+		    
+            if(data.centers) setCenters(data.centers)
+            if(data.branches) setBranches(data.branches)
+                
+		}).finally(()=>{
+            dispatch({type:'STOP_LOADING'})
+        }) 	
+    }
     useEffect(()=>{
         [...document.getElementsByClassName('select2')].forEach(element => {  
             $(element).select2({
@@ -31,16 +45,10 @@ function ClientADV() {
                 width:'100%'
             })            
         });
+        init()
 		return ()=>null
     },[Option])
-	const options = [
-		{ value: 'chocolate', label: 'Chocolate' },
-		{ value: 'strawberry', label: 'Strawberry' },
-		{ value: 'vanilla', label: 'Vanilla' }
-	]
-    const centerOptions = [
-		{value:'shivnagar',label:'Shivnagar'}
-	]
+
 	const handleSearch = e => {
 		// here it comes baeibee
 		dispatch({type:'LOADING'})
@@ -73,7 +81,7 @@ function ClientADV() {
 											id='branch'
 											placeholder='Select Branch'
 											onChange={e=>setSearchFields({...searchFields, branch:e.value})}
-											options={options}
+											options={branches}
 										/> 
 									</FormControl>
                                 </Col>
@@ -86,7 +94,7 @@ function ClientADV() {
                                         <ReactSelect  
                                             id='center'
 											placeholder='Select Center'
-											options={centerOptions}
+											options={centers}
 											onChange={e=>setSearchFields({...searchFields, center:e.value})}
                                         />
 								</FormControl>
@@ -127,10 +135,12 @@ function ClientADV() {
 									<tbody>
 										{responseData.length ?
 											responseData.map((row,index)=>{
-												return (<tr>
-													{Object.values(row).map((key, cell)=>{
-														return <td> {cell} </td>
-													})}
+												return (<tr key={index}>
+                                                    <td> {row.id} </td>
+                                                    <td> {row.name} </td>
+                                                    <td> 
+                                                        <i className='fa fa-pencil'/>
+                                                    </td>
 												</tr>)
 											})
 										:null

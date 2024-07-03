@@ -1,11 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react"; 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { 
   Card,
   CardBody,
-  CardTitle,   
   Form,
   FormGroup,
   Label,
@@ -23,7 +22,7 @@ const AddEnrollment = () => {
     const [searched, setSearch] = useState(false)
     const [fields ,setFields] = useState({
         source:'',
-        branchName:'',
+        branchID:'',
         name:''
     })
     const [responseData ,setResponse] = useState([])
@@ -32,7 +31,7 @@ const AddEnrollment = () => {
         setFields({...fields, [e.target.name]:e.target.value })
     }
     // eslint-disable-next-line
-    const centers = useSelector(state=>state.auth.center)
+    const [branches, fillBranches]= useState([])
     // console.log(centers)
 
     const handleSearch = e => {
@@ -57,7 +56,13 @@ const AddEnrollment = () => {
         })
     }
 
-    useEffect(()=>{},[])
+    useEffect(()=>{
+        axios.get('get-branches')
+		.then(({data})=>{
+			console.log(data)
+			fillBranches(data)
+		})
+    },[])
 
     return (
         <div> 
@@ -77,30 +82,23 @@ const AddEnrollment = () => {
                             onChange={setChange}
                             type="select"
                         >
-                            <option value={'cgt'}> CGT </option>
                             <option value={'enrollment'}> Enrollment </option>  
                         </Input>
                         </Col > 
                         <Col md="2">
-                            <Label size={'sm'} for="branchName">Branch Name</Label>
+                            <Label size={'sm'} for="branchID">Branch Name</Label>
                             <Input
-                                id="branchName" 
-                                name="branchName"
+                                id="branchID" 
+                                name="branchID"
                                 type="select"
                                 onChange={setChange}
                             >
                                 <option> All </option>
-                                <option value={'Patupur'}> Patupur </option>
-                                <option value={'Basti'}> Basti </option> 
-                                <option value={'Ajamgadh'}> Ajamgadh </option> 
-                                <option value={'Firozabad'}> Firozabad </option> 
-                                <option value={'Rampur'}> Rampur </option> 
-                                <option value={'Allahabad'}> Allahabad </option> 
-                                {/* 
-                                    centers.map((option,index)=>{
-                                        return <option value={option.value}>{option.label}</option>
+                                { 
+                                    branches.map((option,i)=>{
+                                        return <option key={i} value={option.id}>{option.name}</option>
                                     })
-                                 */}
+                                }
                             </Input>
                         </Col > 
                         <Col md="5">
@@ -157,11 +155,11 @@ const AddEnrollment = () => {
                         }):
                         searched ? 
                         <tr className="text-center">
-                            <td colspan={8} className="text-danger fs-4">
+                            <td colSpan={8} className="text-danger fs-4">
                                 No records found!
                             </td>
                         </tr>
-                        :''
+                        :null
                     }
                     </tbody>
                 </Table>

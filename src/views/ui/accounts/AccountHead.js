@@ -1,12 +1,92 @@
-import React from 'react'
-import {  Card, CardBody, CardFooter, CardHeader, Col, Input, Label, Row, Table } from 'reactstrap'
+import $ from 'jquery'
+import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react'
+import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import CreatableSelect from 'react-select/creatable';
+import {  Card, CardBody, CardFooter, CardHeader, Col, Form, Input, Label, Row, Table } from 'reactstrap'
 
 function AccountHead() {
-  return (
+    const dispatch = useDispatch()
+    const [name, setName] = useState('')
+    const [group_name, setGroup] = useState('')
+    const [type, setType] = useState('')
+    const [submitState, trigger] = useState(false)
+    const typeRef=  useRef('')
+    const groupRef=  useRef('')
+    const [data, fillData] = useState([])
+    const changeName = e => {
+        setName(e.target.value)
+    }
+    const changeType = e => {
+        if(e?.value) setType(e.value)
+    }
+    const changeGroup = e => {
+        if(e?.value) setGroup(e.value)
+    }
+    const handleSubmit = e => {
+        dispatch({type:'LOADING'})
+        e.preventDefault();
+        axios.post('/create-account-head', {
+            name,
+            group_name,
+            type,
+        })
+        .then(({data})=>{
+            // console.log(data)
+            toast.success(data.message??'Record added succesfully!')
+            setName(()=>'')
+            setGroup(()=>'')
+            setType(()=>'')
+            typeRef.current.clearValue()
+            groupRef.current.clearValue()
+        })
+        .catch(err=>{
+            console.log(err)
+            toast.error('Something went wrong!')
+        })
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
+        trigger(!submitState)
+    }
+
+    const init = () => {
+        dispatch({type:'LOADING'})
+        axios.get('get-account-heads')
+        .then(({data})=>{ 
+            if(typeof data==='object')
+            {
+                fillData(data)
+            }
+        })
+        .catch(err=>{
+            toast.error('An error occurred!')
+            console.log(err.message|err)
+        })
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
+    }
+    
+    $('input[type=search]').on('keyup search',function () {
+        // search logic here        
+        $('tbody tr').each((i,row) => {
+            if(!row.textContent.toLowerCase().includes(this.value?.toLowerCase()))
+            {
+                $(row).addClass('d-none')   
+            }else{
+                $(row).removeClass('d-none')   
+            }
+        });
+    });
+
+    useEffect(()=>{
+        init()
+        return ()=>null
+    },[submitState])
+    return (
     <>
         <Col className='d-flex'>
             <Col md={6}>
                 <Card>
+                <Form onSubmit={handleSubmit} >
                     <CardHeader>
                         <b> ACCOUNT HEAD </b>
                     </CardHeader>
@@ -14,29 +94,43 @@ function AccountHead() {
                         <Row>
                             <Col md={6}>
                                 <Label> Account Head Name </Label>
-                                <Input type='text' placeholder='Enter Head Name' />
+                                <Input 
+                                    name='name'
+                                    type='text'
+                                    onChange={changeName}
+                                    value={name}
+                                />
                             </Col>
                             <Col md={6}>
                                 <Label> A/C Nature </Label>
-                                <Input type='select'  name='headNature'>
-                                    <option> Assets </option>
-                                    <option></option>
-                                </Input>
+                                <CreatableSelect 
+                                    isClearable
+                                    options={[{value:'',label:''}]}
+                                    name='type'
+                                    ref={typeRef}
+                                    defaultValue={type}
+                                    onChange={changeType}
+                                />
                             </Col>
                         </Row>
                         <Row className='mt-3' >
                             <Col md={6}>
                                 <Label> Primary Groups </Label>
-                                <Input type='select'  name='headNature'>
-                                    <option> Branch & Division </option>
-                                    <option></option>
-                                </Input>
+                                <CreatableSelect 
+                                    isClearable
+                                    options={[{value:'',label:'Branch & Division'}]}
+                                    name='group'
+                                    ref={groupRef}
+                                    defaultValue={group_name}
+                                    onChange={changeGroup}
+                                />
                             </Col>
                         </Row>
                     </CardBody>
                     <CardFooter>
                         <button className='btn btn-success w-100'> Submit </button>
                     </CardFooter>
+                    </Form>
                 </Card>
             </Col>
             <Col md={6} className='mx-3'>
@@ -65,36 +159,14 @@ function AccountHead() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p>Assets</p></td>
-                                    <td><p> Current Assets </p></td>
-                                    <td><p> Assets </p></td> 
+                              {data.map((row,i)=>{
+                                return <tr key={i}>
+                                    <td><Input type='checkbox'/></td>
+                                    <td>{row.name}</td>
+                                    <td>{row.group_name}</td>
+                                    <td>{row.type}</td>
                                 </tr>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Liabilities </p></td>
-                                    <td><p> Current Liabilities </p></td>
-                                    <td><p> Liabilities </p></td> 
-                                </tr>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Expenses </p></td>
-                                    <td><p> Direct Expenses </p></td>
-                                    <td><p> Expenditure </p></td> 
-                                </tr>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Income </p></td>
-                                    <td><p> Direct Income </p></td>
-                                    <td><p> Income </p></td> 
-                                </tr>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Equity Fund </p></td>
-                                    <td><p> Capital Accounts </p></td>
-                                    <td><p> Liabilities </p></td> 
-                                </tr>
+                              })}
                             </tbody>
                         </Table>
                     </CardBody>
@@ -105,7 +177,7 @@ function AccountHead() {
             </Col>
         </Col>
     </>
-  )
+    )
 }
 
 export default AccountHead

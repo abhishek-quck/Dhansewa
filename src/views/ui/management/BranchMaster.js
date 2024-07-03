@@ -1,12 +1,14 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { Card, CardBody, CardHeader, CardText, Col, Form, Input, Label, Row, Table } from 'reactstrap'
 
 const BranchMaster = () => {
-    const dispatch = useDispatch()
-
-    const [fields,setFields] = useState({
+    const dispatch = useDispatch();
+    const [stateCodes , setCodes]= useState([]);
+    var initial ={}
+    const [fields,setFields] = useState( initial = {
         name:'',
         address:'',
         branch_manager_id:'',
@@ -44,17 +46,30 @@ const BranchMaster = () => {
     const handleSubmit = e => {
         e.preventDefault() 
         dispatch({type:'LOADING'})
-
         axios.post('/create-branch', fields )
         .then(({data})=>{
-            console.log(data);
+            toast.success(data.message)
+            setFields(initial)
+        })
+        .catch(err=>{
+            console.log(err)
+            toast.error('Something went wrong')
         })
         .finally(()=>{
             dispatch({type:'STOP_LOADING'})
         }) 
     }
 
-    useEffect(()=>{},[])
+    useEffect(()=>{
+        axios.get('/get-state-codes')
+        .then(({data})=>{
+            console.log(data)
+            if(data.length)
+            {
+                setCodes(data)
+            }
+        })
+    },[])
 
     return (
         <>
@@ -72,8 +87,9 @@ const BranchMaster = () => {
                         <Input 
                             onChange={handleChange}
                             name={'name'} 
+                            value={fields.name}
                             style={inputStyle} 
-                            type='select' 
+                            type='text' 
                         />
                     </Col>
                     <Col className='d-flex'>
@@ -84,7 +100,8 @@ const BranchMaster = () => {
                                 name={'address'} 
                                 style={inputStyle} 
                                 type='text'
-                                placeholder='Enter Loan Amount'
+                                value={fields.address}
+                                placeholder='Enter Address'
                             /> 
                         </div>
                     </Col>
@@ -96,7 +113,8 @@ const BranchMaster = () => {
                             onChange={handleChange} 
                             name={'branch_manager_id'} 
                             style={inputStyle} 
-                            type='select'
+                            type='text'
+                            value={fields.branch_manager_id}
                         />
                     </Col>
                     <Col className='d-flex'>
@@ -107,7 +125,7 @@ const BranchMaster = () => {
                                 name={'gps_location'} 
                                 style={inputStyle} 
                                 type='text'
-                                placeholder='Enter Loan Amount'
+                                value={fields.gps_location}
                             /> 
                         </div>
                     </Col>
@@ -115,7 +133,18 @@ const BranchMaster = () => {
                 <Row className={'mt-2'} style={{fontSize:'small'}}>
                     <Col>
                         <Label> State Code</Label>
-                        <Input onChange={handleChange} name={'state_code'} style={inputStyle} type='select' />
+                        <Input 
+                            onChange={handleChange} 
+                            name={'state_code'} 
+                            style={inputStyle} 
+                            type='select'
+                            defaultValue={fields.state_code}
+                        >
+                            <option> Select State-Code </option>
+                            {stateCodes.map((option,i)=>{
+                                return <option key={i} value={option.value}>{option.label}</option>
+                            })}
+                        </Input> 
                     </Col>
                     <Col className='d-flex'>
                         <div>
@@ -125,7 +154,7 @@ const BranchMaster = () => {
                                 name={'branch_gst_num'} 
                                 style={inputStyle} 
                                 type='text'
-                                placeholder='Enter Loan Amount'
+                                value={fields.branch_gst_num}
                             /> 
                         </div>
                     </Col>
@@ -138,6 +167,7 @@ const BranchMaster = () => {
                             name={'payout_month_and_year'} 
                             style={inputStyle} 
                             type='date' 
+                            value={fields.payout_month_and_year}
                         />
                     </Col>
                     <Col className='d-flex'>
@@ -148,6 +178,7 @@ const BranchMaster = () => {
                                 name={'setup_date'} 
                                 style={inputStyle} 
                                 type='date'
+                                value={fields.setup_date}
                             /> 
                         </div>
                     </Col>
@@ -159,8 +190,13 @@ const BranchMaster = () => {
                             onChange={handleChange} 
                             name={'backdate_allowed'} 
                             style={inputStyle} 
-                            type='date' 
-                        />
+                            type='select' 
+                            defaultValue={fields.backdate_allowed}
+                        >
+                            <option> Choose </option>
+                            <option value={1}> YES </option>
+                            <option value={0}> NO </option>
+                        </Input>
                     </Col>
                     <Col className='d-flex'>
                         <div>
@@ -170,6 +206,7 @@ const BranchMaster = () => {
                                 name={'running_date'} 
                                 style={inputStyle} 
                                 type='date'
+                                value={fields.running_date}
                             /> 
                         </div>
                     </Col>
@@ -181,7 +218,9 @@ const BranchMaster = () => {
                             onChange={handleChange} 
                             name={'dissolved_date'} 
                             style={inputStyle} 
-                            type='date' />
+                            type='date'
+                            value={fields.dissolved_date}
+                        />
                     </Col> 
                 </Row>
                 <CardText style={{backgroundColor:'beige',padding:5}}>
@@ -195,9 +234,11 @@ const BranchMaster = () => {
                             name={'multi_loan_allowed'} 
                             style={inputStyle} 
                             type='select'
+                            defaultValue={fields.multi_loan_allowed}
                         >
-                            <option value={'yes'}> Yes </option>
-                            <option value={'no'}> No </option>
+                            <option> Choose </option>
+                            <option value={1}> YES </option>
+                            <option value={0}> NO </option>
                         </Input> 
                     </Col>
                     <Col md={4}>
@@ -207,9 +248,11 @@ const BranchMaster = () => {
                             name={'spml_allowed'} 
                             style={inputStyle} 
                             type='select'
+                            defaultValue={fields.spml_allowed}
                         >
-                            <option value={'yes'}> Yes </option>
-                            <option value={'no'}> No </option>
+                            <option> Choose </option>
+                            <option value={1}> YES </option>
+                            <option value={0}> NO </option>
                         </Input> 
                     </Col>
                     <Col md={4}>
@@ -220,6 +263,7 @@ const BranchMaster = () => {
                             style={inputStyle} 
                             type='text' 
                             placeholder='Enter Product No. in 2 digits'
+                            value={fields.loan_product_id}
                         />
                     </Col>
                 </Row>
@@ -236,6 +280,7 @@ const BranchMaster = () => {
                                 style={inputStyle} 
                                 type='text'
                                 placeholder='Bank Code'
+                                value={fields.bank_account}
                             /> 
                         </div>
                     </Col>
@@ -248,6 +293,7 @@ const BranchMaster = () => {
                                 style={inputStyle} 
                                 type='text'
                                 placeholder='Cash Code'
+                                value={fields.cash_account}
                             /> 
                         </div>
                     </Col>
@@ -262,6 +308,7 @@ const BranchMaster = () => {
                                 style={inputStyle} 
                                 type='text'
                                 placeholder='Branch Code'
+                                value={fields.branch_account}
                             /> 
                         </div>
                     </Col>
@@ -273,9 +320,11 @@ const BranchMaster = () => {
                                 name={'loan_charge_auto'} 
                                 style={inputStyle} 
                                 type='select'
+                                defaultValue={fields.loan_charge_auto}
                             >
-                                <option value={'yes'}> YES </option>
-                                <option value={'no'}> NO </option>
+                                <option> Choose </option>
+                                <option value={1}> YES </option>
+                                <option value={0}> NO </option>
                             </Input> 
                         </div>
                     </Col>
@@ -287,6 +336,7 @@ const BranchMaster = () => {
                                 name={'cash_balance'} 
                                 style={inputStyle} 
                                 type='text'
+                                value={fields.cash_balance}
                                 placeholder='Current:Cash 0'
                             /> 
                         </div>
@@ -299,9 +349,11 @@ const BranchMaster = () => {
                                 name={'closing_enabled'} 
                                 style={inputStyle} 
                                 type='select'
+                                defaultValue={fields.closing_enabled}
                             >
-                                <option value={'yes'}> YES </option>
-                                <option value={'no'}> NO </option>
+                                <option> Choose </option>
+                                <option value={1}> YES </option>
+                                <option value={0}> NO </option>
                             </Input> 
                         </div>
                     </Col>
@@ -316,7 +368,8 @@ const BranchMaster = () => {
                             onChange={handleChange} 
                             name={'reporting_mail'} 
                             style={inputStyle} 
-                            type='date' />
+                            value={fields.reporting_mail}
+                            type='text' />
                     </Col>
                     <Col className='d-flex'>
                         <div>
@@ -325,8 +378,13 @@ const BranchMaster = () => {
                                 onChange={handleChange} 
                                 name={'aadhaar_verify'} 
                                 style={inputStyle} 
-                                type='date'
-                            />
+                                type='select'
+                                defaultValue={fields.aadhaar_verify}
+                            >
+                                <option> Choose </option>
+                                <option value={1}> YES </option>
+                                <option value={0}> NO </option>
+                            </Input>
                         </div>
                     </Col>
                 </Row>
@@ -337,7 +395,9 @@ const BranchMaster = () => {
                             onChange={handleChange} 
                             name={'reporting_phone_sms'} 
                             style={inputStyle} 
-                            type='date' 
+                            placeholder='Enter phone number'
+                            value={fields.reporting_phone_sms}
+                            type='text' 
                         />
                     </Col>
                     <Col className='d-flex'>
@@ -345,10 +405,14 @@ const BranchMaster = () => {
                             <Label> Mobile Verify <small className='text-danger'>*</small> </Label>
                             <Input 
                                 onChange={handleChange} 
-                                name={'name'} 
+                                name={'mobile_verify'} 
                                 style={inputStyle} 
-                                type='date'
-                            /> 
+                                type='select'
+                            >
+                                <option> Choose </option>
+                                <option value={1}> YES </option>
+                                <option value={0}> NO </option>
+                            </Input>
                         </div>
                     </Col>
                 </Row>
@@ -367,7 +431,7 @@ const BranchMaster = () => {
                 <div className='d-flex'>
                     <Input 
                         onChange={handleChange} 
-                        name={'mobile_verify'} 
+                        name={'search'} 
                         style={{...inputStyle,border:'1px solid'}} 
                         type='text'
                         placeholder='Search By Name..'

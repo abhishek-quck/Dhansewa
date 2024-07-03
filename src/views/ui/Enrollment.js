@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { 
@@ -16,15 +16,17 @@ import {
 } from "reactstrap";
 import { useSearchEnrollmentsQuery } from "../../features/centerSlice";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const Enrollment = () => {
 	const dispatch = useDispatch()
+	const [branches , setBranches] = useState([])
 	const [searched, hitSearch]= useState(false)
 	const enrollTerm= useSelector(state=>state.auth.enrollTerm)
 	const [fields, setFields] = useState({ term:enrollTerm||'',branch:'' })
 
 	const { data, error, isLoading } = useSearchEnrollmentsQuery(fields, {
-		skip:enrollTerm === null|''
+		skip:enrollTerm === null
 	})
 
 	if(error)
@@ -37,6 +39,12 @@ const Enrollment = () => {
 		hitSearch(a=>!a)
 		dispatch({type:'SEARCH_ENROLLED', payload:fields})
 	}
+	useEffect(()=>{
+		axios.get('get-branches')
+		.then(({data})=>{
+			setBranches(data)
+		})
+	},[])
 	return (
 	<div> 
 		<Card>
@@ -56,10 +64,14 @@ const Enrollment = () => {
 						id="branch" 
 						name="branch"
 						type="select"
-						onChange={e=>setFields({...fields,[e.target.name]:e.target.value})}
+						onChange={e=>setFields({...fields,branch:e.target.value})}
 					>
-						<option value={'all'}>All</option>
-						<option value={'0'} >2</option> 
+					<option value={''}> All </option>
+					{ 
+						branches.map((option,i)=>{
+							return <option key={i} value={option.id}>{option.name}</option>
+						})
+					} 
 					</Input>
 					</Col >
 					<Col xs="3" >
@@ -102,9 +114,11 @@ const Enrollment = () => {
 					data?.length ? data.map((row,index)=>{
 						return (<tr key={index}>
 							<td>{index+1}</td>
-							{ Object.keys(row).map((key,td)=>{
-								return (<td key={key}>{row[key]}</td>)
-							})}
+							<td>{row.id}</td>
+							<td>{row.applicant_name}</td>
+							<td>{row.phone}</td>
+							<td>{row.aadhaar}</td>
+							<td>{row.state}</td> 
 						</tr>)
 					}):
 					searched && <tr>

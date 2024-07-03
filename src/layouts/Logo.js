@@ -3,9 +3,10 @@ import { ReactComponent as LogoDark } from "../assets/images/logos/xtremelogo.sv
 import { Link } from "react-router-dom";
 
 const Logo = () => {
+  const company = 'DHANSEVA';
   return (
     <Link to="/" className={`text-decoration-none`}>
-      <h3 className={`text-secondary`}>DHANSEVA</h3>
+      <h3 className={`text-secondary`}>{company}</h3>
     </Link>
   );
 };

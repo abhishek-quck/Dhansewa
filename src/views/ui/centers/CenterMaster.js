@@ -5,7 +5,7 @@ import $ from 'jquery';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
+import { Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
 import { useSearchCentersQuery } from '../../../features/centerSlice';
 
 function CenterMaster() {
@@ -13,8 +13,8 @@ function CenterMaster() {
 	const search = useSelector(state=>state.auth.search)
 	const getInfo = (e) => {  
 		dispatch({type:'SEARCH', payload:e.target.value})
+		setFields({...fields, branch:e.target.value })
 	}
- 
 	const debouncedSearchQuery = useDebounce(search, 500);
 	const { data, isLoading } = useSearchCentersQuery(debouncedSearchQuery,{skip:search===''})
 
@@ -36,6 +36,9 @@ function CenterMaster() {
 		advisor:''
 	});
 	// eslint-disable-next-line
+	const [states, fillStates] = useState([])
+	const [districts, fillDistricts] = useState([])
+	const [branches, setBranches] = useState([])
 	const [centers, populateCenter] = useState([])
 	
 	const onChange = e => {
@@ -59,17 +62,24 @@ function CenterMaster() {
 	}
 
 	useEffect(()=>{
-		console.log(data)
-	},[search])
+		axios.get('get-options/all')
+		.then(({data})=>{
+			if(data.state) fillStates(data.state)
+			if(data.district) fillDistricts(data.district)
+		})
+		axios.get('get-branches')
+		.then(({data})=>{
+			console.log(data)
+			setBranches(data)
+		})
+	},[])
 
 	return (
 	<>
 	<Card>
-		<CardHeader className='bg-secondary text-white'> 
-			<CardTitle>
+		<CardHeader> 
 				<i className='fa-solid fa-arrow-down' /> &nbsp;
-				Centers Master
-			</CardTitle>
+				<b> CENTER MASTER </b>
 		</CardHeader>
 		<CardBody>
 			<Col>
@@ -92,6 +102,7 @@ function CenterMaster() {
 						</Row>
 						<Row>
 							<div className="mt-3" id="resultArea"/>   
+							<Container>
 							<Table bordered hover style={{fontSize:'small'}}>
 								<thead>
 									<tr>
@@ -114,6 +125,7 @@ function CenterMaster() {
 									<tr></tr>
 								</tbody>
 							</Table>
+							</Container>
 						</Row>
 					</Col>
 					<Col md={6} >
@@ -134,12 +146,13 @@ function CenterMaster() {
 												type="select"
 												onChange={getInfo}
 											>
-												<option value={'benipur'}> Benipur </option>
-												<option value={'basti'}> Basti </option> 
-												<option value={'ajamgadh'}> Ajamgadh </option> 
-												<option value={'firozabad'}> Firozabad </option> 
-												<option value={'rampur'}> Rampur </option> 
-												<option value={'allahabad'}> Allahabad </option> 
+												<option value={''}> Select Branch </option>
+												{branches.map((option,i)=>{
+													return <option value={option.id} key={i}>  
+														{option.name} 
+													</option> 
+												})}
+ 
 											</Input>
 										</div>
 									</Col > 
@@ -182,7 +195,14 @@ function CenterMaster() {
 												type="select"
 												onChange={onChange} 
 											>   
-												<option value={'benipur'}> Benipur </option>
+												<option> Select District </option>
+												{districts.map((option, i)=>{
+													return (
+														<option key={i} value={option.value}>
+															{option.label}
+														</option>
+													)
+												})}
 												<option value={'basti'}> Basti </option> 
 											</Input>
 											
@@ -198,7 +218,14 @@ function CenterMaster() {
 												type="select"
 												onChange={onChange} 
 											>
-												<option value={'bihar'}> Bihar </option>
+												<option> Select State </option>
+												{states.map((option, index)=>{
+												 	return (
+														<option key={index} value={option.value}>
+															{option.label} 
+														</option>
+													)
+												})}
 											</Input>   
 										</div>
 									</Col > 
@@ -210,11 +237,9 @@ function CenterMaster() {
 											<Input 
 												id='staffName'
 												name="staff"
-												type="select"
+												type="text"
 												onChange={onChange}
-											>
-												<option> --SELECT-- </option>
-											</Input>
+											/>
 										</div>
 									</Col > 
 									</Row>

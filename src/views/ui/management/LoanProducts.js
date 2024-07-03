@@ -4,9 +4,9 @@ import { Button, Card, CardBody, CardHeader, Col, Input, Label, Row } from 'reac
 function LoanProducts() {
   return (
     <Card>
-        <CardHeader className='bg-secondary text-white'>
+        <CardHeader className=''>
             <i className='fa-solid fa-arrow-down'/> &nbsp;
-            LOAN PRODUCTS:
+            <b>LOAN PRODUCTS:</b>
         </CardHeader>
         <CardBody>
             <Col>

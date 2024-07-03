@@ -87,28 +87,12 @@ const Starter = () => {
             className="col-md-5 mx-4"  
           >Connect Device
           </Button>
-          <ProjectTables /> 
-          <Summary /> 
         </Col>
-        <Col lg="8" xl="7" xxl="8">
-          <ProjectTables /> 
-          <Summary /> 
+        <Col lg="8" xl="7" xxl="8" className="mt-4">
+          {/* <Summary />  */}
         </Col>
       </Row>
-      {/***Blog Cards***/}
-      <Row>
-        {BlogData.map((blg, index) => (
-          <Col sm="6" lg="6" xl="3" key={index}>
-            <Blog
-              image={blg.image}
-              title={blg.title}
-              subtitle={blg.subtitle}
-              text={blg.description}
-              color={blg.btnbg}
-            />
-          </Col>
-        ))}
-      </Row>
+      
     </div>
   );
 };

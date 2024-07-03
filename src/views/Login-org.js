@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Col, FormGroup, Input, Label, Form, Row, Button } from 'reactstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserDetails }from '../reducers/auth'
+import { getUserDetails }from '../reducers/theReducer'
 import axios from 'axios' 
 function Login() {
   const dispatch = useDispatch();

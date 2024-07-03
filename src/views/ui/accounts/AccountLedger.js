@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, Row, Spinner, Table } from 'reactstrap'   
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
+import ReactSelect from 'react-select';
 // import { DataGrid } from '@mui/x-data-grid';
 // import Loader from '../../../layouts/loader/Loader'
 
 function AccountLedger() {
 	const dispatch = useDispatch()
 	const [fields,setFields] = useState({ branch:'', accountName:'', from:'',to:'' })
+    const [branches , setBranches] = useState([])
 	const [data, setData] = useState([])
 	const handleSubmit = e => {
 		dispatch({ type:'LOADING' })
@@ -24,6 +26,19 @@ function AccountLedger() {
 		})
 		.catch(err=>console.log(err))
 	}
+
+    useEffect(()=>{
+        axios.get('get-branches')
+        .then(({data})=>{
+            let options = []
+            for(let index of data)
+            {
+                options.push({value:index.id, label:index.name})
+            }
+            console.log(options)
+            setBranches(options)
+        })
+    },[])
 
     // Generate EXCEL
     const downloadExcel = async() => {
@@ -79,17 +94,12 @@ function AccountLedger() {
                                                     Branch Name
                                                     <span className='text-danger'>*</span> 
                                                 </Label>
-                                                <Input 
-                                                    name="branch"
-                                                    type="select"  
-													onChange={ e=>
-														setFields({...fields, [e.target.name]:e.target.value })
-													}
-                                                >
-                                                    <option></option>
-                                                    <option> All </option>
-                                                    <option> Benipur </option>
-                                                </Input>
+                                                <ReactSelect 
+                                                    name='branch'
+                                                    className='w-100'
+                                                    options={branches}
+                                                    onChange={e=>setFields({...fields, branch:e.value})}
+                                                />
                                             </div>
                                         </Col > 
                                         </Row>

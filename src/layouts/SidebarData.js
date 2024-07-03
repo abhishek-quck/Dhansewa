@@ -16,14 +16,14 @@ export const navigation= [
         },
         {
           title: "Update CIS",
-          href: "/about",
+          href: "#",
         },
         {
           title: "Speed Enrollments",
-          href: "/about",
+          href: "#",
         },
       ],
-      links:["/new-enrollment","/about"]
+      links:["/new-enrollment"]
     },
     {
       title: "Centers Info",
@@ -185,7 +185,7 @@ export const navigation= [
         },
         {
           title:'Our Bank A/C',
-          href:'#'
+          href:'/bank-master'
         },
         {
           title:'Bank IFSC Master',
@@ -204,7 +204,7 @@ export const navigation= [
     },
     {
       title: "HR & Payroll",
-      href: "/forms",
+      href: "#",
       icon: "bi bi-textarea-resize",
       name:'payroll',
       sub:[
@@ -239,7 +239,7 @@ export const navigation= [
         },
         {
           title: "Branch Go Back",
-          href: "/about",
+          href: "#",
         },
         {
           title: "Edit Loaning Info",

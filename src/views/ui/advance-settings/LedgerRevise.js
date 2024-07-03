@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react"; 
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
+import ReactSelect from "react-select";
 import { 
   Card,
   CardBody,
@@ -17,6 +18,9 @@ import {
 } from "reactstrap";
 
 const LedgerRevise = () => { 
+    const [branches, setBranches ] = useState([])
+    const [centers, setCenters ] = useState([])
+    const [clients, setClients ] = useState([])
 
     const dispatch = useDispatch()
     const [fields, setFields] = useState({
@@ -57,7 +61,35 @@ const LedgerRevise = () => {
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
-    useEffect(()=>{},[])
+    const init = () => {
+        dispatch({type:'LOADING'})
+        axios.get('get-options/all')
+		.then(({data})=>{
+		    console.log(data)
+            if(data.centers) setCenters(data.centers)
+            if(data.branches) setBranches(data.branches)
+            if(data.clients)
+            {
+                let {clients} = data
+                let arr= [];
+                for(let item of clients)
+                {
+                    let obj = {value:item.value, label:item.label}
+                    arr.push(obj)
+                }
+                console.log(arr)
+                setClients(arr)   
+            }
+                
+		}).finally(()=>{
+            dispatch({type:'STOP_LOADING'})
+        })
+		
+    }
+    useEffect(()=>{
+        init()
+        return ()=>null
+    },[])
 
     return (
     <div> 
@@ -71,45 +103,27 @@ const LedgerRevise = () => {
                 <Row className="mt-2">
                     <Col md="3">
                         <Label size={'sm'} for="exampleEmail"> Branches </Label>
-                        <Input
-                            id="exampleSelectMulti" 
-                            name="selectMulti"
-                            type="select"
-                            onChange={setSearchInputs}
-                        >
-                            <option> --SELECT BRANCH-- </option>
-                            <option value={'enrollment'}> Enrollment </option>  
-                        </Input>
+                        <ReactSelect 
+                            id="exampleEmail"
+                            options={branches}
+                        />
                     </Col > 
                     <Col md="3">
                     <Label size={'sm'} for="center"> Centers </Label>
-                    <Input
-                        id="center" 
+                    
+                    <ReactSelect 
+                        id="center"
                         name="center"
-                        type="select"
-                        onChange={setSearchInputs}
-                    >
-                        <option value={''}> --SELECT CENTER-- </option>
-                        <option value={''}> Patupur </option>
-                        <option value={''}> Basti </option> 
-                        <option value={''}> Ajamgadh </option> 
-                        <option value={''}> Firozabad </option> 
-                        <option value={''}> Rampur </option> 
-                        <option value={''}> Allahabad </option> 
-                    </Input>
+                        options={centers}
+                    />
                     </Col > 
                     <Col md="3">
                     <Label  size={'sm'} for="exampleEmail"> Clients </Label>
                     <div className="d-flex">
-                        <Input
-                            id="exampleSelectMulti" 
-                            name="branch"
-                            type="select"
-                            onChange={setSearchInputs}
-                            className="col-1" 
-                        > 
-                            <option> --SELECT CLIENT-- </option>
-                        </Input>
+                        <ReactSelect
+                            options={clients}
+                            className="w-100"
+                        />
                     </div>
                     </Col > 
                     <Col md="3">

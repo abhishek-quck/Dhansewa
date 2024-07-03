@@ -4,7 +4,8 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useSelector } from "react-redux"; 
 
-axios.defaults.baseURL='http://localhost/Dhansewa-API/public/api';
+axios.defaults.baseURL='https://demoapi.dhanseva.co.in/public/api';
+// axios.defaults.baseURL='http://localhost/Dhansewa-API/public/api';
 axios.defaults.headers.common = 
 {
   "Accept":"application/json",

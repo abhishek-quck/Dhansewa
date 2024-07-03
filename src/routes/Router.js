@@ -29,6 +29,7 @@ import ClientDisbursement from "../views/ui/ClientDisbursement.js";
 import AddGRT from "../views/ui/centers/GRT/AddGRT.js"; 
 import BranchMaster from "../views/ui/management/BranchMaster.js";
 import PrintDocs from "../views/PrintDocs.js";
+import BankMaster from "../views/ui/management/BankMaster.js";
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
@@ -84,6 +85,7 @@ const ThemeRoutes = [
       { path: "/grid", exact: true, element: <Grid /> },
       { path: "/management", exact: true, element: <Tables /> },
       { path: "/loan-products", exact: true, element: <LoanProducts /> },
+      { path: "/bank-master", exact: true, element: <BankMaster /> },
       { path: "/loan-chart-master", exact: true, element: <LoanChartMaster /> },
       { path: "/forms", exact: true, element: <Forms /> },
       { path: "/collections", exact: true, element: <Collections /> },

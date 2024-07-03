@@ -34,7 +34,7 @@ const Sidebar = () => {
   
   return (
     <div className={`p-3 ${theme.toLowerCase()}-theme`} >
-      <div className="d-flex align-items-left" style={{flexDirection:'column'}}>
+      <div className="d-flex align-items-center" style={{flexDirection:'column'}}>
         <Logo />  
         <CardTitle>Micro Foundations</CardTitle>
         <span className="ms-auto d-lg-none">

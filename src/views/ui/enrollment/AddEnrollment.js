@@ -19,9 +19,12 @@ import {
 const AddEnrollment = () => { 
 	const dispatch = useDispatch()
 	const [submitted, hit]=useState(false)
+	const [branches, setBranches] = useState([])
+	const [states, fillStates] = useState([])
+	const [districts, fillDistricts] = useState([])
 	const [fields, setFields] = useState({
 		applicant_name:'',
-		branchName:'',
+		branch:'',
 		aadhaar:'',
 		phone:'',
 		district:'',
@@ -67,12 +70,29 @@ const AddEnrollment = () => {
 		Object.keys(state).forEach(key=>state[key]='')
 		setFields(state)
 	}
-	useEffect(()=>{},[submitted])
+	useEffect(()=>{
+	
+		axios.get('get-options/all')
+		.then(({data})=>{
+			if(data.state) fillStates(data.state)
+			if(data.district) fillDistricts(data.district)
+		})
+
+		axios.get('get-branches')
+		.then(({data})=>{
+			setBranches(data)
+		}).catch(err=>{
+			console.log(err)
+			toast.error('Something went wrong!')
+		})
+
+	},[])
+
 	return (
 	<div> 
 		<Card className="col-7">
 		<Form onSubmit={handleSubmit}>
-		<CardHeader tag="h6" className="border-bottom mb-0 d-flex" >
+		<CardHeader tag="h6" className="mb-0 d-flex" >
 			<b className="mb-2 mt-2">BASIC INFORMATION</b>
 		</CardHeader>
 		<CardBody className="bg-gray-300">
@@ -85,16 +105,15 @@ const AddEnrollment = () => {
 						</Label>
 						<Input
 							id="branch" 
-							name="branchName"
+							name="branch"
 							type="select"
+							defaultValue={fields.branch}
 							onChange={onChange}
 						>
-							<option value='benipur'> Benipur </option>
-							<option value='basti'> Basti </option> 
-							<option value='azamgarh'> Azamgarh </option> 
-							<option value='firozabad'> Firozabad </option> 
-							<option value='rampur'> Rampur </option> 
-							<option value='allahabad'> Allahabad </option> 
+							<option > Select Branch </option>
+							{branches.map((option,i)=>{
+		 						return <option key={i} value={option.id}>{option.name}</option>
+							})}
 						</Input>
 					</div>
 					</Col > 
@@ -108,6 +127,7 @@ const AddEnrollment = () => {
 							name="aadhaar"
 							type="text" 
 							onChange={onChange}
+							value={fields.aadhaar}
 							placeholder="Enter Aadhaar no"
 						/>
 					</div>
@@ -122,6 +142,7 @@ const AddEnrollment = () => {
 								className={'xs'} 
 								style={{width:90}}
 								name="verification_type"
+								defaultValue={fields.verification_type}
 							>
 							<option value={'voterID'}> Voter ID </option>
 							<option value={'passBook'}> Passbook </option>
@@ -134,6 +155,7 @@ const AddEnrollment = () => {
 							type="text"
 							onChange={onChange}
 							placeholder="Enter other KYC No"
+							defaultValue={fields.verification}
 						/>
 					</div>
 					</Col > 
@@ -147,6 +169,7 @@ const AddEnrollment = () => {
 							name="applicant_name"
 							type="text"
 							onChange={onChange}
+							defaultValue={fields.applicant_name}
 							placeholder="Enter applicant name"
 						/> 
 							
@@ -167,6 +190,7 @@ const AddEnrollment = () => {
 							name="relative_name"
 							type="text"
 							onChange={onChange}
+							defaultValue={fields.relative_name}
 							placeholder="Enter name"
 						/>   
 					</div>
@@ -181,7 +205,9 @@ const AddEnrollment = () => {
 							name="gender"
 							type="select"
 							onChange={onChange}
+							defaultValue={fields.gender}
 						>
+							<option > Choose </option>
 							<option value="male">Male</option>
 							<option value="female">Female</option> 
 						</Input>
@@ -194,10 +220,11 @@ const AddEnrollment = () => {
 						<Label className="col-4"  size={'sm'} for="pan">PAN</Label>
 						<Input
 							id="pan" 
-							name="pan"
+							name="PAN"
 							type="text"
 							onChange={onChange}
 							placeholder="Enter PAN No"
+							defaultValue={fields.PAN}
 						/>
 					</div>
 					</Col > 
@@ -208,9 +235,10 @@ const AddEnrollment = () => {
 						<Label className="col-4"  size={'sm'} for="pin">Postal PIN</Label>
 						<Input
 							id="pin" 
-							name="pin"
+							name="postal_pin"
 							type="text"
 							onChange={onChange}
+							defaultValue={fields.postal_pin}
 							placeholder="Enter PIN"
 						/>
 					</div>
@@ -225,6 +253,7 @@ const AddEnrollment = () => {
 							name="village"
 							type="text"
 							onChange={onChange}
+							defaultValue={fields.village}
 							placeholder="Enter village/city name" 
 						/>
 					</div>
@@ -239,11 +268,12 @@ const AddEnrollment = () => {
 							name="district"
 							type="select"
 							onChange={onChange}
+							defaultValue={fields.district}
 						>
-							<option value={'darbhanga'}> Darbhanga </option>
-							<option value={'gonda'}> Gonda </option> 
-							<option value={'ballia'}> Ballia </option> 
-							<option value={'basti'}> Basti </option> 
+							<option > Select District </option>
+							{districts.map((opt,i)=>{
+								return <option key={i} value={opt.value} >{opt.label}</option>
+							})}
 						</Input>
 					</div>
 					</Col > 
@@ -257,9 +287,12 @@ const AddEnrollment = () => {
 							name="state"
 							type="select"
 							onChange={onChange}
+							defaultValue={fields.state}
 						>
-							<option value={'bihar'}> Bihar </option>
-							<option value={'uttar pradesh'}> UP </option> 
+							<option> Select State </option>
+							{states.map((opt,i)=>{
+							   return <option key={i} value={opt.value}> {opt.label} </option> 
+							})}
 						</Input>
 					</div>
 					</Col > 
@@ -273,6 +306,7 @@ const AddEnrollment = () => {
 							name="date_of_birth"
 							type="date"
 							onChange={onChange}
+							defaultValue={fields.date_of_birth}
 							placeholder="Enter Date of Birth"
 						/>
 					</div>
@@ -287,6 +321,7 @@ const AddEnrollment = () => {
 							name="phone"
 							type="text"
 							onChange={onChange}
+							defaultValue={fields.phone}
 							placeholder="Enter phone"
 						/>
 					</div>
@@ -301,6 +336,7 @@ const AddEnrollment = () => {
 							name="group"
 							type="text"
 							onChange={onChange}
+							defaultValue={fields.group}
 							placeholder="Enter group no"
 						/>
 					</div>
@@ -316,6 +352,7 @@ const AddEnrollment = () => {
 							name="advDetails"
 							type="checkbox" 
 							onChange={onChange}
+							defaultChecked={fields.advDetails}
 						/>
 					</div>
 					</Col > 
@@ -329,6 +366,7 @@ const AddEnrollment = () => {
 							name="nomineeDetails"
 							type="checkbox" 
 							onChange={onChange}
+							defaultChecked={fields.nomineeDetails}
 						/>
 					</div>
 					</Col > 
@@ -342,6 +380,7 @@ const AddEnrollment = () => {
 							name="creditReport"
 							type="checkbox" 
 							onChange={onChange}
+							defaultChecked={fields.creditReport}
 						/>
 					</div>
 					</Col > 
