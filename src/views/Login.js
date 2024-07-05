@@ -19,7 +19,7 @@ function Login() {
   const navigate = useNavigate()
   const dispatch = useDispatch(); 
   const [justifyActive, setJustifyActive] = useState('login');;
-  const [fields, setFields] = useState({email:'joe@gullu.com',password:'password'})
+  const [fields, setFields] = useState({email:'',password:''})
   const [signupFields, regFields] = useState({email:'',password:'',name:'',username:''})
   
   const state= useSelector(state=>state.auth)  
