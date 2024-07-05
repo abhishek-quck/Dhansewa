@@ -11,15 +11,15 @@ const FullLayout = () => {
   // eslint-disable-next-line
   let navigate = useNavigate()
   const sidebarStyle = { position:'fixed', overflow:'scroll' }
-
+  const {userToken, companyID} = useSelector(state=>state.auth)
   let isLoading = useSelector(state => state.auth.loading)
   let state = useSelector(state => state.auth)
-  let isLoggedIn = localStorage.getItem('auth-token') && (state.companyID || localStorage.getItem('companyID'))
+  let isLoggedIn = userToken && (companyID || localStorage.getItem('companyID'))
   const [loading, setLoading] = useState(isLoading) 
   useEffect(()=> {  
     setLoading(isLoading)
     return ()=>null
-  },[isLoading , navigate ])
+  },[userToken , navigate ])
   return (
     <main className={``} style={{backgroundColor:state.theme==='Dark'?'#848989':''}}>
 	  <Toaster/>	 
