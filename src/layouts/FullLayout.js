@@ -19,7 +19,7 @@ const FullLayout = () => {
   useEffect(()=> {  
     setLoading(isLoading)
     return ()=>null
-  },[state.userToken , navigate ])
+  },[isLoading , navigate ])
   return (
     <main className={``} style={{backgroundColor:state.theme==='Dark'?'#848989':''}}>
 	  <Toaster/>	 

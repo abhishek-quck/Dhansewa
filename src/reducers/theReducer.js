@@ -108,7 +108,12 @@ const authReducer = (state=initialState,action) => {
 				...state,
 				GRTs:action.payload
 			}
-
+        case 'ERROR':{
+            return {
+                ...state,
+                error:action.payload.error
+            }
+        }
         case 'UPDATE_GRT':
 			return {
 				...state, 

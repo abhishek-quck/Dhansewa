@@ -29,6 +29,7 @@ function PrintDocs() {
 
     const printPassbook = async() => {
         dispatch({type:'LOADING'})
+        console.log(fields)
         return axios.get('print-passbook/'+fields.client,
             {
             responseType:'blob',
@@ -93,6 +94,7 @@ function PrintDocs() {
     }
 
     const fetch = (clientID) => {
+        setFields({...fields, client:clientID})
         dispatch({type:'LOADING'})
         axios.post('/get-client-information', {...fields,client:clientID})
         .then( ({data}) => {

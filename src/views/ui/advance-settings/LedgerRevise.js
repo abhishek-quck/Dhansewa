@@ -21,7 +21,26 @@ const LedgerRevise = () => {
     const [branches, setBranches ] = useState([])
     const [centers, setCenters ] = useState([])
     const [clients, setClients ] = useState([])
-
+    const [view, setView] = useState({
+        id:'',
+        client_id:'',
+        loan_date:'',
+        loan_amount:'',
+        loan_fee:'',
+        insurance_fee:'',
+        gst:'',
+        loan_product:'',
+        bank_name:'',
+        funding_by:'',
+        policy:'',
+        utilization:'',
+        first_installment:'',
+        number_of_emis:'',
+        payment_mode:'',
+        schedule_recurring:'',
+        cross_sale_products:'',
+        client_id:'',
+    })
     const dispatch = useDispatch()
     const [fields, setFields] = useState({
 
@@ -59,6 +78,17 @@ const LedgerRevise = () => {
             toast.error('Something went wrong!')
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
+    }
+
+    const getClient = clientID => {
+        axios.get('get-disbursement-details/'+clientID)
+        .then(({data})=>{
+            console.log(data)
+            for(let KEY in data)
+            {
+                setView({...view, KEY:data[KEY]})
+            }
+        })
     }
 
     const init = () => {
@@ -123,6 +153,7 @@ const LedgerRevise = () => {
                         <ReactSelect
                             options={clients}
                             className="w-100"
+                            onChange={e=>getClient(e.value)}
                         />
                     </div>
                     </Col > 
@@ -161,6 +192,7 @@ const LedgerRevise = () => {
                                                     <Input 
                                                         type="text"
                                                         name="search" 
+                                                        defaultValue={view.id}
                                                         style={{width:'350px'}}
                                                         onChange={handleChange}
                                                     />

@@ -72,15 +72,7 @@ const SpeedLoanDisburse = () => {
     const UtilizationRef = useRef(null)
     const policyRef = useRef(null)
     const funderRef = useRef(null)
-    const loanProductsRef = useRef(null)
-
-    let looper = [
-        emiRef,
-        UtilizationRef,
-        policyRef,
-        funderRef,
-        loanProductsRef
-    ];
+    const loanProductsRef = useRef(null) 
 
     const init = () => { // GEt Branches, Centers , loan-products & client info
 
@@ -112,6 +104,7 @@ const SpeedLoanDisburse = () => {
             if(data.centers) setCenters(data.centers) 
             if(data.clients) setClients(data.clients) 
         })
+        .catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
         .finally(() => {
             dispatch({ type:'STOP_LOADING' })
         })
@@ -120,7 +113,7 @@ const SpeedLoanDisburse = () => {
         .then(({data})=>{
             console.log(data)
             setLoanProducts(data)
-        })
+        }).catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
 
     }
 
@@ -151,6 +144,7 @@ const SpeedLoanDisburse = () => {
             .then(({data})=>{
                 console.log(data)
             })
+            .catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
             .finally(()=>{
                 dispatch({type:'STOP_LOADING'})
             })
@@ -159,29 +153,19 @@ const SpeedLoanDisburse = () => {
 
     const handleSubmit = e => {
         dispatch({type:'LOADING'})
-        console.log($('form[name=speedLoan]')[0])
-        try {
-            for (const item of looper) {
-                item.current.clearValue()
-            }
-        } catch (error) {
-            console.log(error)
-        }
-        $('form[name=speedLoan]')[0].reset()
+        const formData = Object.assign({}, fields, sFields);
+        console.log(formData)
         e.preventDefault()
-        axios.post('/speed-loan-disburse',fields)
+        axios.post('/speed-loan-disburse',formData)
         .then(({data})=>{
             console.log(data) 
             toast.success('Records added successfully!')
         })
         .catch(err=>{
             console.log(err)
-            toast.error(err.message)
+            // dispatch({type:'ERROR',payload:{error:err.message}})
         })
-        .finally((res)=>{
-            dispatch({type:'STOP_LOADING'})
-            console.log(res)
-        })
+        .finally(()=> dispatch({type:'STOP_LOADING'}))
     }
 
 	useEffect(()=>{
@@ -221,6 +205,7 @@ const SpeedLoanDisburse = () => {
                     <Label size={'sm'} for="branchID"> Client ID </Label>
                     <div className="d-flex">
                         <ReactSelect
+                            isSearchable
                             options={clients}
                             ref={clientRef}
                             className="w-100"
@@ -240,15 +225,14 @@ const SpeedLoanDisburse = () => {
                         <CardBody>
                             <Row className=" container">
                                 <Col sm="4" md="4">
-                                    <Label  size={'sm'} for="loan_date">
+                                    <Label size={'sm'} for="loan_date">
                                         Loan Date
                                     </Label>
                                     <Input
                                         id="loan_date" 
                                         name="loan_date"
                                         type="date" 
-                                        defaultValue={date}
-                                        onChange={e=>setFields({...fields,loan_date:e.value})}
+                                        onChange={e=>setFields({...fields,loan_date:e.target.value})}
                                         placeholder="Enter disburse date"
                                     /> 
                                 </Col>
@@ -257,6 +241,8 @@ const SpeedLoanDisburse = () => {
                                         Loan Products
                                     </Label>
                                     <CreatableSelect
+                                        placeholder="Search or select"
+                                        isDisabled={sFields.client?.length<1}
                                         isClearable
                                         ref={loanProductsRef}
                                         id="loan_product" 
@@ -270,6 +256,8 @@ const SpeedLoanDisburse = () => {
                                         Loan Amount(View Chart)
                                     </Label>
                                     <CreatableSelect
+                                        placeholder="Search or select"
+                                        isDisabled={sFields.client?.length<1}
                                         id="loan_amount" 
                                         isClearable
                                         name="loan_amount"
@@ -284,6 +272,7 @@ const SpeedLoanDisburse = () => {
                                         Loan Fee
                                     </Label>
                                     <Input
+                                        disabled={sFields.client?.length<1}
                                         id="loan_fee" 
                                         name="loan_fee"
                                         onChange={inputChange}
@@ -295,6 +284,8 @@ const SpeedLoanDisburse = () => {
                                         Funding By
                                     </Label>
                                     <CreatableSelect
+                                        placeholder="Search or select"
+                                        isDisabled={sFields.client?.length<1}
                                         id="funding_by" 
                                         ref={funderRef}
                                         isClearable
@@ -308,6 +299,8 @@ const SpeedLoanDisburse = () => {
                                         Policy
                                     </Label>
                                     <CreatableSelect
+                                        placeholder="Search or select"
+                                        isDisabled={sFields.client?.length<1}
                                         id="policy" 
                                         ref={policyRef}
                                         isClearable
@@ -323,6 +316,7 @@ const SpeedLoanDisburse = () => {
                                         Inc. Fee
                                     </Label>
                                     <Input
+                                        disabled={sFields.client?.length<1}
                                         id="insurance_fee" 
                                         name="insurance_fee"
                                         type="text" 
@@ -334,6 +328,7 @@ const SpeedLoanDisburse = () => {
                                         GST
                                     </Label>
                                     <Input
+                                        disabled={sFields.client?.length<1}
                                         id="gst" 
                                         name="gst"
                                         onChange={inputChange}
@@ -345,6 +340,8 @@ const SpeedLoanDisburse = () => {
                                         Utilization
                                     </Label>
                                     <CreatableSelect
+                                        placeholder="Search or select"
+                                        isDisabled={sFields.client?.length<1}
                                         id="utilization" 
                                         isClearable
                                         ref={UtilizationRef}
@@ -360,6 +357,7 @@ const SpeedLoanDisburse = () => {
                                     First Installment Date
                                     </Label>
                                     <Input
+                                        disabled={sFields.client?.length<1}
                                         id="first_installment" 
                                         name="first_installment"
                                         type="date" 
@@ -373,6 +371,8 @@ const SpeedLoanDisburse = () => {
                                         No. of EMI collected till
                                     </Label>
                                     <CreatableSelect
+                                        placeholder="Search or select"
+                                        isDisabled={sFields.client?.length<1}
                                         id="number_of_emis" 
                                         name="number_of_emis" 
                                         isClearable
@@ -386,6 +386,7 @@ const SpeedLoanDisburse = () => {
                                         Payment Mode
                                     </Label>
                                     <ReactSelect
+                                        isDisabled={sFields.client?.length<1}
                                         id="payment_mode" 
                                         onChange={e=>setFields({...fields,payment_mode:e.value})}
                                         name="payment_mode"
@@ -407,6 +408,7 @@ const SpeedLoanDisburse = () => {
                                     Schedule Recurring 
                                 </Label>
                                 <Input
+                                    disabled={sFields.client?.length<1}
                                     id="schedule_recurring" 
                                     name="schedule_recurring"
                                     type="text" 
@@ -418,7 +420,8 @@ const SpeedLoanDisburse = () => {
                                 <Label  size={'sm'} for="bank_name">
                                     Bank Name
                                 </Label>
-                                <ReactSelect
+                                <CreatableSelect
+                                    isDisabled={sFields.client?.length<1}
                                     id="bank_name" 
                                     name="bank_name"
                                     onChange={e=>setFields({...fields,bank_name:e.value})}
@@ -429,7 +432,8 @@ const SpeedLoanDisburse = () => {
                                 <Label  size={'sm'} for="cross_sale_products">
                                     Cross Sale Products
                                 </Label>
-                                <ReactSelect
+                                <CreatableSelect
+                                    isDisabled={sFields.client?.length<1}
                                     id="cross_sale_products" 
                                     name="cross_sale_products"
                                     onChange={e=>setFields({...fields,cross_sale_products:e.value})}

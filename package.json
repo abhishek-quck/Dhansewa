@@ -1,6 +1,6 @@
 {
-  "name": "starter-bt5",
-  "homepage": "https://dhanseva.co.in/app/",
+  "homepage": "http://abhishek-quck.github.io/dhanseva",
+  "name": "dhanseva",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -43,7 +43,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -65,6 +67,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "7.22.5",
+    "gh-pages": "^6.1.1",
     "react-scripts": "5.0.1"
   },
   "overrides": {
