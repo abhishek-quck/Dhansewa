@@ -56,9 +56,7 @@ const LedgerRevise = () => {
     }
     const [hitSearch, hit] = useState(false)
 
-    const doSomething = () => { 
-        alert('will have to do something!')
-    }
+    const doSomething = () => { }
     const [ledgerContent ,setContent]= useState([]) 
 
     const generateLedger = (e) => {
@@ -67,35 +65,23 @@ const LedgerRevise = () => {
         dispatch({type:'LOADING'})
         axios.post('/search-client-ledger',searchfields)
         .then(({data})=>{
-            console.log(data)
-            if(data!==undefined)
-            {
-                setContent(data)
-            }
+            if(data!==undefined) setContent(data)
         })
-        .catch(err=>{
-            console.log(err)
-            toast.error('Something went wrong!')
-        })
+        .catch(()=>toast.error('Something went wrong!'))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
     const getClient = clientID => {
+        dispatch({type:'LOADING'})
         axios.get('get-disbursement-details/'+clientID)
-        .then(({data})=>{
-            console.log(data)
-            for(let KEY in data)
-            {
-                setView({...view, KEY:data[KEY]})
-            }
-        })
+        .then(({data})=>setView(data))
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
     const init = () => {
         dispatch({type:'LOADING'})
         axios.get('get-options/all')
 		.then(({data})=>{
-		    console.log(data)
             if(data.centers) setCenters(data.centers)
             if(data.branches) setBranches(data.branches)
             if(data.clients)
@@ -107,13 +93,9 @@ const LedgerRevise = () => {
                     let obj = {value:item.value, label:item.label}
                     arr.push(obj)
                 }
-                console.log(arr)
                 setClients(arr)   
             }
-                
-		}).finally(()=>{
-            dispatch({type:'STOP_LOADING'})
-        })
+		}).finally(()=>dispatch({type:'STOP_LOADING'}))
 		
     }
     useEffect(()=>{
@@ -187,14 +169,15 @@ const LedgerRevise = () => {
                                             <td>
                                                 <small>Loan ID</small>
                                             </td>
-                                            <td colSpan={2}>
+                                            <td colSpan={3}>
                                                 <div className="d-flex"> 
                                                     <Input 
                                                         type="text"
                                                         name="search" 
                                                         defaultValue={view.id}
-                                                        style={{width:'350px'}}
+                                                        style={{width:'450px'}}
                                                         onChange={handleChange}
+                                                        disabled
                                                     />
                                                     <button className="btn btn-primary mx-2">
                                                         <i className="fa fa-search" />
@@ -206,7 +189,7 @@ const LedgerRevise = () => {
                                             <td>
                                                 <small> Loan Product </small>
                                             </td>
-                                            <td colSpan={2}>
+                                            <td colSpan={3}>
                                                 <small>: (View Chart) </small>
                                             </td> 
                                         </tr>
@@ -215,13 +198,21 @@ const LedgerRevise = () => {
                                                 <small> Disbursement Date </small>
                                             </td>
                                             <td >
-                                                <Input type="date" onChange={handleChange} />
+                                                <Input type="date" 
+                                                    onChange={handleChange} 
+                                                    disabled
+                                                    defaultValue={view.created_at} />
                                             </td>
                                             <td >
                                                 <small> : Loan amount </small>
                                             </td>
                                             <td>
-                                                <Input type="text" onChange={handleChange} className="mt-1" />
+                                                <Input type="text" 
+                                                    onChange={handleChange} 
+                                                    disabled
+                                                    className="mt-1" 
+                                                    defaultValue={view.loan_amount}
+                                                />
                                             </td>
                                         </tr>
                                         <tr>
@@ -229,13 +220,17 @@ const LedgerRevise = () => {
                                                 <small> Loan Duration </small>
                                             </td>
                                             <td >
-                                                <Input type="text" onChange={handleChange} className="mt-1" />
+                                                <Input type="text" 
+                                                    onChange={handleChange} 
+                                                    className="mt-1" />
                                             </td>
                                             <td >
                                                 <small> : Expected Paidup Date </small>
                                             </td>
                                             <td>
-                                                <Input type="text" onChange={handleChange} className="mt-1" />
+                                                <Input type="text" 
+                                                    onChange={handleChange} 
+                                                    className="mt-1" />
                                             </td>
                                         </tr>
                                         <tr>
