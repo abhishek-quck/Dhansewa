@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { Form } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 function Login() {
   const navigate = useNavigate()
@@ -66,8 +67,6 @@ function Login() {
         if( response.status!==200 )
         {
           console.log(response)
-          alert(response.statusText) 
-          dispatch({type:'STOP_LOADING'})
         }
         if( response.data.access_token )
         {
@@ -77,11 +76,8 @@ function Login() {
           axios.defaults.headers.common['Authorization'] = `Bearer `+data.access_token;
           navigate('/landing')
         }
-      }).catch(err=> {
-        console.log(err)
-        alert(err.response.statusText) 
-        dispatch({type:'STOP_LOADING'})
-      })
+      }).catch(()=>toast.error('Invalid credentials!') )
+      .finally(()=>dispatch({type:'STOP_LOADING'}))
     } catch (error) {
       alert(error.message)
       console.log(error)
