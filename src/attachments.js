@@ -4,9 +4,9 @@ import axios from 'axios';
 var Attachments =
 {
     messageOrigin: null,
-    preview: function(docID,clientID, module ,hasData)
+    preview: function(clientID, docID, module ,hasData)
     {
-        // Remove existing elements, otherwise things get very confusing very quickly
+        // Remove existing elements, we already faced enough errors
         let cModalBody=document.body.querySelectorAll('.attachment-viewer.d-none');
         for (let i = 0; i < cModalBody.length; i++)
         {
@@ -26,7 +26,10 @@ var Attachments =
             Attachments.events.previewCallback(hasData)
         } else {
                 
-            let ids=[docID];
+            let ids=[docID]; /* came as array when pdf was converted to jpg(s); returned multiple ids to fetch single image.
+                Here is a bit different case, you'll need the Imagick extension to come into play in the backend to get the pdf-image 
+                id(s). As of now , we are taking only single id of the document(png,jpg).
+            */
             for (let i = 0; i < ids.length; i++)
             {
                 let id= ids[i]; 
@@ -127,9 +130,9 @@ var Attachments =
     }
 }
 
-function preview(elem, module, sFunction, hasData=false)
+function preview(clientID, docID, sFunction ,hasData=false)
 {   
-    Attachments.preview(elem, module, sFunction, hasData);
+    Attachments.preview(clientID, docID, sFunction, hasData);
 }
  
 export { preview }

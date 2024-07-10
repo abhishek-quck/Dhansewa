@@ -1,8 +1,10 @@
+import $ from 'jquery'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
-import { Card, CardBody, CardHeader, CardText, Col, Form, Input, Label, Row, Table } from 'reactstrap'
+import { useDispatch } from 'react-redux';
+import { Card, CardBody, CardHeader, CardText, Col, Form, Input, Label, Row, Table } from 'reactstrap';
+import { validate } from '../../../helpers/utils';
 
 const BranchMaster = () => {
     const dispatch = useDispatch();
@@ -40,11 +42,26 @@ const BranchMaster = () => {
     }
 
     const handleChange = e => {
+        e.target.style.border=''
         setFields({...fields, [e.target.name]:e.target.value})
     }  
 
     const handleSubmit = e => {
         e.preventDefault() 
+        let {shouldGo, result} = validate(fields)
+        if(shouldGo===false)
+        {
+            for (const el in fields) {
+                if (result[el]) {
+                    $(`input[name=${el}], select[name=${el}], textarea[name=${el}]`).addClass('placeholder-error').attr('placeholder', result[el]).css('border','1px solid red')
+                } else {
+                    $(`input[name=${el}], select[name=${el}], textarea[name=${el}]`).css('border','')
+                    // no border at valid inputs
+                }
+            }
+            toast.error('Fill the required fields!')
+            return 
+        }
         dispatch({type:'LOADING'})
         axios.post('/create-branch', fields )
         .then(({data})=>{

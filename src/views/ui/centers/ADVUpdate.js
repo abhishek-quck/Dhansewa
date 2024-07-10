@@ -1,8 +1,10 @@
-import axios from 'axios'
-import React, { useState } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
-import { Button, Card, CardBody, CardHeader, CardText, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
+import $ from 'jquery';
+import axios from 'axios';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { Button, Card, CardBody, CardHeader, CardText, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import {validate} from '../../../helpers/utils'
 
 function ADVUpdate() {
 	const dispatch = useDispatch()
@@ -24,15 +26,23 @@ function ADVUpdate() {
 	})
 
 	const handleGeneralChange = e => {
+        e.target.style.border=''
 		setGeneralFields({...generalFields, [e.target.name]:e.target.value })
 	}
 	 
 	const handleFinancialChange = e => {
+        e.target.style.border=''
 		setFinancialFields({...financialFields, [e.target.name]:e.target.value })
 	}
 
 	const handleGeneralSubmit = e => {
 		e.preventDefault()
+        let {shouldGo} = validate(generalFields)
+        if(shouldGo===false)
+        { 
+            toast.error('Fill the required fields!')
+            return 
+        }
 		dispatch({type:'LOADING'})
 		axios.post('/update-center-advance/general',generalFields)
 		.then(({data})=>{
@@ -50,6 +60,20 @@ function ADVUpdate() {
 	
 	const handleFinancialSubmit = e => {
 		e.preventDefault()
+        let {shouldGo, result} = validate(financialFields)
+        if(shouldGo===false)
+        {
+            for (const el in financialFields) {
+                if (result[el]) {
+                    $(`input[name=${el}], select[name=${el}], textarea[name=${el}]`).addClass('placeholder-error').attr('placeholder',result[el]).css('border','1px solid red');
+                } else {
+                    $(`input[name=${el}], select[name=${el}], textarea[name=${el}]`).removeClass('placeholder-error').attr('placeholder',result[el]).css('border','');
+                    // no border on valid inputs
+                }
+            }
+            toast.error('Fill the required fields!')
+            return 
+        }
 		dispatch({type:'LOADING'})
 		axios.post('/update-center-advance/financial',financialFields)
 		.then(({data})=>{
@@ -139,6 +163,7 @@ function ADVUpdate() {
                                                     type="select"
 													onChange={handleGeneralChange}
                                                 >
+                                                    <option > Choose </option>
                                                     <option value={'bihar'}> Bihar </option>
                                                     <option value={'up'}> UP </option> 
                                                 </Input>
@@ -155,6 +180,7 @@ function ADVUpdate() {
                                                     type="select" 
 													onChange={handleGeneralChange}
                                                 >
+                                                    <option > Choose </option>
                                                     <option value={'no'}> No </option>
                                                     <option value={'yes'}> YES </option>
                                                 </Input>
@@ -171,6 +197,7 @@ function ADVUpdate() {
                                                     type="select" 
 													onChange={handleGeneralChange}
                                                 >
+                                                    <option > Choose </option>
                                                     <option value={'good'}> Good </option>
                                                     <option value={'average'}> Average </option>
                                                     <option value={'bad'}> Bad </option>
@@ -262,6 +289,7 @@ function ADVUpdate() {
                                                     type="select"
 													onChange={handleFinancialChange}
                                                 >
+                                                    <option > Choose </option>
                                                     <option> Bihar </option>
                                                     <option> UP </option> 
                                                 </Input>

@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
 import { useSearchCentersQuery } from '../../../features/centerSlice';
+import { validate } from '../../../helpers/utils';
 
 function CenterMaster() {
 	const dispatch = useDispatch();
@@ -42,13 +43,30 @@ function CenterMaster() {
 	const [centers, populateCenter] = useState([])
 	
 	const onChange = e => {
-		setFields({...fields, [e.target.name]:e.target.value})
+		if(e.target)
+		{
+			e.target.style.border = '';
+			setFields({...fields, [e.target.name]:e.target.value})
+		}
 	}
 	// submit add-form
 	const handleSubmit = e => 
 	{
-		dispatch({type:'LOADING'})
 		e.preventDefault();
+		let {shouldGo,result} = validate(fields)
+		if(shouldGo===false)
+		{
+			toast.error('Fill the required fields')
+			for (const el in fields) {
+				if (result[el]) {
+					$(`input[name=${el}], select[name=${el}], textarea[name=${el}]`).addClass('placeholder-error').attr('placeholder', result[el]).css('border','1px solid red')
+				}else{
+					$(`input[name=${el}], select[name=${el}], textarea[name=${el}]`).removeClass('placeholder-error').css('border','') // no border on valid inputs
+				}
+			}
+			return 
+		}
+		dispatch({type:'LOADING'})
 		axios.post('/add-center',fields)
 		.then(({data})=> {
 			console.log(data)

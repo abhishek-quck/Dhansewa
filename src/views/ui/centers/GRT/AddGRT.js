@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 import { preview } from '../../../../attachments'
+import { validate } from '../../../../helpers/utils'
 
 const AddGRT = () => {
     const dispatch = useDispatch()
@@ -32,6 +33,12 @@ const AddGRT = () => {
     
     const handleSubmit = e => {
         e.preventDefault()
+		let {shouldGo} = validate(fields)
+		if(shouldGo===false)
+		{
+			toast.error('Fill the required fields!')
+			return 
+		}
         let formData = new FormData()
 		formData.append('id', id );
         for(let entry in fields)
@@ -74,7 +81,8 @@ const AddGRT = () => {
 
 	const previewDoc = () => {
 		let data = thisUser?.latest_document?.data
-		preview(id,thisUser.verification_type, 'preview-document', data!==undefined?[data]:false)
+		let clientID = thisUser?.grt?.client_id
+		preview(clientID,thisUser.verification_type, 'preview-document', data!==undefined?[data]:false)
 	}
 	
     useEffect(()=>{
@@ -83,7 +91,7 @@ const AddGRT = () => {
 		{
 			thisUser = thisUser[id]
 		}else{
-			axios.get(`get-client-details/${id}`)
+			axios.post(`get-client-details/${id}`)
 			.then(({data})=>{
 				if(typeof data==='object' && Object.keys(data).length)
 				{
@@ -252,15 +260,19 @@ const AddGRT = () => {
 				</div>
 				</Col > 
 			</Row>
-			<Row className="mt-4">
-				<Col md="12">
-				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="doc"> Previous Document </Label>
-					<i className='fa fa-paperclip' onClick={previewDoc} />
-					<small className='mx-4'>{previousDocument}</small>
-				</div>
-				</Col > 
-			</Row>
+			{
+				thisUser.grt ? 
+				<Row className="mt-4">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4" size={'sm'} for="doc"> Previous Document </Label>
+						<i className='fa fa-paperclip' onClick={previewDoc} />
+						<small className='mx-4'>{previousDocument}</small>
+					</div>
+					</Col > 
+				</Row>
+				:null
+			}
 			</FormGroup> 
 			<div className="mt-3" id="resultArea">  
 			</div>

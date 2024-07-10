@@ -3,29 +3,44 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody, CardFooter, CardHeader, CardText, Col, Form, Input, Label, Row, Spinner, Table } from 'reactstrap'
+import $ from 'jquery'
+import { validate } from '../../../helpers/utils'
 
 let initial = {
-    name:'',
-    phone:'',
-    full_address:'',
-    ob_type:'',
-    ob_balance:'',
-    ob_head:'',
+    name:null,
+    phone:null,
+    full_address:null,
+    ob_type:null,
+    ob_date:null,
+    ob_balance:null,
+    ob_head:null,
+    prefix:null,
+    key_type:null,
 }
 function AccountMaster() {
   const dispatch = useDispatch()
   const [fields, setFields] = useState(initial)
   const [formSubmitted, trigger] = useState(false)
   const app = useSelector(state=>state.auth)
-
+  const [placeholder, setPlaceHolder]=useState(fields)
   const change = e => {
-    console.log(e?.target)
+    if(e?.target)
+    {
+        e.target.style.border=''
+        setFields({...fields, [e.target.name]:e.target.value})
+    }
   }
 
   const handleSubmit = e => {
-    trigger(!formSubmitted)  // use `!` instead `true|false` for proper use of useEffect
-    dispatch({type:'LOADING'})
     e.preventDefault();
+    trigger(!formSubmitted)  // use `!` instead `true|false` for proper use of useEffect
+    let {result, shouldGo} = validate(fields)
+    if(shouldGo===false)
+    { 
+        setPlaceHolder(result)
+        return 
+    }
+    dispatch({type:'LOADING'})
     axios.post('create-account',fields)
     .then(({data})=>{
         console.log(data)
@@ -42,6 +57,17 @@ function AccountMaster() {
   }
 
   useEffect(()=>{
+    $('input[type=search]').on('keyup search',function () {
+        // search logic here        
+        $('tbody tr').each((i,row) => {
+            if(!row.textContent.toLowerCase().includes(this.value?.toLowerCase()))
+            {
+                $(row).addClass('d-none')   
+            }else{
+                $(row).removeClass('d-none')   
+            }
+        });
+    });
     return ()=>null
   },[formSubmitted])
 
@@ -60,7 +86,8 @@ function AccountMaster() {
                                 <Label> Account Name </Label>
                                 <Input 
                                     type='text' 
-                                    placeholder='Enter Name' 
+                                    placeholder={placeholder.name??'Enter Name'}
+                                    name='name'
                                     onChange={change}
                                 />
                             </Col>
@@ -68,8 +95,8 @@ function AccountMaster() {
                                 <Label> Mobile </Label>
                                 <Input 
                                     type='text' 
-                                    name='mobile' 
-                                    placeholder='+91 0000000000' 
+                                    name='phone' 
+                                    placeholder={placeholder.phone??'+91 0000000000'} 
                                     onChange={change}
                                 />
                             </Col>
@@ -77,14 +104,23 @@ function AccountMaster() {
                         <Row className='mt-3' >
                             <Col md={6}>
                                 <Label> Head Name </Label>
-                                <Input type='select' name='headNature'>
-                                    <option> Branch & Division </option>
+                                <Input 
+                                    type='select' 
+                                    name='ob_head'
+                                    onChange={change}
+                                >
                                     {<option></option>}
+                                    <option value={`branch_and_division`}> Branch & Division </option>
                                 </Input>
                             </Col>
                             <Col md={6}>
                                 <Label> Full Address </Label>
-                                <Input type='text' name='address' placeholder='Address' />
+                                <Input 
+                                    type='text' 
+                                    name='full_address' 
+                                    onChange={change}
+                                    placeholder={placeholder.full_address??'Address'} 
+                                />
                             </Col>
                         </Row>
                         <Row className='mt-4 mb-2'>
@@ -96,25 +132,44 @@ function AccountMaster() {
                         <Row>
                             <Col md={4}>
                                 <Label> O.B. Type </Label>
-                                <Input type='select' >
-                                    <option> Dr. </option>
-                                    <option> Mr. </option>
-                                    <option> Mrs. </option>
+                                <Input 
+                                    type='select' 
+                                    name='ob_type'
+                                    onChange={change}
+                                >
+                                    <option value={`Dr.`}> Dr. </option>
+                                    <option value={`Mr.`}> Mr. </option>
+                                    <option value={`Mrs.`}> Mrs. </option>
                                 </Input>
                             </Col>
                             <Col md={4}>
                                 <Label> Opening Balance </Label>
-                                <Input type='text' name='mobile' placeholder='Opening Balance' />
+                                <Input 
+                                    type='text' 
+                                    name='ob_balance' 
+                                    onChange={change}
+                                    placeholder={placeholder.ob_balance??'Opening Balance'} 
+                                />
                             </Col>
                             <Col md={4}>
                                 <Label> O.B. Date </Label>
-                                <Input type='date' name='obDate' />
+                                <Input type='date' 
+                                    name='ob_date' 
+                                    onChange={change}
+                                    placeholder={placeholder.ob_date}
+                                />
                             </Col>
                         </Row>
                         <Row className='mt-4'>
                             <Col md={4}>
                                 <Label> Details </Label>
-                                <Input type='select' placeholder='Details' >
+                                <Input 
+                                    type='select' 
+                                    onChange={change}
+                                    name='prefix'
+                                    placeholder='Details' 
+                                >
+                                    <option> Choose </option>
                                     <option value={'Dr.'}> Dr. </option>
                                     <option value={'Mr.'}> Mr. </option>
                                     <option value={'Mrs.'}> Mrs. </option>
@@ -122,9 +177,13 @@ function AccountMaster() {
                             </Col>
                             <Col md={4}>
                                 <Label> Key Type </Label>
-                                <Input type='select' name='keyType' >
-                                    <option >Other</option>
-                                    <option ></option>
+                                <Input 
+                                    type='select' 
+                                    name='key_type' 
+                                    onChange={change}
+                                >
+                                    <option value={`other`}></option>
+                                    <option value={`other`}>Other</option>
                                 </Input>
                             </Col>
                              

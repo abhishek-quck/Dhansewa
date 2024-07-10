@@ -1,32 +1,54 @@
-import $ from 'jquery'
+import $, { error } from 'jquery'
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import CreatableSelect from 'react-select/creatable';
 import {  Card, CardBody, CardFooter, CardHeader, Col, Form, Input, Label, Row, Table } from 'reactstrap'
+import { validate } from '../../../helpers/utils';
 
 function AccountHead() {
     const dispatch = useDispatch()
-    const [name, setName] = useState('')
-    const [group_name, setGroup] = useState('')
-    const [type, setType] = useState('')
+    const [name, setName] = useState(null)
+    const [group_name, setGroup] = useState(null)
+    const [type, setType] = useState(null)
     const [submitState, trigger] = useState(false)
     const typeRef=  useRef('')
     const groupRef=  useRef('')
     const [data, fillData] = useState([])
     const changeName = e => {
+        e.target.style.border=''
         setName(e.target.value)
     }
     const changeType = e => {
-        if(e?.value) setType(e.value)
+        if(e?.value) {
+            setType(e.value)
+        }
+        $('.type').css('border','')
     }
-    const changeGroup = e => {
-        if(e?.value) setGroup(e.value)
+    function changeGroup (e) {
+        if(e?.value) {
+            setGroup(e.value) 
+        }
+        $('.group_name').css('border','')
     }
+    const [errors, setErrors] = useState({name,group_name,type})
     const handleSubmit = e => {
-        dispatch({type:'LOADING'})
         e.preventDefault();
+        const {shouldGo,result} = validate({name,group_name,type})
+        if(shouldGo===false)
+        {
+            setErrors(result)
+            // if(result.name){
+            // } 
+            for (const el in result) {
+                $(`input[name=${el}]`).addClass('placeholder-error').css('1px solid red')
+            }
+            toast.error('Fill the required fields!')
+            console.log(result)
+            return 
+        }    
+        dispatch({type:'LOADING'})
         axios.post('/create-account-head', {
             name,
             group_name,
@@ -99,6 +121,7 @@ function AccountHead() {
                                     type='text'
                                     onChange={changeName}
                                     value={name}
+                                    placeholder={errors.name??'Enter Name'}
                                 />
                             </Col>
                             <Col md={6}>
@@ -110,6 +133,8 @@ function AccountHead() {
                                     ref={typeRef}
                                     defaultValue={type}
                                     onChange={changeType}
+                                    className='type'
+                                    placeholder={errors.type??'Select Type'}
                                 />
                             </Col>
                         </Row>
@@ -119,10 +144,12 @@ function AccountHead() {
                                 <CreatableSelect 
                                     isClearable
                                     options={[{value:'',label:'Branch & Division'}]}
-                                    name='group'
+                                    name='group_name'
                                     ref={groupRef}
                                     defaultValue={group_name}
                                     onChange={changeGroup}
+                                    className='group_name'
+                                    placeholder={errors.group_name??'Select Group'}
                                 />
                             </Col>
                         </Row>

@@ -81,7 +81,7 @@ function SaleProducts() {
         <Form onSubmit={handleSubmit}>
         <Row>
             <Col>
-                <button className='btn btn-success btn-sm' type='button' onClick={addRow}> +Add </button>
+                <button className='btn btn-outline-success btn-sm mb-3' type='button' onClick={addRow}> +Add </button>
                 <Table bordered hover style={{fontSize:'small'}}>
                     <thead>
                         <tr>
@@ -134,7 +134,7 @@ function SaleProducts() {
                             </td>
                             <td>
                                 <Button color='danger' data-index={i} onClick={deletRow}>
-                                    Delete
+                                    <i className='fa fa-trash' />
                                 </Button>
                             </td>
                             </tr>

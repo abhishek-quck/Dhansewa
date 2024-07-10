@@ -1,3 +1,4 @@
+import $ from "jquery";
 import axios from "axios";
 import React, { useEffect, useState } from "react"; 
 import toast from "react-hot-toast";
@@ -39,14 +40,13 @@ const LedgerRevise = () => {
         payment_mode:'',
         schedule_recurring:'',
         cross_sale_products:'',
-        client_id:'',
     })
     const dispatch = useDispatch()
     const [fields, setFields] = useState({
 
     })
     const [searchfields, setSearchFields] = useState({
-
+        client:null
     })
     const setSearchInputs = e => {
         setSearchFields({...searchfields, [e.target.name]:e.target.value })
@@ -62,6 +62,11 @@ const LedgerRevise = () => {
     const generateLedger = (e) => {
         hit(true)
         e.preventDefault()
+        if(!searchfields.client) {
+            toast.error('Select a client first!')
+            $('.client').css('border','1px solid red')
+            return 
+        }
         dispatch({type:'LOADING'})
         axios.post('/search-client-ledger',searchfields)
         .then(({data})=>{
@@ -72,6 +77,8 @@ const LedgerRevise = () => {
     }
 
     const getClient = clientID => {
+        $('.client').css('border','')
+        setSearchFields({...searchfields, client: clientID})
         dispatch({type:'LOADING'})
         axios.get('get-disbursement-details/'+clientID)
         .then(({data})=>setView(data))
@@ -134,7 +141,7 @@ const LedgerRevise = () => {
                     <div className="d-flex">
                         <ReactSelect
                             options={clients}
-                            className="w-100"
+                            className="w-100 client"
                             onChange={e=>getClient(e.value)}
                         />
                     </div>
@@ -238,11 +245,17 @@ const LedgerRevise = () => {
                                                 <small> Actual Paidup Date </small>
                                             </td>
                                             <td >
-                                                <Input 
-                                                    type="text" 
-                                                    onChange={handleChange} 
-                                                    className="mt-1" 
-                                                />
+                                                {view.id && 
+                                                    <div 
+                                                        className="bg-success text-white px-3" 
+                                                        style={{
+                                                            padding:12, 
+                                                            borderRadius:'5px'
+                                                        }}
+                                                    >
+                                                        <b>ACCOUNT ACTIVE</b>
+                                                    </div>
+                                                }
                                             </td>
                                             <td >
                                                 <small> : Total Interest Expected </small>

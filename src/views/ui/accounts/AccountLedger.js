@@ -3,18 +3,27 @@ import { Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, Row, Sp
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import ReactSelect from 'react-select';
+import { validate } from '../../../helpers/utils';
+import ErrorMessage from '../../../layouts/error/ErrorMessage';
 // import { DataGrid } from '@mui/x-data-grid';
 // import Loader from '../../../layouts/loader/Loader'
 
 function AccountLedger() {
 	const dispatch = useDispatch()
-	const [fields,setFields] = useState({ branch:'', accountName:'', from:'',to:'' })
+    let initialState= { branch:'', accountName:'', from:'',to:'' }
+	const [fields,setFields] = useState(initialState)
+	const [errors,setErrors] = useState(initialState)
     const [branches , setBranches] = useState([])
 	const [data, setData] = useState([])
 	const handleSubmit = e => {
-		dispatch({ type:'LOADING' })
-		e.preventDefault()
-		getLedgerData()
+        e.preventDefault()
+        let {result,shouldGo} = validate(fields,[])
+        setErrors(result)
+        if(shouldGo)
+        {
+            dispatch({ type:'LOADING' })
+            getLedgerData()
+        }
 	}
 
 	const getLedgerData = () => {
@@ -64,9 +73,6 @@ function AccountLedger() {
 
     }
 
-	// const columns = [ ]; in DataTable.js
-
-	//   const rows = [ ]; in DataTable.js
     const [loading, setload] = useState(false);
     // const getInfo = ()=>{}
     return (
@@ -101,6 +107,7 @@ function AccountLedger() {
                                                     onChange={e=>setFields({...fields, branch:e.value})}
                                                 />
                                             </div>
+                                            <ErrorMessage error={errors.branch} />
                                         </Col > 
                                         </Row>
                                         <Row className="mt-2">

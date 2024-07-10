@@ -19,6 +19,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import $ from 'jquery'
 import { useDispatch } from "react-redux";
+import { validate } from "../../../helpers/utils";
 var allData = {branch:{}, center:{}, clients:{}}
 
 const getCurrentDate = () => {
@@ -53,7 +54,7 @@ const SpeedLoanDisburse = () => {
         bank_name:'',
         cross_sale_products:''
     })
-
+    const [errors, setErrors] = useState(fields)
     const [sFields, setSearchField] = useState({
         branch:'',
         center:'',
@@ -73,7 +74,8 @@ const SpeedLoanDisburse = () => {
     const policyRef = useRef(null)
     const funderRef = useRef(null)
     const loanProductsRef = useRef(null) 
-
+   
+    const update = e => e.target.style.border= ''
     const init = () => { // GEt Branches, Centers , loan-products & client info
 
         dispatch({ type:'LOADING' })
@@ -152,10 +154,21 @@ const SpeedLoanDisburse = () => {
     }
 
     const handleSubmit = e => {
+        e.preventDefault()
+        if(!sFields.client)
+        {
+            toast.error('Select a client to get started')
+            return
+        }
+        let {shouldGo, result} = validate(fields)
+        if(shouldGo===false)
+        { 
+            setErrors(result)
+            return 
+        }
         dispatch({type:'LOADING'})
         const formData = Object.assign({}, fields, sFields);
         console.log(formData)
-        e.preventDefault()
         axios.post('/speed-loan-disburse',formData)
         .then(({data})=>{
             console.log(data) 
@@ -170,7 +183,12 @@ const SpeedLoanDisburse = () => {
 
 	useEffect(()=>{
         init()
-        return ()=>null 
+        $(document).on('change','input,select,textarea', function(){
+            this.style.border = ''
+        })
+        return ()=>{
+            $(document).off('change','input,select,textarea')
+        }
 	},[])
 
   return (
@@ -246,6 +264,7 @@ const SpeedLoanDisburse = () => {
                                         isClearable
                                         ref={loanProductsRef}
                                         id="loan_product" 
+                                        className="loan_product"
                                         onChange={e=>setFields({...fields,loan_product:e.value})}
                                         name="loan_product"
                                         options={loanProducts}
@@ -261,6 +280,7 @@ const SpeedLoanDisburse = () => {
                                         id="loan_amount" 
                                         isClearable
                                         name="loan_amount"
+                                        className="loan_amount"
                                         onChange={e=>setFields({...fields,loan_amount:e.value})}
                                         options={[{value:'', label:''}]}
                                     />
@@ -290,6 +310,7 @@ const SpeedLoanDisburse = () => {
                                         ref={funderRef}
                                         isClearable
                                         name="funding_by" 
+                                        className="funding_by" 
                                         onChange={e=>setFields({...fields,funding_by:e.value})}
                                         options={[{value:'',label:''}]}
                                     />
@@ -306,6 +327,7 @@ const SpeedLoanDisburse = () => {
                                         isClearable
                                         onChange={e=>setFields({...fields,policy:e.value})}
                                         name="policy" 
+                                        className="policy" 
                                         options={[{value:'',label:''}]}
                                     />
                                 </Col>
@@ -319,6 +341,7 @@ const SpeedLoanDisburse = () => {
                                         disabled={sFields.client?.length<1}
                                         id="insurance_fee" 
                                         name="insurance_fee"
+                                        className="insurance_fee"
                                         type="text" 
                                         onChange={inputChange}
                                     /> 
@@ -346,6 +369,7 @@ const SpeedLoanDisburse = () => {
                                         isClearable
                                         ref={UtilizationRef}
                                         name="utilization"
+                                        className="utilization"
                                         onChange={e=>setFields({...fields,utilization:e.value})}
                                         options={[{value:'',label:''}]}
                                     />
@@ -360,6 +384,7 @@ const SpeedLoanDisburse = () => {
                                         disabled={sFields.client?.length<1}
                                         id="first_installment" 
                                         name="first_installment"
+                                        className="first_installment"
                                         type="date" 
                                         onChange={inputChange}
                                         defaultValue={date}
@@ -375,6 +400,7 @@ const SpeedLoanDisburse = () => {
                                         isDisabled={sFields.client?.length<1}
                                         id="number_of_emis" 
                                         name="number_of_emis" 
+                                        className="number_of_emis" 
                                         isClearable
                                         ref={emiRef}
                                         onChange={e=>setFields({...fields,number_of_emis:e.value })}
@@ -390,6 +416,7 @@ const SpeedLoanDisburse = () => {
                                         id="payment_mode" 
                                         onChange={e=>setFields({...fields,payment_mode:e.value})}
                                         name="payment_mode"
+                                        className="payment_mode"
                                         options={paymentOptions}
                                     />
                                 </Col>

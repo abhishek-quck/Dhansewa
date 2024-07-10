@@ -15,6 +15,7 @@ import {
   CardFooter,
   CardHeader 
 } from "reactstrap";
+import { validate } from "../../../helpers/utils";
 
 const AddEnrollment = () => { 
 	const dispatch = useDispatch()
@@ -44,13 +45,21 @@ const AddEnrollment = () => {
 		creditReport:'',
 	})
 	const onChange = e => {
+		e.target.style.border=''
 		const {name, value} = e.target;
 		setFields({...fields, [name]:value})
 	}
-
+	const [errors, setErrors] = useState(fields)
 	
 	const handleSubmit = ev => {
 		ev.preventDefault()
+		let {result, shouldGo} = validate(fields)
+		if(shouldGo===false)
+		{
+			setErrors(result)
+			toast.error('Fill the required fields')
+			return 
+		}
 		dispatch({type:'LOADING'})
  
 		axios.post('/add-enrollment', fields )
@@ -109,6 +118,7 @@ const AddEnrollment = () => {
 							type="select"
 							defaultValue={fields.branch}
 							onChange={onChange}
+							style={{border:errors.branch ?'1px solid red':''}}
 						>
 							<option > Select Branch </option>
 							{branches.map((option,i)=>{
@@ -129,6 +139,7 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							value={fields.aadhaar}
 							placeholder="Enter Aadhaar no"
+							style={{border:errors.branch ?'1px solid red':''}}
 						/>
 					</div>
 					</Col > 
@@ -140,8 +151,9 @@ const AddEnrollment = () => {
 							<select 
 								type="select" 
 								className={'xs'} 
-								style={{width:90}}
+								style={{width:90,border:errors.verification_type ?'1px solid red':''}}
 								name="verification_type"
+								onChange={onChange}
 								defaultValue={fields.verification_type}
 							>
 							<option value={'voterID'}> Voter ID </option>
@@ -156,6 +168,7 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							placeholder="Enter other KYC No"
 							defaultValue={fields.verification}
+							style={{border:errors.verification ?'1px solid red':''}}
 						/>
 					</div>
 					</Col > 
@@ -171,6 +184,7 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							defaultValue={fields.applicant_name}
 							placeholder="Enter applicant name"
+							style={{border:errors.applicant_name ?'1px solid red':''}}
 						/> 
 							
 					</div>
@@ -192,6 +206,7 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							defaultValue={fields.relative_name}
 							placeholder="Enter name"
+							style={{border:errors.relative_name ?'1px solid red':''}}
 						/>   
 					</div>
 					</Col > 
@@ -206,6 +221,7 @@ const AddEnrollment = () => {
 							type="select"
 							onChange={onChange}
 							defaultValue={fields.gender}
+							style={{border:errors.gender ?'1px solid red':''}}
 						>
 							<option > Choose </option>
 							<option value="male">Male</option>
@@ -225,6 +241,7 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							placeholder="Enter PAN No"
 							defaultValue={fields.PAN}
+							style={{border:errors.PAN ?'1px solid red':''}}
 						/>
 					</div>
 					</Col > 
@@ -240,6 +257,7 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							defaultValue={fields.postal_pin}
 							placeholder="Enter PIN"
+							style={{border:errors.postal_pin ?'1px solid red':''}}
 						/>
 					</div>
 					</Col > 
@@ -255,6 +273,7 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							defaultValue={fields.village}
 							placeholder="Enter village/city name" 
+							style={{border:errors.village ?'1px solid red':''}}
 						/>
 					</div>
 					</Col > 
@@ -269,6 +288,7 @@ const AddEnrollment = () => {
 							type="select"
 							onChange={onChange}
 							defaultValue={fields.district}
+							style={{border:errors.district ?'1px solid red':''}}
 						>
 							<option > Select District </option>
 							{districts.map((opt,i)=>{
@@ -288,6 +308,7 @@ const AddEnrollment = () => {
 							type="select"
 							onChange={onChange}
 							defaultValue={fields.state}
+							style={{border:errors.state ?'1px solid red':''}}
 						>
 							<option> Select State </option>
 							{states.map((opt,i)=>{
@@ -308,6 +329,7 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							defaultValue={fields.date_of_birth}
 							placeholder="Enter Date of Birth"
+							style={{border:errors.date_of_birth ?'1px solid red':''}}
 						/>
 					</div>
 					</Col > 
@@ -322,7 +344,8 @@ const AddEnrollment = () => {
 							type="text"
 							onChange={onChange}
 							defaultValue={fields.phone}
-							placeholder="Enter phone"
+							placeholder={"Enter phone"}
+							style={{border:errors.phone ?'1px solid red':''}}
 						/>
 					</div>
 					</Col > 
@@ -337,6 +360,7 @@ const AddEnrollment = () => {
 							type="text"
 							onChange={onChange}
 							defaultValue={fields.group}
+							style={{border:errors.group?'1px solid red':''}}
 							placeholder="Enter group no"
 						/>
 					</div>
