@@ -61,10 +61,10 @@ const SalesChart = () => {
 		<Chart
 			type="bar"
 			width="100%"
-			height="390"
+			height="300"
 			options={chartoptions.options}
 			series={chartoptions.series}
-		></Chart>
+		/>
 		</CardBody>
 	</Card>
 	);

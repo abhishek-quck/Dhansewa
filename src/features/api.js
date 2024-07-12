@@ -16,8 +16,11 @@ export const apiSlice = createApi({
   endpoints: builder => ({
     getCollections: builder.query({
       query:()=>'/collections'
+    }),
+    getMonthlyIncome: builder.query({
+      query:()=>'/collections/monthly-income'
     })
   })	
 })
  
-export const { useGetCollectionsQuery } = apiSlice 
+export const { useGetCollectionsQuery, useGetMonthlyIncomeQuery } = apiSlice 

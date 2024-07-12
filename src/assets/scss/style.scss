@@ -224,3 +224,8 @@ background: var(--main-color);
     font-style: italic; /* Make the placeholder text italic */
     opacity: 1; /* Set opacity to 1 to ensure color visibility */
 }
+.shadow-none.card{
+    width: 100%!important;
+    border: none;
+    background-color: transparent;
+}

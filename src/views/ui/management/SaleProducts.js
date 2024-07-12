@@ -11,9 +11,9 @@ function SaleProducts() {
     ]
     const dispatch = useDispatch()
     const [fields, setFields] = useState({
-        category:['as'],
-        name:['u'],
-        description:['know'] 
+        category:[null],
+        name:[null],
+        description:[null] 
     })
 
     const handleChange = e => {

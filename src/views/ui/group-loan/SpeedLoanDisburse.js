@@ -157,6 +157,7 @@ const SpeedLoanDisburse = () => {
         e.preventDefault()
         if(!sFields.client)
         {
+            $(`.client`).css('border','1px solid red')
             toast.error('Select a client to get started')
             return
         }
@@ -220,13 +221,14 @@ const SpeedLoanDisburse = () => {
                         />
                  </Col > 
                  <Col md="5">
-                    <Label size={'sm'} for="branchID"> Client ID </Label>
+                    <Label size={'sm'} for="clientID"> Client ID </Label>
                     <div className="d-flex">
                         <ReactSelect
+                            id="clientID"
                             isSearchable
                             options={clients}
                             ref={clientRef}
-                            className="w-100"
+                            className="w-100 client"
                             defaultValue={sFields.client}
                             onChange={updateClient}
                         /> 

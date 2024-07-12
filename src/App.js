@@ -30,7 +30,7 @@ const App = () => {
   {
     return <ShowError/>
   }
-  return <div className="dark">{routing}</div>;
+  return <div>{routing}</div>;
 };
 
 export default App;

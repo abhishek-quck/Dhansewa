@@ -1,11 +1,20 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Button, Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from 'reactstrap'
 
 function MeetingHandover() {
+	const dispatch = useDispatch()
 	const [responseData, setData] = useState([])
+	const [branches, setBranches] = useState([])
 	useEffect(()=>{
-		 
+		dispatch({ type:'LOADING' })
+        axios.get('get-options') 
+        .then(({data}) => 
+        {
+			setBranches(data.branches)
+		})
+		.finally(()=>dispatch({type:'STOP_LOADING'}))
 	},[])
 	return (
 	<>
@@ -23,8 +32,9 @@ function MeetingHandover() {
 					<div className='d-flex'> 
 						<Input type='select' > 
 							<option>--SELECT--</option>
-							<option value={'benipur'}> 01-Benipur </option>
-							<option value={'madhubani'}> 02-Madhubani </option>
+							{branches.map(branch=>{
+								return <option key={branch.value} value={branch.value}> {branch.label} </option>
+							})}
 						</Input>
 						<Button color='primary' className='mx-2'> 
 							<i className='fa fa-search'/>

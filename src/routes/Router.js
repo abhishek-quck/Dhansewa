@@ -61,6 +61,7 @@ const ThemeRoutes = [
       { path: "/dashboard", exact: true, element: <Dashboard /> },
       { path: "/about", exact: true, element: <About /> },
       { path: "/new-enrollment", exact: true, element: <Enrollment /> },
+      { path: "/search-enrolled", exact: true, element: <Enrollment /> },
       { path: "/add-enrollment", exact: true, element: <AddEnrollment /> },
       { path: "/center-master", exact: true, element: <CenterMaster /> },
       { path: "/meeting-handover", exact: true, element: <MeetingHandover /> },
