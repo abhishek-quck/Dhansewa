@@ -1,4 +1,3 @@
-import { sanitizeFilterModel } from '@mui/x-data-grid/hooks/features/filter/gridFilterUtils'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
@@ -57,11 +56,11 @@ function UpdateCIS() {
         <div className='d-flex'>
             <div className='col-6'>
                 <Card>
-                    <CardHeader>
-                        <b> Personal Information : {id}</b>
-                    </CardHeader>
                     <CardBody >
                         <FormGroup>
+                        <CardText className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                            <b className='text-primary mx-1'> Personal Information : {id} </b>
+                        </CardText>
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
@@ -281,7 +280,7 @@ function UpdateCIS() {
                                     defaultValue={fields.relegion}
                                     style={{border:errors.relegion ?'1px solid red':''}}
                                 >
-                                    <option > Select District </option>
+                                    <option > </option>
                                     <option value={'Hindu'}> Hindu </option>
                                     <option value={'Muslim'}> Muslim </option>
                                     <option value={'Christ'}> Christ </option>
@@ -303,7 +302,7 @@ function UpdateCIS() {
                                     defaultValue={fields.category}
                                     style={{border:errors.category ?'1px solid red':''}}
                                 >
-                                    <option> Select category </option>
+                                    <option> </option>
                                     <option value={'General'}>  General </option>
                                     <option value={'OBC'}> OBC(other backward category) </option>
                                     <option value={'SC/ST'}>    SC/ST   </option>
@@ -412,7 +411,7 @@ function UpdateCIS() {
                                     onChange={onChange}
                                     defaultValue={fields.village}
                                     style={{border:errors.village?'1px solid red':''}}
-                                    placeholder="Enter postal pin"
+                                    placeholder="Enter village"
                                 />
                             </div>
                             </Col > 
@@ -458,34 +457,15 @@ function UpdateCIS() {
                                 <Input
                                     id="district" 
                                     name="district"
-                                    type="text"
+                                    type="select"
                                     onChange={onChange}
                                     defaultValue={fields.district}
                                     style={{border:errors.district?'1px solid red':''}}
                                 >
-                                    <option> Select </option>
-                                </Input>
-                            </div>
-                            </Col > 
-                        </Row> 
-
-                        <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
-                            <b className='text-primary mx-1'> Co-Applicant Employment </b>          
-                        </CardText>
-
-                        <Row className="mt-2">
-                            <Col md="12">
-                            <div className="d-flex">
-                                <Label className="col-4" size={'sm'} for="district"> District </Label>
-                                <Input
-                                    id="district" 
-                                    name="district"
-                                    type="text"
-                                    onChange={onChange}
-                                    defaultValue={fields.district}
-                                    style={{border:errors.district?'1px solid red':''}}
-                                >
-                                    <option> Select </option>
+                                    <option>  </option>
+                                    {districts.map(option=>{
+                                        return <option key={option.id} value={option.id}>{option.name}</option>
+                                    })}
                                 </Input>
                             </div>
                             </Col > 
@@ -610,7 +590,7 @@ function UpdateCIS() {
                     </FormGroup> 
                 </CardBody>
                 <CardFooter style={{borderTop:'1px solid black'}}>
-                    <Button color='primary'>
+                    <Button color='success' className='w-100' size='sm'>
                         Update Personal Info
                     </Button>
                 </CardFooter>
@@ -618,11 +598,11 @@ function UpdateCIS() {
             </div>
             <div className='col-6'>
                 <Card>
-                    <CardHeader>
-                        <b> Nominee Information </b>
-                    </CardHeader>
                     <CardBody>
                         <FormGroup>
+                            <CardText className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                                <b className='text-primary mx-1'> Nominee Information </b>
+                            </CardText>
                             <Row >
                                 <Col md="12">
                                 <div className="d-flex">
@@ -736,7 +716,9 @@ function UpdateCIS() {
                             </Row> 
                          
                             <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
-                                <b className='text-primary mx-1'> Co-Applicant Employment </b>          
+                                <b className='text-primary mx-1'> 
+                                    CO-APPLICANT EMPLOYMENT 
+                                </b>          
                             </CardText>
                   
                             <Row>
@@ -829,7 +811,7 @@ function UpdateCIS() {
                             </Row>
 
                             <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
-                                <b className='text-primary mx-1'> Financial Liabilities </b>          
+                                <b className='text-primary mx-1'> FINANCIAL LIABILITIES </b>          
                             </CardText>
 
                             <Row >
@@ -1092,7 +1074,7 @@ function UpdateCIS() {
                                         type="select"
                                         onChange={onChange}
                                     >
-                                        <option> Choose </option>
+                                        <option>  </option>
                                         <option value={'group'}> Group </option>
                                     </Input>
                                     </div>
@@ -1230,6 +1212,11 @@ function UpdateCIS() {
 
                         </FormGroup>
                     </CardBody>
+                    <CardFooter className='text-center'>
+                        <Button color='success' className='w-100' size='sm'>
+                            Upload
+                        </Button>
+                    </CardFooter>
                 </Card>
             </div>
         </div>
