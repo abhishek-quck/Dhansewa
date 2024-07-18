@@ -113,7 +113,7 @@ const EditEnrollment = () => {
 					</tr>
 				</thead>
 				<tbody> 
-				{isLoading? <tr><td colSpan={6} className="text-center"><Spinner/></td></tr> :
+				{isLoading? <tr><td colSpan={9} className="text-center"><Spinner/></td></tr> :
 					data?.length ? data.map((row,index)=>{
 						return (<tr key={index}>
 							<td>
