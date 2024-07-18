@@ -1,19 +1,13 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import ReactSelect from 'react-select'
+import { useDispatch } from 'react-redux'
 import { Button, Card, CardBody, CardHeader, Col, Form, Input, Row, Table } from 'reactstrap'
 
 function BankMaster() {
+    const dispatch = useDispatch()
     const [rAdded, addR] = useState(false)
 
-    const addRow = () => {
-
-    }
-
-    const bool = [
-        {value:'', label:''},
-        {value:'', label:''}
-    ]
+    const addRow = () => {}
 
     const [fields, setFields] = useState({
         name:[''],
@@ -73,7 +67,6 @@ function BankMaster() {
                                     <Input
                                     type='select' 
                                     onChange={handleChange} 
-                                     
                                     name='bank'>
                                         <option> Select Category </option>
                                         <option value={'Home Appliances'}> 
@@ -87,7 +80,7 @@ function BankMaster() {
                                         data-index={i} 
                                         onChange={handleChange} 
                                         name='ifsc_code'
-                                        placeholder='Enter name'
+                                        placeholder='Enter IFSC'
                                     />
                                 </td>
                                 <td>

@@ -1,9 +1,27 @@
 import { Card, CardBody, CardHeader, CardTitle, Row } from "reactstrap";
 import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const SalesChart = () => {
-	const {companyName}  = useSelector(state=>state.auth)
+	const {companyName, theme}  = useSelector(state=>state.auth)
+	const categories = [
+		"Jan",
+		"Feb",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"Aug",
+	]
+	let colors
+	if(theme==='Light')
+	{
+		colors=['#3b58c7', '#E91E63']
+	} else {
+		colors=['#ffffff', '#ffffff']
+	}
 	const chartoptions = {
 	series: [
 		{
@@ -13,7 +31,7 @@ const SalesChart = () => {
 		{
 			name: "Collection",
 			data: [0, 11, 32, 45, 32, 34, 52, 41],
-			backgroundColor:'red'
+			backgroundColor:'red',
 		},
 	],
 	options: {
@@ -32,19 +50,41 @@ const SalesChart = () => {
 			width: 1,
 		},
 		xaxis: {
-			categories: [
-				"Jan",
-				"Feb",
-				"March",
-				"April",
-				"May",
-				"June",
-				"July",
-				"Aug",
-			],
+			categories,
+			labels: {
+				show: true,
+				style: {
+					colors: Array(categories.length).fill( theme==='Dark'? '#ffffff': '#1e2a35'),
+					fontSize: '12px',
+					fontFamily: 'Helvetica, Arial, sans-serif',
+					fontWeight: 400,
+					cssClass: 'apexcharts-xaxis-label',
+				}
+			}
 		},
+		yaxis: {
+			labels: {
+				show: true,
+				style: {
+					colors: Array(categories.length).fill( theme==='Dark'? '#ffffff': '#1e2a35'),
+					fontSize: '12px',
+					fontFamily: 'Helvetica, Arial, sans-serif',
+					fontWeight: 400,
+					cssClass: 'apexcharts-yaxis-label',
+				}
+			}
+		},
+		legend:{
+			show:true,
+			labels:{
+				colors:[theme==='Dark'? '#ffffff': '#1e2a35']
+			}
+		}
 	},
 	};
+	useEffect(()=>{
+		return ()=>null
+	},[theme])
 	return (
 	<Card>
 		<CardHeader>
@@ -57,7 +97,7 @@ const SalesChart = () => {
 				<small> MONTHLY DISBURSEMENT & COLLECTION -2024 </small>
 			</Row>
 		</CardHeader>
-		<CardBody>
+		<CardBody className="dashboard-card">
 		<Chart
 			type="bar"
 			width="100%"

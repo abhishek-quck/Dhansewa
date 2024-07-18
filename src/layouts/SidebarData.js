@@ -16,14 +16,14 @@ export const navigation= [
         },
         {
           title: "Update CIS",
-          href: "#",
+          href: "/update-cis",
         },
         {
           title: "Speed Enrollments",
           href: "#",
         },
       ],
-      links:["/new-enrollment"]
+      links:["new-enrollment",'update-cis']
     },
     {
       title: "Centers Info",

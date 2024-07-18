@@ -65,8 +65,11 @@ table > thead{
 }
 .dark .card-body, .dark .card-footer {
     background-color:#707283!important;
-    label, span, b, p, .card-text{
+    label, span, b, p, .card-text, .card-title, .apexcharts-text{
         color: white;
+    }
+    .card-subtitle{
+        color: #ffff8f!important;
     }
     table{
         border: 1px solid black;
@@ -228,4 +231,7 @@ background: var(--main-color);
     width: 100%!important;
     border: none;
     background-color: transparent;
+}
+.ledger-revise table tr td:nth-child(odd){
+    width: 210px;    
 }

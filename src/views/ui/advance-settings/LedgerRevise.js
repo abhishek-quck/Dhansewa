@@ -48,6 +48,7 @@ const LedgerRevise = () => {
     const [searchfields, setSearchFields] = useState({
         client:null
     })
+    const checkStyle = {marginTop:'10px',marginRight:'8px'}
     const setSearchInputs = e => {
         setSearchFields({...searchfields, [e.target.name]:e.target.value })
     }
@@ -76,10 +77,12 @@ const LedgerRevise = () => {
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
-    const getClient = clientID => {
+    const getClient = clientID => 
+    {
         $('.client').css('border','')
         setSearchFields({...searchfields, client: clientID})
         dispatch({type:'LOADING'})
+
         axios.get('get-disbursement-details/'+clientID)
         .then(({data})=>setView(data))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
@@ -111,7 +114,7 @@ const LedgerRevise = () => {
     },[])
 
     return (
-    <div> 
+    <div className="ledger-revise"> 
         <Card className="col-12">
         <CardHeader className="mb-0 d-flex">
             <b className="mt-2 mb-2"> LOAN LEDGER REVISE </b> 
@@ -182,7 +185,7 @@ const LedgerRevise = () => {
                                                         type="text"
                                                         name="search" 
                                                         defaultValue={view.id}
-                                                        style={{width:'450px'}}
+                                                        style={{width:'350px'}}
                                                         onChange={handleChange}
                                                         disabled
                                                     />
@@ -197,7 +200,7 @@ const LedgerRevise = () => {
                                                 <small> Loan Product </small>
                                             </td>
                                             <td colSpan={3}>
-                                                <small>: (View Chart) </small>
+                                                <small> <b>{view.loan_product}</b> : (View Chart) </small>
                                             </td> 
                                         </tr>
                                         <tr>
@@ -205,21 +208,13 @@ const LedgerRevise = () => {
                                                 <small> Disbursement Date </small>
                                             </td>
                                             <td >
-                                                <Input type="date" 
-                                                    onChange={handleChange} 
-                                                    disabled
-                                                    defaultValue={view.created_at} />
+                                                <b className="mt-1">{view.created_at} </b>
                                             </td>
                                             <td >
-                                                <small> : Loan amount </small>
+                                                <small> Loan amount </small>
                                             </td>
                                             <td>
-                                                <Input type="text" 
-                                                    onChange={handleChange} 
-                                                    disabled
-                                                    className="mt-1" 
-                                                    defaultValue={view.loan_amount}
-                                                />
+                                                <b className="mt-1">{view.loan_amount} &#8377;</b> 
                                             </td>
                                         </tr>
                                         <tr>
@@ -227,17 +222,13 @@ const LedgerRevise = () => {
                                                 <small> Loan Duration </small>
                                             </td>
                                             <td >
-                                                <Input type="text" 
-                                                    onChange={handleChange} 
-                                                    className="mt-1" />
+                                                <b className="mt-1"> N/A </b>
                                             </td>
                                             <td >
-                                                <small> : Expected Paidup Date </small>
+                                                <small> Expected Paidup Date </small>
                                             </td>
                                             <td>
-                                                <Input type="text" 
-                                                    onChange={handleChange} 
-                                                    className="mt-1" />
+                                                <b className="mt-1"> N/A </b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -247,25 +238,23 @@ const LedgerRevise = () => {
                                             <td >
                                                 {view.id && 
                                                     <div 
-                                                        className="bg-success text-white px-3" 
+                                                        className="bg-success text-white px-2 d-flex" 
                                                         style={{
-                                                            padding:12, 
-                                                            borderRadius:'5px'
+                                                            padding:5, 
+                                                            borderRadius:'5px',
+                                                            width:115
                                                         }}
                                                     >
-                                                        <b>ACCOUNT ACTIVE</b>
+                                                        <i className="fa fa-check fs-5" style={checkStyle} />
+                                                        <small>ACCOUNT ACTIVE</small>
                                                     </div>
                                                 }
                                             </td>
                                             <td >
-                                                <small> : Total Interest Expected </small>
+                                                <small> Total Interest Expected </small>
                                             </td>
                                             <td>
-                                                <Input 
-                                                    type="text" 
-                                                    onChange={handleChange} 
-                                                    className="mt-1" 
-                                                />
+                                                <b className="mt-1"> N/A </b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -273,21 +262,13 @@ const LedgerRevise = () => {
                                                 <small> Principal Outstanding </small>
                                             </td>
                                             <td >
-                                                <Input 
-                                                    type="text" 
-                                                    onChange={handleChange} 
-                                                    className="mt-1" 
-                                                />
+                                                <b className="mt-1"> N/A </b>
                                             </td>
                                             <td >
-                                                <small> : Interest Outstanding </small>
+                                                <small> Interest Outstanding </small>
                                             </td>
                                             <td>
-                                                <Input 
-                                                    type="text" 
-                                                    onChange={handleChange} 
-                                                    className="mt-1" 
-                                                />
+                                                <b className="mt-1"> N/A </b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -295,21 +276,13 @@ const LedgerRevise = () => {
                                                 <small> Principal Arrear </small>
                                             </td>
                                             <td >
-                                                <Input 
-                                                    type="text" 
-                                                    onChange={handleChange} 
-                                                    className="mt-1" 
-                                                />
+                                                <b className="mt-1" > 0 </b>
                                             </td>
                                             <td >
-                                                <small> : Interest Arrear </small>
+                                                <small> Interest Arrear </small>
                                             </td>
                                             <td>
-                                                <Input 
-                                                    type="text" 
-                                                    onChange={handleChange} 
-                                                    className="mt-1" 
-                                                />
+                                                <b className="mt-1"> 0 </b>
                                             </td>
                                         </tr>
                                     </tbody>

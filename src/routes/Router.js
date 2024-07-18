@@ -1,44 +1,45 @@
 import { lazy } from "react";
-import { Navigate } from "react-router-dom";
-import AddEnrollment from "../views/ui/enrollment/AddEnrollment.js";
-import ClientGRT from "../views/ui/centers/ClientGRT.js";
-import SpeedLoanDisburse from "../views/ui/group-loan/SpeedLoanDisburse.js";
-import LedgerRevise from "../views/ui/advance-settings/LedgerRevise.js";
-import CreditReport from "../views/ui/CreditReport.js";
-import Collections from "../views/ui/activity/Collections.js";
-import DayClose from "../views/ui/activity/DayClose.js";
-import CenterMaster from "../views/ui/centers/CenterMaster.js";
-import MeetingHandover from "../views/ui/centers/MeetingHandover.js";
-import Visit from "../views/ui/centers/Visit.js";
-import ADVUpdate from "../views/ui/centers/ADVUpdate.js";
-import ClientADV from "../views/ui/centers/ClientADV.js";
-import AccountHead from "../views/ui/accounts/AccountHead.js";
-import AccountMaster from "../views/ui/accounts/AccountMaster.js";
-import VoucherEntry from "../views/ui/accounts/VoucherEntry.js";
-import SaleProducts from "../views/ui/management/SaleProducts.js";
-import Login from "../views/Login.js";
-import Signup from "../views/Signup.js";
-import Landing from "../layouts/Landing.js";
-import AccountLedger from "../views/ui/accounts/AccountLedger.js";
-import TrialBalance from "../views/ui/accounts/TrialBalance.js";
-import LoanProducts from "../views/ui/management/LoanProducts.js";
-import ArrearCollection from "../views/ui/activity/ArrearCollection.js";
-import ArrearClients from "../views/ui/ArrearClients.js";
-import LoanChartMaster from "../views/ui/management/LoanChartMaster.js";
-import ClientDisbursement from "../views/ui/ClientDisbursement.js";
-import AddGRT from "../views/ui/centers/GRT/AddGRT.js"; 
-import BranchMaster from "../views/ui/management/BranchMaster.js";
-import PrintDocs from "../views/PrintDocs.js";
-import BankMaster from "../views/ui/management/BankMaster.js";
+import { Navigate } from "react-router-dom"; 
+const AddEnrollment = lazy(()=>import("../views/ui/enrollment/AddEnrollment.js"))
+const ClientGRT = lazy(()=>import("../views/ui/centers/ClientGRT.js"))
+const SpeedLoanDisburse = lazy(()=>import("../views/ui/group-loan/SpeedLoanDisburse.js"))
+const LedgerRevise = lazy(()=>import("../views/ui/advance-settings/LedgerRevise.js"))
+const CreditReport = lazy(()=>import("../views/ui/CreditReport.js"))
+const Collections = lazy(()=>import("../views/ui/activity/Collections.js"))
+const DayClose = lazy(()=>import("../views/ui/activity/DayClose.js"))
+const CenterMaster = lazy(()=>import("../views/ui/centers/CenterMaster.js"))
+const MeetingHandover = lazy(()=>import("../views/ui/centers/MeetingHandover.js"))
+const Visit = lazy(()=>import("../views/ui/centers/Visit.js"))
+const ADVUpdate = lazy(()=>import("../views/ui/centers/ADVUpdate.js"))
+const ClientADV = lazy(()=>import("../views/ui/centers/ClientADV.js"))
+const AccountHead = lazy(()=>import("../views/ui/accounts/AccountHead.js"))
+const AccountMaster = lazy(()=>import("../views/ui/accounts/AccountMaster.js"))
+const VoucherEntry = lazy(()=>import("../views/ui/accounts/VoucherEntry.js"))
+const SaleProducts = lazy(()=>import("../views/ui/management/SaleProducts.js"))
+const Login = lazy(()=>import("../views/Login.js"))
+const Signup = lazy(()=>import("../views/Signup.js"))
+const Landing = lazy(()=>import("../layouts/Landing.js"))
+const TrialBalance = lazy(()=>import("../views/ui/accounts/TrialBalance.js"))
+const LoanProducts = lazy(()=>import("../views/ui/management/LoanProducts.js"))
+const ArrearCollection = lazy(()=>import("../views/ui/activity/ArrearCollection.js"))
+const ArrearClients = lazy(()=>import("../views/ui/ArrearClients.js"))
+const LoanChartMaster = lazy(()=>import("../views/ui/management/LoanChartMaster.js"))
+const ClientDisbursement = lazy(()=>import("../views/ui/ClientDisbursement.js"))
+const AddGRT = lazy(()=>import("../views/ui/centers/GRT/AddGRT.js"))
+const BranchMaster = lazy(()=>import("../views/ui/management/BranchMaster.js"))
+const PrintDocs = lazy(()=>import("../views/PrintDocs.js"))
+const BankMaster = lazy(()=>import("../views/ui/management/BankMaster.js"))
+const EditEnrollment = lazy(()=>import("../views/ui/enrollment/EditEnrollment.js"))
+const UpdateCIS = lazy(()=>import("../views/ui/enrollment/UpdateCIS.js"))
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 
 /***** Pages ****/
-
+const AccountLedger = lazy(()=> import("../views/ui/accounts/AccountLedger.js"))
 const Dashboard = lazy(() => import("../views/Dashboard.js"));
 const About = lazy(() => import("../views/About.js"));
-const Enrollment = lazy(() => import("../views/ui/Enrollment"));
+const Enrollment = lazy(() => import("../views/ui/enrollment/Enrollment"));
 const Badges = lazy(() => import("../views/ui/Badges"));
 const Buttons = lazy(() => import("../views/ui/Buttons"));
 const Cards = lazy(() => import("../views/ui/Cards"));
@@ -63,6 +64,8 @@ const ThemeRoutes = [
       { path: "/new-enrollment", exact: true, element: <Enrollment /> },
       { path: "/search-enrolled", exact: true, element: <Enrollment /> },
       { path: "/add-enrollment", exact: true, element: <AddEnrollment /> },
+      { path: "/update-cis", exact: true, element: <EditEnrollment /> },
+      { path: "/edit-enrolled/:id", exact: true, element: <UpdateCIS /> },
       { path: "/center-master", exact: true, element: <CenterMaster /> },
       { path: "/meeting-handover", exact: true, element: <MeetingHandover /> },
       { path: "/center-visit", exact: true, element: <Visit /> },

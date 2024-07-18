@@ -14,7 +14,7 @@ import {
   Table,
   Spinner,
 } from "reactstrap";
-import { useSearchEnrollmentsQuery } from "../../features/centerSlice";
+import { useSearchEnrollmentsQuery } from "../../../features/centerSlice";
 import toast from "react-hot-toast";
 import axios from "axios";
 
@@ -131,11 +131,7 @@ const Enrollment = () => {
 				</Table> 
 			</div>
 		</CardBody>
-		</Card>
-		{/* --------------------------------------------------------------------------------*/}
-		{/* Card-2*/}
-		{/* --------------------------------------------------------------------------------*/}
-		 
+		</Card> 
 	</div>
 	);
 };

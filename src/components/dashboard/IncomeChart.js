@@ -1,10 +1,12 @@
-import { Card, CardBody, Spinner } from "reactstrap"; 
+import { Card, CardBody, CardHeader, Spinner } from "reactstrap"; 
 import { useGetMonthlyIncomeQuery } from "../../features/api";
 import Chart from "react-apexcharts";  
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const IncomeChart = () => { 
-
   const { data, isLoading, isSuccess, error } = useGetMonthlyIncomeQuery()
+  const {theme} = useSelector(state=>state.auth)
   
   let chartoptions = {
     series:[],
@@ -19,14 +21,17 @@ const IncomeChart = () => {
         options: {
           chart: {
             width: 200
-          },
-          legend: {
-            position: 'bottom'
-          },
+          }, 
         }
-	}],
+	    }],
+      legend: {
+        labels:{
+          colors :Array(data?.labels?.length).fill( theme==='Dark'? '#ffffff': '#1e2a35'),   
+        }
+      },
     },
   };
+  useEffect(()=>{},[theme])
   
   if(isSuccess)
   {
@@ -39,16 +44,19 @@ const IncomeChart = () => {
     console.log(error) 
   }
   return (
-    <Card>
-      <CardBody>  
-        <Chart
-          type="pie"
-          width="100%"
-          height="390"
-          options={chartoptions.options}
-          series={chartoptions.series}
-        />
-      </CardBody>
+    <Card className="mt-3">
+        <CardHeader className="text-center fs-4">
+            MONTHLY INTEREST INCOME
+        </CardHeader>
+        <CardBody className="dashboard-card">  
+            <Chart
+                type="pie"
+                width="100%"
+                height="390"
+                options={chartoptions.options}
+                series={chartoptions.series}
+            />
+        </CardBody>
     </Card>
   );
 };

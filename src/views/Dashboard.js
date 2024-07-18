@@ -77,15 +77,12 @@ const Starter = () => {
           >Connect Device
           </Button>
         </Col>
-        <Col lg="12" xl="7" xxl="12" className="mt-4">
-          <h2 className="text-center fs-2" style={{fontWeight:'bold'}}>
-            MONTHLY INTEREST INCOME
-          </h2>
+        <Col sm="6" lg="6" xl="7" xxl="8" > 
           <IncomeChart />
         </Col>
         <div className="d-flex">
         <ComponentCard >
-          <Row > 
+          <Row className="dashboard-card"> 
             {
               MenuList.map( item => {
                 return (
@@ -107,8 +104,8 @@ const Starter = () => {
       <Row>
         <div>
           <Card>
-            <CardBody>
-                <CardText>
+            <CardBody className="dashboard-card">
+                <CardText tag={'div'}>
                     <h3 className="text-center mt-1"> Notice Board </h3>
                     <small> Recent Birthdays Branch Staff </small>
                 </CardText>

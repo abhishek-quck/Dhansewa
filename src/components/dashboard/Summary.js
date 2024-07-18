@@ -5,7 +5,7 @@ import CollectionChart from "./CollectionChart";
 const Summary = () => {
   return (
     <Card>
-      <CardBody>
+      <CardBody className="dashboard-card">
         <CardTitle tag="h5">Summary</CardTitle>
         <CardSubtitle className="mb-2 text-muted" tag="h6">
           Today Live Collection Status
