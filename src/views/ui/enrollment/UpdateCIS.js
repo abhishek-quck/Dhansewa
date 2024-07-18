@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { Card, CardBody, CardHeader, Col, FormGroup, Input, Label, Row } from 'reactstrap'
+import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, FormGroup, Input, Label, Row } from 'reactstrap'
 
 function UpdateCIS() {
     const dispatch = useDispatch()
@@ -87,7 +87,7 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4"  size={'sm'} for="aadhaar"> Aadhaar </Label>
+                                <Label className="col-4" size={'sm'} for="aadhaar"> Aadhaar </Label>
                                 <Input
                                     id="aadhaar" 
                                     name="aadhaar"
@@ -255,21 +255,202 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4" size={'sm'} for="village"> 
-                                    Village/City Name 
+                                <Label className="col-4" size={'sm'} for="education"> 
+                                    Education
                                 </Label>
+                                <Input
+                                    id="education" 
+                                    name="education"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.education}
+                                    style={{border:errors.education ?'1px solid red':''}}
+                                />
+                            </div>
+                            </Col > 
+                        </Row>
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="district"> Religion </Label>
+                                <Input
+                                    id="relegion" 
+                                    name="relegion"
+                                    type="select"
+                                    onChange={onChange}
+                                    defaultValue={fields.relegion}
+                                    style={{border:errors.relegion ?'1px solid red':''}}
+                                >
+                                    <option > Select District </option>
+                                    <option value={'Hindu'}> Hindu </option>
+                                    <option value={'Muslim'}> Muslim </option>
+                                    <option value={'Christ'}> Christ </option>
+                                </Input>
+                            </div>
+                            </Col > 
+                        </Row>
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="category">
+                                    Caste Category 
+                                </Label>
+                                <Input
+                                    id="category" 
+                                    name="category"
+                                    type="select"
+                                    onChange={onChange}
+                                    defaultValue={fields.category}
+                                    style={{border:errors.category ?'1px solid red':''}}
+                                >
+                                    <option> Select category </option>
+                                    <option value={'General'}>  General </option>
+                                    <option value={'OBC'}> OBC(other backward category) </option>
+                                    <option value={'SC/ST'}>    SC/ST   </option>
+                                </Input>
+                            </div>
+                            </Col > 
+                        </Row>
+
+                        <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                            <b className='text-primary mx-1'> FULL ADDRESS </b>          
+                        </CardText>
+
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4"  size={'sm'} for="door_no"> Door No </Label>
+                                <Input
+                                    id="door_no" 
+                                    name="door_no"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.door_no}
+                                    style={{border:errors.door_no?'1px solid red':''}}
+                                    placeholder="Enter door no"
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+                       
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4"  size={'sm'} for="door_no"> Crossing </Label>
+                                <Input
+                                    id="door_no" 
+                                    name="door_no"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.door_no}
+                                    style={{border:errors.door_no?'1px solid red':''}}
+                                    placeholder="Enter door no"
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+                       
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4"  size={'sm'} for="street"> Street </Label>
+                                <Input
+                                    id="street" 
+                                    name="street"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.street}
+                                    style={{border:errors.street?'1px solid red':''}}
+                                    placeholder="Enter street"
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+                       
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="landmark"> Landmark </Label>
+                                <Input
+                                    id="landmark" 
+                                    name="landmark"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.landmark}
+                                    style={{border:errors.landmark?'1px solid red':''}}
+                                    placeholder="Enter landmark"
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+                       
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="postal_pin"> Postal PIN </Label>
+                                <Input
+                                    id="postal_pin" 
+                                    name="postal_pin"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.postal_pin}
+                                    style={{border:errors.postal_pin?'1px solid red':''}}
+                                    placeholder="Enter postal pin"
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+                       
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="village"> Village Name </Label>
                                 <Input
                                     id="village" 
                                     name="village"
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.village}
-                                    placeholder="Enter village/city name" 
-                                    style={{border:errors.village ?'1px solid red':''}}
+                                    style={{border:errors.village?'1px solid red':''}}
+                                    placeholder="Enter postal pin"
                                 />
                             </div>
                             </Col > 
-                        </Row>
+                        </Row> 
+                       
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="local_address"> Local Address </Label>
+                                <Input
+                                    id="local_address" 
+                                    name="local_address"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.local_address}
+                                    style={{border:errors.local_address?'1px solid red':''}}
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+                       
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="state"> State Name </Label>
+                                <Input
+                                    id="state" 
+                                    name="state"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.state}
+                                    style={{border:errors.state?'1px solid red':''}}
+                                    placeholder="Enter state name"
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+                       
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
@@ -277,58 +458,162 @@ function UpdateCIS() {
                                 <Input
                                     id="district" 
                                     name="district"
-                                    type="select"
-                                    onChange={onChange}
-                                    defaultValue={fields.district}
-                                    style={{border:errors.district ?'1px solid red':''}}
-                                >
-                                    <option > Select District </option>
-                                    {districts.map((opt,i)=>{
-                                        return <option key={i} value={opt.value} >{opt.label}</option>
-                                    })}
-                                </Input>
-                            </div>
-                            </Col > 
-                        </Row>
-                        <Row className="mt-2">
-                            <Col md="12">
-                            <div className="d-flex">
-                                <Label className="col-4" size={'sm'} for="state"> State </Label>
-                                <Input
-                                    id="state" 
-                                    name="state"
-                                    type="select"
-                                    onChange={onChange}
-                                    defaultValue={fields.state}
-                                    style={{border:errors.state ?'1px solid red':''}}
-                                >
-                                    <option> Select State </option>
-                                    {states.map((opt,i)=>{
-                                    return <option key={i} value={opt.value}> {opt.label} </option> 
-                                    })}
-                                </Input>
-                            </div>
-                            </Col > 
-                        </Row>
-                       
-                        <Row className="mt-2">
-                            <Col md="12">
-                            <div className="d-flex">
-                                <Label className="col-4"  size={'sm'} for="exampleEmail"> Group </Label>
-                                <Input
-                                    id="group" 
-                                    name="group"
                                     type="text"
                                     onChange={onChange}
-                                    defaultValue={fields.group}
-                                    style={{border:errors.group?'1px solid red':''}}
-                                    placeholder="Enter group no"
+                                    defaultValue={fields.district}
+                                    style={{border:errors.district?'1px solid red':''}}
+                                >
+                                    <option> Select </option>
+                                </Input>
+                            </div>
+                            </Col > 
+                        </Row> 
+
+                        <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                            <b className='text-primary mx-1'> Co-Applicant Employment </b>          
+                        </CardText>
+
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="district"> District </Label>
+                                <Input
+                                    id="district" 
+                                    name="district"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.district}
+                                    style={{border:errors.district?'1px solid red':''}}
+                                >
+                                    <option> Select </option>
+                                </Input>
+                            </div>
+                            </Col > 
+                        </Row> 
+
+                        <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                            <b className='text-primary mx-1'> BANK INFORMATION </b>          
+                        </CardText>
+
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="ifsc_code"> IFSC </Label>
+                                <Input
+                                    id="ifsc_code" 
+                                    name="ifsc_code"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.ifsc_code}
+                                    style={{border:errors.ifsc_code?'1px solid red':''}}
+                                >
+                                    <option> Select </option>
+                                </Input>
+                            </div>
+                            </Col > 
+                        </Row> 
+
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="bank_name"> 
+                                    Bank Name 
+                                </Label>
+                                <Input
+                                    id="bank_name" 
+                                    name="bank_name"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.bank_name}
+                                    style={{border:errors.bank_name?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
                         </Row> 
+                         
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="bank_branch"> 
+                                    Bank Branch 
+                                </Label>
+                                <Input
+                                    id="bank_branch" 
+                                    name="bank_branch"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.bank_branch}
+                                    style={{border:errors.bank_branch?'1px solid red':''}}
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+                        
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="account_no"> 
+                                    Account No 
+                                </Label>
+                                <Input
+                                    id="account_no" 
+                                    name="account_no"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.account_no}
+                                    style={{border:errors.account_no?'1px solid red':''}}
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="is_debit_card"> 
+                                    Is Debit Card 
+                                </Label>
+                                <Input
+                                    id="is_debit_card" 
+                                    name="is_debit_card"
+                                    type="text"
+                                    onChange={onChange}
+                                    defaultValue={fields.is_debit_card}
+                                    style={{border:errors.is_debit_card?'1px solid red':''}}
+                                />
+                            </div>
+                            </Col > 
+                        </Row> 
+                       
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <Label className="col-4" size={'sm'} for="is_account_active"> 
+                                    Is Account Active 
+                                </Label>
+                                <Input
+                                    id="is_account_active" 
+                                    name="is_account_active"
+                                    type="select"
+                                    onChange={onChange}
+                                    defaultValue={fields.is_account_active}
+                                    style={{border:errors.is_account_active?'1px solid red':''}}
+                                >
+                                    <option> Choose </option>
+                                    <option value={'yes'}> Yes </option>
+                                    <option value={'no'}> No </option>
+                                </Input>
+                            </div>
+                            </Col > 
+                        </Row> 
+                       
                     </FormGroup> 
                 </CardBody>
+                <CardFooter style={{borderTop:'1px solid black'}}>
+                    <Button color='primary'>
+                        Update Personal Info
+                    </Button>
+                </CardFooter>
                 </Card>            
             </div>
             <div className='col-6'>
@@ -338,7 +623,7 @@ function UpdateCIS() {
                     </CardHeader>
                     <CardBody>
                         <FormGroup>
-                            <Row className="mt-2">
+                            <Row >
                                 <Col md="12">
                                 <div className="d-flex">
                                     <Label className="col-4" size={'sm'} for="aadhaar"> Aadhaar </Label>
@@ -348,7 +633,7 @@ function UpdateCIS() {
                                         type="text"
                                         onChange={onChange}
                                         defaultValue={fields.phone}
-                                        placeholder={"Enter Aadhaar"}
+                                        placeholder={"Enter nominee aadhaar"}
                                         style={{border:errors.phone ?'1px solid red':''}}
                                     />
                                 </div>
@@ -449,12 +734,503 @@ function UpdateCIS() {
                                 </div>
                                 </Col> 
                             </Row> 
-                        </FormGroup>
-                        <CardHeader>
+                         
+                            <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                                <b className='text-primary mx-1'> Co-Applicant Employment </b>          
+                            </CardText>
+                  
+                            <Row>
+                                <Col md="12">
+                                    <div className="d-flex">
+                                        <div className="col-4">
+                                            <select 
+                                                type="select" 
+                                                className={'xs'} 
+                                                style={{width:90,border:errors.verification_type ?'1px solid red':''}}
+                                                name="verification_type"
+                                                onChange={onChange}
+                                                defaultValue={nomineeDetails.verification_type}
+                                            >
+                                            <option value={'W/O'}> W/O </option>
+                                            <option value={'S/O'}> S/O </option>
+                                            </select>
+                                        </div>
+                                        <Input
+                                            id="voterID" 
+                                            name="verification"
+                                            type="text"
+                                            onChange={onChange}
+                                            placeholder="Enter name"
+                                            defaultValue={nomineeDetails.verification}
+                                            style={{border:errors.verification ?'1px solid red':''}}
+                                        />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="co_applicant_dob">
+                                        DOB
+                                    </Label>
+                                    <Input 
+                                        id="co_applicant_dob" 
+                                        name="co_applicant_dob"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex"> 
+                                    <Label className="col-4" size={'sm'} for="industry_type">
+                                        Industry Type
+                                    </Label>
+                                    <Input 
+                                        id="industry_type" 
+                                        name="industry_type"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="job_type">
+                                        Job Type
+                                    </Label>
+                                    <Input 
+                                        id="job_type" 
+                                        name="job_type"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="income_freq">
+                                        Income Freq.
+                                    </Label>
+                                    <Input 
+                                        id="income_freq" 
+                                        name="income_freq"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
 
-                        </CardHeader>
+                            <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                                <b className='text-primary mx-1'> Financial Liabilities </b>          
+                            </CardText>
+
+                            <Row >
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="member_in_family">
+                                        Member In Family
+                                    </Label>
+                                    <Input 
+                                        id="member_in_family" 
+                                        name="member_in_family"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="mature_in_family">
+                                        Mature in Family
+                                    </Label>
+                                    <Input 
+                                        id="mature_in_family" 
+                                        name="mature_in_family"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="minor_in_family">
+                                        Minor in Family
+                                    </Label>
+                                    <Input 
+                                        id="minor_in_family" 
+                                        name="minor_in_family"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="earning_person">
+                                        Earning Person
+                                    </Label>
+                                    <Input 
+                                        id="earning_person" 
+                                        name="earning_person"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="depend_person">
+                                        Depend Person
+                                    </Label>
+                                    <Input 
+                                        id="depend_person" 
+                                        name="depend_person"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="house_land">
+                                        House Land
+                                    </Label>
+                                    <Input 
+                                        id="house_land" 
+                                        name="house_land"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="house_type">
+                                        House Type
+                                    </Label>
+                                    <Input 
+                                        id="house_type" 
+                                        name="house_type"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="durable_access">
+                                        Durable Access
+                                    </Label>
+                                    <Input 
+                                        id="durable_access" 
+                                        name="durable_access"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="is_lpg">
+                                        IsLPG
+                                    </Label>
+                                    <Input 
+                                        id="is_lpg" 
+                                        name="is_lpg"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="agricultural_land">
+                                        IsLPG
+                                    </Label>
+                                    <Input 
+                                        id="agricultural_land" 
+                                        name="agricultural_land"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="total_land">
+                                        Total Land
+                                    </Label>
+                                    <Input 
+                                        id="total_land" 
+                                        name="total_land"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="allied_activities">
+                                        Allied Activities
+                                    </Label>
+                                    <Input 
+                                        id="allied_activities" 
+                                        name="allied_activities"
+                                        type="select"
+                                        onChange={onChange}
+                                    >
+                                        <option>  </option>
+                                        <option value={'yes'}> Yes </option>
+                                        <option value={'no'}> No </option>
+                                    </Input>
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="farmer_category">
+                                        Farmer Category
+                                    </Label>
+                                    <Input 
+                                        id="farmer_category" 
+                                        name="farmer_category"
+                                        type="select"
+                                        onChange={onChange}
+                                    >
+                                        <option>  </option>
+                                        <option value={'yes'}> Yes </option>
+                                        <option value={'no'}> No </option>
+                                    </Input>
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="total_monthly_income">
+                                        T.Monthly Income
+                                    </Label>
+                                    <Input 
+                                        id="total_monthly_income" 
+                                        name="total_monthly_income"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="monthly_expenses">
+                                        Monthly Expenses
+                                    </Label>
+                                    <Input 
+                                        id="monthly_expenses" 
+                                        name="monthly_expenses"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                            <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                                <b className='text-primary mx-1'> ADVANCE INFORMATION </b>          
+                            </CardText>
+
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="type">
+                                        Type
+                                    </Label>
+                                    <Input 
+                                        id="type" 
+                                        name="type"
+                                        type="select"
+                                        onChange={onChange}
+                                    >
+                                        <option> Choose </option>
+                                        <option value={'group'}> Group </option>
+                                    </Input>
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="email">
+                                        Email
+                                    </Label>
+                                    <Input 
+                                        id="email" 
+                                        name="email"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="guarantor">
+                                        Guarantor
+                                    </Label>
+                                    <Input 
+                                        id="guarantor" 
+                                        name="guarantor"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="PAN">
+                                        PAN
+                                    </Label>
+                                    <Input 
+                                        id="PAN" 
+                                        name="PAN"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="loan_request">
+                                       Loan Request
+                                    </Label>
+                                    <Input 
+                                        id="loan_request" 
+                                        name="loan_request"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="enrolled_by">
+                                       Enrolled By
+                                    </Label>
+                                    <Input 
+                                        id="enrolled_by" 
+                                        name="enrolled_by"
+                                        type="text"
+                                        onChange={onChange}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="founder_group_no">
+                                       Group No(Temp)
+                                    </Label>
+                                    <Input 
+                                        id="founder_group_no" 
+                                        name="founder_group_no"
+                                        type="text"
+                                        onChange={onChange}
+                                        placeholder='Enter founder group'
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+
+                            <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                                <b className='text-primary mx-1'> KYC & OTHER DOCUMENTS </b>          
+                            </CardText>
+
+                            <Row className="mt-2">
+                                <Col md="12">
+                                <div className="d-flex">
+                                    <div className="col-4">
+                                        <Input 
+                                            type='select'
+                                            className={'xs'} 
+                                            style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
+                                            name="kyc_type"
+                                            onChange={onChange}
+                                            defaultValue={fields.kyc_type}
+                                        >
+                                        <option value={'voterID'}> Voter ID </option>
+                                        <option value={'passBook'}> Passbook </option>
+                                        <option value={'aadhaar'}> Aadhaar </option>
+                                        </Input>
+                                    </div>
+                                    <Input
+                                        name="verification"
+                                        type="file"
+                                        onChange={onChange}
+                                        defaultValue={fields.verification}
+                                        style={{border:errors.verification ?'1px solid red':''}}
+                                    />
+                                </div>
+                                </Col > 
+                            </Row>
+
+                        </FormGroup>
                     </CardBody>
-                </Card>        
+                </Card>
             </div>
         </div>
     </>

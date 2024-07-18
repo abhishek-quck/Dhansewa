@@ -19,16 +19,10 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import $ from 'jquery'
 import { useDispatch } from "react-redux";
-import { validate } from "../../../helpers/utils";
+import { getCurrentDate, validate } from "../../../helpers/utils";
 var allData = {branch:{}, center:{}, clients:{}}
 
-const getCurrentDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
+ 
 const SpeedLoanDisburse = () => { 
     const dispatch = useDispatch()
     const [centers, setCenters] = useState([]);
@@ -54,12 +48,12 @@ const SpeedLoanDisburse = () => {
         bank_name:'',
         cross_sale_products:''
     })
-    const [errors, setErrors] = useState(fields)
     const [sFields, setSearchField] = useState({
         branch:'',
         center:'',
         client:''
     })
+    const [errors, setErrors] = useState({...fields, ...sFields})
 
     const emiRef = useRef(null)
     const paymentOptions = [
@@ -184,7 +178,8 @@ const SpeedLoanDisburse = () => {
 
 	useEffect(()=>{
         init()
-        $(document).on('change','input,select,textarea', function(){
+        $(document).on('change','select', function(){
+            console.log('caught this one also')
             this.style.border = ''
         })
         return ()=>{
