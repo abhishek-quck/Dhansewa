@@ -55,7 +55,7 @@ const Header = () => {
   return (
     <Navbar 
 		color={theme.toLowerCase()} 
-		className={`navbar-${theme.toLowerCase()} text-${theme==='Light'?'white':''}`} expand="md" 
+		className={`navbar-${theme==='Dark'?theme.toLowerCase():''} text-${theme==='Light'?'white':''}`} expand="md" 
 		style={navStyle} 
 	>
       <div className="d-flex align-items-center">

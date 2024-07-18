@@ -139,7 +139,7 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.applicant_name}
-                                    placeholder="Enter applicant name"
+                                    placeholder="Enter member name"
                                     style={{border:errors.applicant_name ?'1px solid red':''}}
                                 /> 
                                     
@@ -156,7 +156,7 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.applicant_name}
-                                    placeholder="Enter applicant name"
+                                    placeholder="Enter father name"
                                     style={{border:errors.applicant_name ?'1px solid red':''}}
                                 /> 
                                     
@@ -255,11 +255,11 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4" size={'sm'} for="exampleEmail"> 
+                                <Label className="col-4" size={'sm'} for="village"> 
                                     Village/City Name 
                                 </Label>
                                 <Input
-                                    id="exampleSelectMulti" 
+                                    id="village" 
                                     name="village"
                                     type="text"
                                     onChange={onChange}
@@ -293,7 +293,7 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4"  size={'sm'} for="exampleEmail"> State </Label>
+                                <Label className="col-4" size={'sm'} for="state"> State </Label>
                                 <Input
                                     id="state" 
                                     name="state"
@@ -341,14 +341,14 @@ function UpdateCIS() {
                             <Row className="mt-2">
                                 <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="phone"> Aadhaar </Label>
+                                    <Label className="col-4" size={'sm'} for="aadhaar"> Aadhaar </Label>
                                     <Input
-                                        id="phone" 
-                                        name="phone"
+                                        id="aadhaar" 
+                                        name="aadhaar"
                                         type="text"
                                         onChange={onChange}
                                         defaultValue={fields.phone}
-                                        placeholder={"Enter phone"}
+                                        placeholder={"Enter Aadhaar"}
                                         style={{border:errors.phone ?'1px solid red':''}}
                                     />
                                 </div>
@@ -393,7 +393,7 @@ function UpdateCIS() {
                                         type="text"
                                         onChange={onChange}
                                         defaultValue={nomineeDetails.nominee_name}
-                                        placeholder={"Enter Nominee Name"}
+                                        placeholder={"Enter nominee name"}
                                         style={{border:errors.nominee_name ?'1px solid red':''}}
                                     />
                                 </div>
