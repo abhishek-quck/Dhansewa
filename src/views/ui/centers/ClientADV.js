@@ -53,7 +53,7 @@ function ClientADV() {
 		// here it comes baeibee
 		dispatch({type:'LOADING'})
 		e.preventDefault()
-		axios.post('/get-client-details', searchFields)
+		axios.post('/get-enrollment-details', searchFields)
 		.then(({data})=>{
 			setResponse(data)
 		})

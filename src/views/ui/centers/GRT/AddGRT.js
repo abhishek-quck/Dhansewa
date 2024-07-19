@@ -82,7 +82,7 @@ const AddGRT = () => {
 	const previewDoc = () => {
 		let data = thisUser?.latest_document?.data
 		let clientID = thisUser?.grt?.client_id
-		preview(clientID,thisUser.verification_type, 'preview-document', data!==undefined?[data]:false)
+		preview(data!==undefined?[data]:false, clientID,thisUser.verification_type, 'preview-document')
 	}
 	
     useEffect(()=>{
@@ -91,7 +91,7 @@ const AddGRT = () => {
 		{
 			thisUser = thisUser[id]
 		}else{
-			axios.post(`get-client-details/${id}`)
+			axios.post(`get-enrollment-details/${id}`)
 			.then(({data})=>{
 				if(typeof data==='object' && Object.keys(data).length)
 				{

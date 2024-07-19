@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, FormGroup, Input, Label, Row } from 'reactstrap'
+import { preview } from '../../../attachments'
 
 function UpdateCIS() {
     const dispatch = useDispatch()
@@ -13,8 +14,23 @@ function UpdateCIS() {
         verification_type:null,
         verification:null,
     })
-    const [fields, updateFields] = useState({
+    const [doc, setDoc] = useState({b64:null,blob:null})
 
+    const [fields, updateFields] = useState({
+        aadhaar:'',
+        applicant_name:'',
+        village:'',
+        postal_pin:'',
+        date_of_birth:'',
+        district:'',
+        state:'',
+        branch:'',
+        ifsc:'',
+        bank:'',
+        bank_branch:'',
+        account_num:'',
+        is_debit_card:'',
+        is_account:'',
     })
     const [districts, setDistricts] = useState([])
     const [states, setStates] = useState([])
@@ -27,6 +43,21 @@ function UpdateCIS() {
         }
     }
     const [branches, setBranches] = useState([])
+
+    const handleFile = e => {
+        let file = e.target.files[0]
+        setDoc({...doc, blob:file})
+        var reader = new FileReader();
+        reader.readAsDataURL(file); 
+        reader.onload = function() {
+            setDoc({...doc, b64:reader.result})
+            console.log(reader.result)
+        }; 
+    }
+
+    const previewUploaded = () => {
+        preview([doc.b64])
+    }
 
     const handleSubmit = e => {
         e.preventDefault()
@@ -44,10 +75,22 @@ function UpdateCIS() {
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
-    useEffect(()=>{
-        axios.get('get-branches')
-        .then(({data})=>setBranches(data))
-
+    useEffect(()=>{ 
+        axios.get('get-options/all')
+		.then(({data})=>{
+			if(data.state) setStates(data.state)
+			if(data.district) setDistricts(data.district)
+			if(data.branches) setBranches(data.branches)
+                
+            axios.post('get-enrollment-details/'+id)
+            .then(({data})=>{
+                console.log(data)
+                updateFields(data)
+            })
+		}).catch(err=>{
+            console.log(err.message)
+        })
+		
         return ()=> null
     },[loading])
 
@@ -77,7 +120,7 @@ function UpdateCIS() {
                                 >
                                     <option > Select Branch </option>
                                     {branches.map((option,i)=>{
-                                        return <option key={i} value={option.id}>{option.name}</option>
+                                        return <option key={i} value={option.value}>{option.label}</option>
                                     })}
                                 </Input>
                             </div>
@@ -131,9 +174,9 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4"  size={'sm'} for="name">Member Name</Label>
+                                <Label className="col-4"  size={'sm'} for="member_name">Member Name</Label>
                                 <Input
-                                    id="name" 
+                                    id="member_name" 
                                     name="member_name"
                                     type="text"
                                     onChange={onChange}
@@ -225,7 +268,7 @@ function UpdateCIS() {
                                     defaultValue={fields.gender}
                                     style={{border:errors.gender ?'1px solid red':''}}
                                 >
-                                    <option > Choose </option>
+                                    <option >   </option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option> 
                                 </Input>
@@ -244,9 +287,9 @@ function UpdateCIS() {
                                     defaultValue={fields.marital_status}
                                     style={{border:errors.marital_status ?'1px solid red':''}}
                                 >
-                                    <option > Choose </option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option> 
+                                    <option > </option>
+                                    <option value="male"> Single </option>
+                                    <option value="female"> Married </option> 
                                 </Input>
                             </div>
                             </Col > 
@@ -303,7 +346,7 @@ function UpdateCIS() {
                                     style={{border:errors.category ?'1px solid red':''}}
                                 >
                                     <option> </option>
-                                    <option value={'General'}>  General </option>
+                                    <option value={'Gen'}>  General </option>
                                     <option value={'OBC'}> OBC(other backward category) </option>
                                     <option value={'SC/ST'}>    SC/ST   </option>
                                 </Input>
@@ -440,12 +483,18 @@ function UpdateCIS() {
                                 <Input
                                     id="state" 
                                     name="state"
-                                    type="text"
+                                    type="select"
                                     onChange={onChange}
-                                    defaultValue={fields.state}
+                                    defaultValue={<option value={fields.state}>{fields.state}</option>}
                                     style={{border:errors.state?'1px solid red':''}}
-                                    placeholder="Enter state name"
-                                />
+                                >
+                                    <option> </option>
+                                    {states.map(opt => {
+                                        return <option key={opt.value} value={opt.value}>
+                                            {opt.label}
+                                        </option>
+                                    })}
+                                </Input>
                             </div>
                             </Col > 
                         </Row> 
@@ -464,7 +513,7 @@ function UpdateCIS() {
                                 >
                                     <option>  </option>
                                     {districts.map(option=>{
-                                        return <option key={option.id} value={option.id}>{option.name}</option>
+                                        return <option key={option.value} value={option.value}>{option.label}</option>
                                     })}
                                 </Input>
                             </div>
@@ -486,9 +535,7 @@ function UpdateCIS() {
                                     onChange={onChange}
                                     defaultValue={fields.ifsc_code}
                                     style={{border:errors.ifsc_code?'1px solid red':''}}
-                                >
-                                    <option> Select </option>
-                                </Input>
+                                />
                             </div>
                             </Col > 
                         </Row> 
@@ -579,7 +626,7 @@ function UpdateCIS() {
                                     defaultValue={fields.is_account_active}
                                     style={{border:errors.is_account_active?'1px solid red':''}}
                                 >
-                                    <option> Choose </option>
+                                    <option>   </option>
                                     <option value={'yes'}> Yes </option>
                                     <option value={'no'}> No </option>
                                 </Input>
@@ -612,7 +659,7 @@ function UpdateCIS() {
                                         name="aadhaar"
                                         type="text"
                                         onChange={onChange}
-                                        defaultValue={fields.phone}
+                                        defaultValue={nomineeDetails.aadhaar}
                                         placeholder={"Enter nominee aadhaar"}
                                         style={{border:errors.phone ?'1px solid red':''}}
                                     />
@@ -1202,11 +1249,20 @@ function UpdateCIS() {
                                     <Input
                                         name="verification"
                                         type="file"
-                                        onChange={onChange}
-                                        defaultValue={fields.verification}
+                                        onChange={handleFile}
                                         style={{border:errors.verification ?'1px solid red':''}}
                                     />
                                 </div>
+                                {doc.b64 && 
+                                    <button 
+                                        type='button'
+                                        className='btn btn-light mt-2'
+                                        onClick={previewUploaded}
+                                        style={{marginLeft:'80%',border:'1px dashed'}}
+                                    >
+                                        Preview <i className='fa fa-eye'/>
+                                    </button>
+                                }
                                 </Col > 
                             </Row>
 

@@ -64,13 +64,10 @@ table > thead{
 	}
 }
 .dark .card-body, .dark .card-footer {
-    background-color:#707283!important;
-    label, span, b, p, .card-text, .card-title, .apexcharts-text{
-        color: white;
-    }
-    .card-subtitle{
-        color: #ffff8f!important;
-    }
+    background-color:#c5c6cd!important;
+    // label, span, b, p, .card-text, .card-title, .apexcharts-text{
+    //     color: white;
+    // }
     table{
         border: 1px solid black;
     }

@@ -1,10 +1,11 @@
 import $ from 'jquery'
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { dataURLtoFile } from './helpers/utils';
 var Attachments =
 {
     messageOrigin: null,
-    preview: function(clientID, docID, module ,hasData)
+    preview: function(hasData, clientID, docID, module)
     {
         // Remove existing elements, we already faced enough errors
         let cModalBody=document.body.querySelectorAll('.attachment-viewer.d-none');
@@ -23,6 +24,23 @@ var Attachments =
         oUL.id='images';
         if(hasData)
         {
+            if(hasData[0].includes('pdf'))
+            {
+                let file = dataURLtoFile(hasData[0],'abc.pdf') 
+                let payload = new FormData();
+                payload.append('doc', file);
+                axios.post('convert-file', payload, {
+                    headers:{
+                        "Accept":"application/json",
+                        "Content-Type": "multipart/form-data",
+                        "Authorization":"Bearer "+localStorage.getItem('auth-token')
+                    }
+                })
+                .then(({data})=>{
+                    console.log(data)
+                })
+                return 
+            }
             Attachments.events.previewCallback(hasData)
         } else {
                 
@@ -130,9 +148,9 @@ var Attachments =
     }
 }
 
-function preview(clientID, docID, sFunction ,hasData=false)
+function preview(hasData=null, clientID, docID, sFunction)
 {   
-    Attachments.preview(clientID, docID, sFunction, hasData);
+    Attachments.preview( hasData, clientID, docID, sFunction );
 }
  
 export { preview }

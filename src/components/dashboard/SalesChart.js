@@ -54,7 +54,7 @@ const SalesChart = () => {
 			labels: {
 				show: true,
 				style: {
-					colors: Array(categories.length).fill( theme==='Dark'? '#ffffff': '#1e2a35'),
+					// colors: Array(categories.length).fill( theme==='Dark'? '#ffffff': '#1e2a35'),
 					fontSize: '12px',
 					fontFamily: 'Helvetica, Arial, sans-serif',
 					fontWeight: 400,
@@ -66,7 +66,7 @@ const SalesChart = () => {
 			labels: {
 				show: true,
 				style: {
-					colors: Array(categories.length).fill( theme==='Dark'? '#ffffff': '#1e2a35'),
+					colors: Array(categories.length).fill(  '#1e2a35'),
 					fontSize: '12px',
 					fontFamily: 'Helvetica, Arial, sans-serif',
 					fontWeight: 400,
@@ -77,7 +77,7 @@ const SalesChart = () => {
 		legend:{
 			show:true,
 			labels:{
-				colors:[theme==='Dark'? '#ffffff': '#1e2a35']
+				colors:['#1e2a35']
 			}
 		}
 	},
