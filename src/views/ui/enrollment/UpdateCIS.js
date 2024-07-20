@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 import { preview } from '../../../attachments'
+import { validate } from '../../../helpers/utils'
 
 function UpdateCIS() {
     const dispatch = useDispatch()
@@ -17,6 +18,7 @@ function UpdateCIS() {
         aadhaar:'',
         applicant_name:'',
         village:'',
+        PAN:'',
         postal_pin:'',
         date_of_birth:'',
         district:'',
@@ -98,6 +100,14 @@ function UpdateCIS() {
 
     const handleSubmit = e => {
         e.preventDefault()
+        delete fields.kyc_document_id
+        let {result,shouldGo} = validate(fields)
+        console.log(result)
+        if(shouldGo===false)
+        {
+            toast.error('All fields are required!')
+            return 
+        }
         dispatch({type:'LOADING'})
         let formData= new FormData();
         for (const key in fields) {
@@ -133,19 +143,30 @@ function UpdateCIS() {
                 
             axios.post('get-enrollment-details/'+id)
             .then(({data})=>{
-                console.log(data)
-                updateFields(data)
+                if(data.other_info)
+                {
+                    data={...data, ...data.other_info}
+                    delete data.other_info
+                }
+                delete data.grt
+                delete data.latest_document
+                delete data.kyc_document_id
+                updateFields({...fields, ...data}) 
             })
 		}).catch(err=>{
             console.log(err.message)
+            dispatch({type:'STOP_LOADING'})
+        })
+        .finally(()=>{
+            dispatch({type:'STOP_LOADING'})
         })
 		
         return ()=> null
-    },[loading])
+    },[])
 
     return (
     <>
-        <div className='d-flex'>
+        <div>
             <Form style={{display:'flex',width:'-webkit-fill-available'}} onSubmit={handleSubmit}>
             <div className='col-6'>
                 <Card>
@@ -513,29 +534,13 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4" size={'sm'} for="local_address"> Local Address </Label>
-                                <Input
-                                    id="local_address" 
-                                    name="local_address"
-                                    type="text"
-                                    onChange={onChange}
-                                    defaultValue={fields.local_address}
-                                    style={{border:errors.local_address?'1px solid red':''}}
-                                />
-                            </div>
-                            </Col > 
-                        </Row> 
-                       
-                        <Row className="mt-2">
-                            <Col md="12">
-                            <div className="d-flex">
                                 <Label className="col-4" size={'sm'} for="state"> State Name </Label>
                                 <Input
                                     id="state" 
                                     name="state"
                                     type="select"
                                     onChange={onChange}
-                                    defaultValue={<option value={fields.state}>{fields.state}</option>}
+                                    defaultValue={fields.state}
                                     style={{border:errors.state?'1px solid red':''}}
                                 >
                                     <option> </option>
@@ -593,16 +598,16 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4" size={'sm'} for="bank_name"> 
+                                <Label className="col-4" size={'sm'} for="bank"> 
                                     Bank Name 
                                 </Label>
                                 <Input
-                                    id="bank_name" 
-                                    name="bank_name"
+                                    id="bank" 
+                                    name="bank"
                                     type="text"
                                     onChange={onChange}
-                                    defaultValue={fields.bank_name}
-                                    style={{border:errors.bank_name?'1px solid red':''}}
+                                    defaultValue={fields.bank}
+                                    style={{border:errors.bank?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -629,16 +634,16 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4" size={'sm'} for="account_no"> 
+                                <Label className="col-4" size={'sm'} for="account_num"> 
                                     Account No 
                                 </Label>
                                 <Input
-                                    id="account_no" 
-                                    name="account_no"
+                                    id="account_num" 
+                                    name="account_num"
                                     type="text"
                                     onChange={onChange}
-                                    defaultValue={fields.account_no}
-                                    style={{border:errors.account_no?'1px solid red':''}}
+                                    defaultValue={fields.account_num}
+                                    style={{border:errors.account_num?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -723,7 +728,104 @@ function UpdateCIS() {
                             }
                             </Col > 
                         </Row>
-                       
+                        <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                                <b className='text-primary mx-1'> 
+                                    CO-APPLICANT EMPLOYMENT 
+                                </b>          
+                            </CardText>
+                  
+                            <Row>
+                                <Col md="12">
+                                    <div className="d-flex">
+                                        <div className="col-4">
+                                            <Input 
+                                                type="select" 
+                                                className={'xs'} 
+                                                style={{width:90,border:errors.co_applicant_rel ?'1px solid red':''}}
+                                                name="co_applicant_rel"
+                                                onChange={onChange}
+                                                defaultValue={fields.co_applicant_rel}
+                                            >
+                                            <option value={'W/O'}> W/O </option>
+                                            <option value={'S/O'}> S/O </option>
+                                            </Input>
+                                        </div>
+                                        <Input
+                                            id="voterID" 
+                                            name="co_applicant"
+                                            type="text"
+                                            onChange={onChange}
+                                            placeholder="Enter name"
+                                            defaultValue={fields.co_applicant}
+                                            style={{border:errors.co_applicant ?'1px solid red':''}}
+                                        />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="co_applicant_dob">
+                                        DOB
+                                    </Label>
+                                    <Input 
+                                        id="co_applicant_dob" 
+                                        name="co_applicant_dob"
+                                        type="date"
+                                        onChange={onChange}
+                                        defaultValue={fields.co_applicant_dob}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex"> 
+                                    <Label className="col-4" size={'sm'} for="co_applicant_industry_type">
+                                        Industry Type
+                                    </Label>
+                                    <Input 
+                                        id="co_applicant_industry_type" 
+                                        name="co_applicant_industry_type"
+                                        type="text"
+                                        onChange={onChange}
+                                        defaultValue={fields.co_applicant_industry_type}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="co_applicant_job_type">
+                                        Job Type
+                                    </Label>
+                                    <Input 
+                                        id="co_applicant_job_type" 
+                                        name="co_applicant_job_type"
+                                        type="text"
+                                        onChange={onChange}
+                                        defaultValue={fields.co_applicant_job_type}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col md="12">
+                                    <div className="d-flex">
+                                    <Label className="col-4" size={'sm'} for="co_applicant_income_freq">
+                                        Income Freq.
+                                    </Label>
+                                    <Input 
+                                        id="co_applicant_income_freq" 
+                                        name="co_applicant_income_freq"
+                                        type="text"
+                                        onChange={onChange}
+                                        defaultValue={fields.co_applicant_income_freq}
+                                    />
+                                    </div>
+                                </Col>
+                            </Row>
                     </FormGroup> 
                 </CardBody>
                 <Button color='success' className='w-100' style={submitStyle} size='md'>
@@ -849,103 +951,7 @@ function UpdateCIS() {
                                 </Col> 
                             </Row> 
                          
-                            <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
-                                <b className='text-primary mx-1'> 
-                                    CO-APPLICANT EMPLOYMENT 
-                                </b>          
-                            </CardText>
-                  
-                            <Row>
-                                <Col md="12">
-                                    <div className="d-flex">
-                                        <div className="col-4">
-                                            <Input 
-                                                type="select" 
-                                                className={'xs'} 
-                                                style={{width:90,border:errors.co_applicant_rel ?'1px solid red':''}}
-                                                name="co_applicant_rel"
-                                                onChange={onChange}
-                                                defaultValue={fields.co_applicant_rel}
-                                            >
-                                            <option value={'W/O'}> W/O </option>
-                                            <option value={'S/O'}> S/O </option>
-                                            </Input>
-                                        </div>
-                                        <Input
-                                            id="voterID" 
-                                            name="co_applicant"
-                                            type="text"
-                                            onChange={onChange}
-                                            placeholder="Enter name"
-                                            defaultValue={fields.co_applicant}
-                                            style={{border:errors.co_applicant ?'1px solid red':''}}
-                                        />
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row className="mt-2">
-                                <Col md="12">
-                                    <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="co_applicant_dob">
-                                        DOB
-                                    </Label>
-                                    <Input 
-                                        id="co_applicant_dob" 
-                                        name="co_applicant_dob"
-                                        type="text"
-                                        onChange={onChange}
-                                    />
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row className="mt-2">
-                                <Col md="12">
-                                    <div className="d-flex"> 
-                                    <Label className="col-4" size={'sm'} for="co_applicant_industry_type">
-                                        Industry Type
-                                    </Label>
-                                    <Input 
-                                        id="co_applicant_industry_type" 
-                                        name="co_applicant_industry_type"
-                                        type="text"
-                                        onChange={onChange}
-                                        defaultValue={fields.co_applicant_industry_type}
-                                    />
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row className="mt-2">
-                                <Col md="12">
-                                    <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="co_applicant_job_type">
-                                        Job Type
-                                    </Label>
-                                    <Input 
-                                        id="co_applicant_job_type" 
-                                        name="co_applicant_job_type"
-                                        type="text"
-                                        onChange={onChange}
-                                        defaultValue={fields.co_applicant_job_type}
-                                    />
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row className="mt-2">
-                                <Col md="12">
-                                    <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="co_applicant_income_freq">
-                                        Income Freq.
-                                    </Label>
-                                    <Input 
-                                        id="co_applicant_income_freq" 
-                                        name="co_applicant_income_freq"
-                                        type="text"
-                                        onChange={onChange}
-                                        defaultValue={fields.co_applicant_income_freq}
-                                    />
-                                    </div>
-                                </Col>
-                            </Row>
+                            
 
                             <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
                                 <b className='text-primary mx-1'> FINANCIAL LIABILITIES </b>          
@@ -1265,6 +1271,7 @@ function UpdateCIS() {
                                         name="PAN"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.PAN}
                                     />
                                     </div>
                                 </Col>
