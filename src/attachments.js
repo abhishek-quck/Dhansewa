@@ -24,7 +24,7 @@ var Attachments =
         oUL.id='images';
         if(hasData)
         {
-            if(hasData[0].includes('pdf'))
+            if(hasData[0].includes('application/pdf'))
             {
                 let file = dataURLtoFile(hasData[0],'abc.pdf') 
                 let payload = new FormData();

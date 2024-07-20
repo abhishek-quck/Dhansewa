@@ -70,7 +70,7 @@ const AddEnrollment = () => {
             <CardHeader tag="h6" className=" d-flex" >
                 <b>CLIENT GRT</b>
             </CardHeader>
-            <CardBody className="bg-gray-300">
+            <CardBody>
                 <Form onSubmit={handleSearch}>
                     <FormGroup>
                     <Row>

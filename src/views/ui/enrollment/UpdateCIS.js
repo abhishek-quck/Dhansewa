@@ -3,17 +3,14 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, FormGroup, Input, Label, Row } from 'reactstrap'
+import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 import { preview } from '../../../attachments'
 
 function UpdateCIS() {
     const dispatch = useDispatch()
     const {loading} = useSelector(state=>state.auth)
     const {id} = useParams()
-    const [nomineeDetails, updateNominee] = useState({
-        verification_type:null,
-        verification:null,
-    })
+    const submitStyle = {position:'fixed',maxWidth:'360px',left:'40%',top:'90%',zIndex:'121'}
     const [doc, setDoc] = useState({b64:null,blob:null})
 
     const [fields, updateFields] = useState({
@@ -24,13 +21,54 @@ function UpdateCIS() {
         date_of_birth:'',
         district:'',
         state:'',
-        branch:'',
+        branch_id:'',
         ifsc:'',
         bank:'',
         bank_branch:'',
         account_num:'',
         is_debit_card:'',
-        is_account:'',
+        is_account_active:'',
+        enroll_id:id,
+        door_num:'',
+        crossing:'',
+        street:'',
+        landmark:'',
+        alt_phone:'',
+        marital_status:'',
+        education:'',
+        religion:'',
+        category:'',     
+        nominee:'',
+        nominee_dob:'',
+        nominee_relation:'',
+        nominee_aadhaar:'',
+        nominee_kyc_type:'',
+        nominee_kyc:'',
+        co_applicant:'',
+        co_applicant_rel:'',
+        co_applicant_dob:'',
+        co_applicant_industry_type:'',
+        co_applicant_job_type:'',
+        co_applicant_income_freq:'',
+        member_in_family:'',
+        mature_in_family:'',
+        minor_in_family:'',
+        earning_person_in_family:'',
+        depend_person_in_family:'',
+        house_land:'',
+        house_type:'',
+        durable_access:'',
+        is_lpg:'',
+        total_land:'',
+        allied_activities:'',
+        farmer_category:'',
+        total_monthly_income:'',
+        monthly_expenses:'',
+        type:'',
+        email:'',
+        guarantor:'',
+        enrolled_by:'',
+        group_no:'',
     })
     const [districts, setDistricts] = useState([])
     const [states, setStates] = useState([])
@@ -38,7 +76,6 @@ function UpdateCIS() {
     const onChange = e => {
         if(e?.target)
         {
-            e.target.style.border = ''
             updateFields({...fields, [e.target.name]:e.target.value})
         }
     }
@@ -62,8 +99,20 @@ function UpdateCIS() {
     const handleSubmit = e => {
         e.preventDefault()
         dispatch({type:'LOADING'})
-        let formData= new FormData;
-        axios.post('/update-enrolled', formData)
+        let formData= new FormData();
+        for (const key in fields) {
+            if(!(['latest_document','grt']).includes(key))
+            {
+                formData.append(key, fields[key])
+            }
+        }
+        axios.post('update-additional-enroll-information', formData, {
+            headers:{
+                "Accept":"application/json",
+                "Content-Type": "multipart/form-data",
+                "Authorization":"Bearer "+localStorage.getItem('auth-token')
+            }
+        })
         .then(({data})=>{
             console.log(data)
             toast.success(data.message)
@@ -97,6 +146,7 @@ function UpdateCIS() {
     return (
     <>
         <div className='d-flex'>
+            <Form style={{display:'flex',width:'-webkit-fill-available'}} onSubmit={handleSubmit}>
             <div className='col-6'>
                 <Card>
                     <CardBody >
@@ -114,9 +164,9 @@ function UpdateCIS() {
                                     id="branch" 
                                     name="branch"
                                     type="select"
-                                    defaultValue={fields.branch}
+                                    defaultValue={fields.branch_id}
                                     onChange={onChange}
-                                    style={{border:errors.branch ?'1px solid red':''}}
+                                    style={{border:errors.branch_id ?'1px solid red':''}}
                                 >
                                     <option > Select Branch </option>
                                     {branches.map((option,i)=>{
@@ -146,10 +196,10 @@ function UpdateCIS() {
                             <Col md="12">
                             <div className="d-flex">
                                 <div className="col-4">
-                                    <select 
+                                    <Input 
                                         type="select" 
                                         className={'xs'} 
-                                        style={{width:90,border:errors.verification_type ?'1px solid red':''}}
+                                        style={{width:120,border:errors.verification_type ?'1px solid red':''}}
                                         name="verification_type"
                                         onChange={onChange}
                                         defaultValue={fields.verification_type}
@@ -157,7 +207,7 @@ function UpdateCIS() {
                                     <option value={'voterID'}> Voter ID </option>
                                     <option value={'passBook'}> Passbook </option>
                                     <option value={'aadhaar'}> Aadhaar </option>
-                                    </select>
+                                    </Input>
                                 </div>
                                 <Input
                                     id="voterID" 
@@ -314,14 +364,14 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4" size={'sm'} for="district"> Religion </Label>
+                                <Label className="col-4" size={'sm'} for="religion"> Religion </Label>
                                 <Input
-                                    id="relegion" 
-                                    name="relegion"
+                                    id="religion" 
+                                    name="religion"
                                     type="select"
                                     onChange={onChange}
-                                    defaultValue={fields.relegion}
-                                    style={{border:errors.relegion ?'1px solid red':''}}
+                                    defaultValue={fields.religion}
+                                    style={{border:errors.religion ?'1px solid red':''}}
                                 >
                                     <option > </option>
                                     <option value={'Hindu'}> Hindu </option>
@@ -361,14 +411,14 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4"  size={'sm'} for="door_no"> Door No </Label>
+                                <Label className="col-4"  size={'sm'} for="door_num"> Door No </Label>
                                 <Input
-                                    id="door_no" 
-                                    name="door_no"
+                                    id="door_num" 
+                                    name="door_num"
                                     type="text"
                                     onChange={onChange}
-                                    defaultValue={fields.door_no}
-                                    style={{border:errors.door_no?'1px solid red':''}}
+                                    defaultValue={fields.door_num}
+                                    style={{border:errors.door_num?'1px solid red':''}}
                                     placeholder="Enter door no"
                                 />
                             </div>
@@ -378,15 +428,15 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4"  size={'sm'} for="door_no"> Crossing </Label>
+                                <Label className="col-4"  size={'sm'} for="crossing"> Crossing </Label>
                                 <Input
-                                    id="door_no" 
-                                    name="door_no"
+                                    id="crossing" 
+                                    name="crossing"
                                     type="text"
                                     onChange={onChange}
-                                    defaultValue={fields.door_no}
-                                    style={{border:errors.door_no?'1px solid red':''}}
-                                    placeholder="Enter door no"
+                                    defaultValue={fields.crossing}
+                                    style={{border:errors.crossing?'1px solid red':''}}
+                                    placeholder="Enter crossing"
                                 />
                             </div>
                             </Col > 
@@ -527,14 +577,14 @@ function UpdateCIS() {
                         <Row className="mt-2">
                             <Col md="12">
                             <div className="d-flex">
-                                <Label className="col-4" size={'sm'} for="ifsc_code"> IFSC </Label>
+                                <Label className="col-4" size={'sm'} for="ifsc"> IFSC </Label>
                                 <Input
-                                    id="ifsc_code" 
-                                    name="ifsc_code"
+                                    id="ifsc" 
+                                    name="ifsc"
                                     type="text"
                                     onChange={onChange}
-                                    defaultValue={fields.ifsc_code}
-                                    style={{border:errors.ifsc_code?'1px solid red':''}}
+                                    defaultValue={fields.ifsc}
+                                    style={{border:errors.ifsc?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -633,14 +683,52 @@ function UpdateCIS() {
                             </div>
                             </Col > 
                         </Row> 
+                        <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+                            <b className='text-primary mx-1'> KYC & OTHER DOCUMENTS </b>          
+                        </CardText>
+
+                        <Row className="mt-2">
+                            <Col md="12">
+                            <div className="d-flex">
+                                <div className="col-4">
+                                    <Input 
+                                        type='select'
+                                        className={'xs'} 
+                                        style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
+                                        name="kyc_type"
+                                        onChange={onChange}
+                                        defaultValue={fields.kyc_type}
+                                    >
+                                    <option value={'voterID'}> Voter ID </option>
+                                    <option value={'passBook'}> Passbook </option>
+                                    <option value={'aadhaar'}> Aadhaar </option>
+                                    </Input>
+                                </div>
+                                <Input
+                                    type="file"
+                                    name='doc'
+                                    onChange={handleFile}
+                                    style={{border:errors.verification ?'1px solid red':''}}
+                                />
+                            </div>
+                            {doc.b64 && 
+                                <button 
+                                    type='button'
+                                    className='btn btn-light mt-2'
+                                    onClick={previewUploaded}
+                                    style={{marginLeft:'80%',border:'1px dashed'}}
+                                >
+                                    Preview <i className='fa fa-eye'/>
+                                </button>
+                            }
+                            </Col > 
+                        </Row>
                        
                     </FormGroup> 
                 </CardBody>
-                <CardFooter style={{borderTop:'1px solid black'}}>
-                    <Button color='success' className='w-100' size='sm'>
-                        Update Personal Info
-                    </Button>
-                </CardFooter>
+                <Button color='success' className='w-100' style={submitStyle} size='md'>
+                    Save Changes
+                </Button>
                 </Card>            
             </div>
             <div className='col-6'>
@@ -653,14 +741,14 @@ function UpdateCIS() {
                             <Row >
                                 <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="aadhaar"> Aadhaar </Label>
+                                    <Label className="col-4" size={'sm'} for="nominee_aadhaar"> Aadhaar </Label>
                                     <Input
-                                        id="aadhaar" 
-                                        name="aadhaar"
+                                        id="nominee_aadhaar" 
+                                        name="nominee_aadhaar"
                                         type="text"
                                         onChange={onChange}
-                                        defaultValue={nomineeDetails.aadhaar}
-                                        placeholder={"Enter nominee aadhaar"}
+                                        defaultValue={fields.nominee_aadhaar}
+                                        placeholder={"Enter nominee nominee_aadhaar"}
                                         style={{border:errors.phone ?'1px solid red':''}}
                                     />
                                 </div>
@@ -670,27 +758,26 @@ function UpdateCIS() {
                                 <Col md="12">
                                 <div className="d-flex">
                                     <div className="col-4">
-                                        <select 
+                                        <Input 
                                             type="select" 
                                             className={'xs'} 
-                                            style={{width:90,border:errors.verification_type ?'1px solid red':''}}
-                                            name="verification_type"
+                                            style={{width:150,border:errors.nominee_kyc_type ?'1px solid red':''}}
+                                            name="nominee_kyc_type"
                                             onChange={onChange}
-                                            defaultValue={nomineeDetails.verification_type}
+                                            defaultValue={fields.nominee_kyc_type}
                                         >
                                         <option value={'voterID'}> Voter ID </option>
                                         <option value={'passBook'}> Passbook </option>
                                         <option value={'aadhaar'}> Aadhaar </option>
-                                        </select>
+                                        </Input>
                                     </div>
-                                    <Input
-                                        id="voterID" 
-                                        name="verification"
+                                    <Input 
+                                        name="nominee_kyc"
                                         type="text"
                                         onChange={onChange}
                                         placeholder="Enter other KYC No"
-                                        defaultValue={nomineeDetails.verification}
-                                        style={{border:errors.verification ?'1px solid red':''}}
+                                        defaultValue={fields.nominee_kyc}
+                                        style={{border:errors.nominee_kyc ?'1px solid red':''}}
                                     />
                                 </div>
                                 </Col > 
@@ -698,15 +785,15 @@ function UpdateCIS() {
                             <Row className="mt-2">
                                 <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="phone"> Nominee Name </Label>
+                                    <Label className="col-4" size={'sm'} for="nominee"> Nominee Name </Label>
                                     <Input
-                                        id="nominee_name" 
-                                        name="nominee_name"
+                                        id="nominee" 
+                                        name="nominee"
                                         type="text"
                                         onChange={onChange}
-                                        defaultValue={nomineeDetails.nominee_name}
+                                        defaultValue={fields.nominee}
                                         placeholder={"Enter nominee name"}
-                                        style={{border:errors.nominee_name ?'1px solid red':''}}
+                                        style={{border:errors.nominee ?'1px solid red':''}}
                                     />
                                 </div>
                                 </Col > 
@@ -720,7 +807,7 @@ function UpdateCIS() {
                                         name="nominee_dob"
                                         type="date"
                                         onChange={onChange}
-                                        defaultValue={nomineeDetails.nominee_dob}
+                                        defaultValue={fields.nominee_dob}
                                         style={{border:errors.nominee_dob ?'1px solid red':''}}
                                     />
                                 </div>
@@ -729,16 +816,16 @@ function UpdateCIS() {
                             <Row className="mt-2">
                                 <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="nominee_rel"> 
+                                    <Label className="col-4" size={'sm'} for="nominee_relation"> 
                                         Nominee Relationship 
                                     </Label>
                                     <Input
-                                        id="nominee_rel" 
-                                        name="nominee_rel"
+                                        id="nominee_relation" 
+                                        name="nominee_relation"
                                         type="text"
                                         onChange={onChange}
-                                        defaultValue={nomineeDetails.nominee_rel}
-                                        style={{border:errors.nominee_rel ?'1px solid red':''}}
+                                        defaultValue={fields.nominee_relation}
+                                        style={{border:errors.nominee_relation ?'1px solid red':''}}
                                     />
                                 </div>
                                 </Col> 
@@ -772,26 +859,26 @@ function UpdateCIS() {
                                 <Col md="12">
                                     <div className="d-flex">
                                         <div className="col-4">
-                                            <select 
+                                            <Input 
                                                 type="select" 
                                                 className={'xs'} 
-                                                style={{width:90,border:errors.verification_type ?'1px solid red':''}}
-                                                name="verification_type"
+                                                style={{width:90,border:errors.co_applicant_rel ?'1px solid red':''}}
+                                                name="co_applicant_rel"
                                                 onChange={onChange}
-                                                defaultValue={nomineeDetails.verification_type}
+                                                defaultValue={fields.co_applicant_rel}
                                             >
                                             <option value={'W/O'}> W/O </option>
                                             <option value={'S/O'}> S/O </option>
-                                            </select>
+                                            </Input>
                                         </div>
                                         <Input
                                             id="voterID" 
-                                            name="verification"
+                                            name="co_applicant"
                                             type="text"
                                             onChange={onChange}
                                             placeholder="Enter name"
-                                            defaultValue={nomineeDetails.verification}
-                                            style={{border:errors.verification ?'1px solid red':''}}
+                                            defaultValue={fields.co_applicant}
+                                            style={{border:errors.co_applicant ?'1px solid red':''}}
                                         />
                                     </div>
                                 </Col>
@@ -814,14 +901,15 @@ function UpdateCIS() {
                             <Row className="mt-2">
                                 <Col md="12">
                                     <div className="d-flex"> 
-                                    <Label className="col-4" size={'sm'} for="industry_type">
+                                    <Label className="col-4" size={'sm'} for="co_applicant_industry_type">
                                         Industry Type
                                     </Label>
                                     <Input 
-                                        id="industry_type" 
-                                        name="industry_type"
+                                        id="co_applicant_industry_type" 
+                                        name="co_applicant_industry_type"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.co_applicant_industry_type}
                                     />
                                     </div>
                                 </Col>
@@ -829,14 +917,15 @@ function UpdateCIS() {
                             <Row className="mt-2">
                                 <Col md="12">
                                     <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="job_type">
+                                    <Label className="col-4" size={'sm'} for="co_applicant_job_type">
                                         Job Type
                                     </Label>
                                     <Input 
-                                        id="job_type" 
-                                        name="job_type"
+                                        id="co_applicant_job_type" 
+                                        name="co_applicant_job_type"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.co_applicant_job_type}
                                     />
                                     </div>
                                 </Col>
@@ -844,14 +933,15 @@ function UpdateCIS() {
                             <Row className="mt-2">
                                 <Col md="12">
                                     <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="income_freq">
+                                    <Label className="col-4" size={'sm'} for="co_applicant_income_freq">
                                         Income Freq.
                                     </Label>
                                     <Input 
-                                        id="income_freq" 
-                                        name="income_freq"
+                                        id="co_applicant_income_freq" 
+                                        name="co_applicant_income_freq"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.co_applicant_income_freq}
                                     />
                                     </div>
                                 </Col>
@@ -872,6 +962,7 @@ function UpdateCIS() {
                                         name="member_in_family"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.member_in_family}
                                     />
                                     </div>
                                 </Col>
@@ -887,6 +978,7 @@ function UpdateCIS() {
                                         name="mature_in_family"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.mature_in_family}
                                     />
                                     </div>
                                 </Col>
@@ -902,6 +994,7 @@ function UpdateCIS() {
                                         name="minor_in_family"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.minor_in_family}
                                     />
                                     </div>
                                 </Col>
@@ -909,14 +1002,15 @@ function UpdateCIS() {
                             <Row className="mt-2">
                                 <Col md="12">
                                     <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="earning_person">
+                                    <Label className="col-4" size={'sm'} for="earning_person_in_family">
                                         Earning Person
                                     </Label>
                                     <Input 
-                                        id="earning_person" 
-                                        name="earning_person"
+                                        id="earning_person_in_family" 
+                                        name="earning_person_in_family"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.earning_person_in_family}
                                     />
                                     </div>
                                 </Col>
@@ -924,14 +1018,15 @@ function UpdateCIS() {
                             <Row className="mt-2">
                                 <Col md="12">
                                     <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="depend_person">
+                                    <Label className="col-4" size={'sm'} for="depend_person_in_family">
                                         Depend Person
                                     </Label>
                                     <Input 
-                                        id="depend_person" 
-                                        name="depend_person"
+                                        id="depend_person_in_family" 
+                                        name="depend_person_in_family"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.depend_person_in_family}
                                     />
                                     </div>
                                 </Col>
@@ -948,6 +1043,7 @@ function UpdateCIS() {
                                         name="house_land"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.house_land}
                                     />
                                     </div>
                                 </Col>
@@ -964,6 +1060,7 @@ function UpdateCIS() {
                                         name="house_type"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.house_type}
                                     />
                                     </div>
                                 </Col>
@@ -980,6 +1077,7 @@ function UpdateCIS() {
                                         name="durable_access"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.durable_access}
                                     />
                                     </div>
                                 </Col>
@@ -994,25 +1092,13 @@ function UpdateCIS() {
                                     <Input 
                                         id="is_lpg" 
                                         name="is_lpg"
-                                        type="text"
+                                        type="select"
                                         onChange={onChange}
-                                    />
-                                    </div>
-                                </Col>
-                            </Row>
-                            
-                            <Row className="mt-2">
-                                <Col md="12">
-                                    <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="agricultural_land">
-                                        IsLPG
-                                    </Label>
-                                    <Input 
-                                        id="agricultural_land" 
-                                        name="agricultural_land"
-                                        type="text"
-                                        onChange={onChange}
-                                    />
+                                        defaultChecked={fields.is_lpg}
+                                    >
+                                        <option value={'yes'}>Yes</option>
+                                        <option value={'no'}>No</option>
+                                    </Input>
                                     </div>
                                 </Col>
                             </Row>
@@ -1028,6 +1114,7 @@ function UpdateCIS() {
                                         name="total_land"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.total_land}
                                     />
                                     </div>
                                 </Col>
@@ -1044,6 +1131,7 @@ function UpdateCIS() {
                                         name="allied_activities"
                                         type="select"
                                         onChange={onChange}
+                                        defaultValue={fields.allied_activities}
                                     >
                                         <option>  </option>
                                         <option value={'yes'}> Yes </option>
@@ -1064,6 +1152,7 @@ function UpdateCIS() {
                                         name="farmer_category"
                                         type="select"
                                         onChange={onChange}
+                                        defaultChecked={fields.farmer_category}
                                     >
                                         <option>  </option>
                                         <option value={'yes'}> Yes </option>
@@ -1084,6 +1173,7 @@ function UpdateCIS() {
                                         name="total_monthly_income"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.total_monthly_income}
                                     />
                                     </div>
                                 </Col>
@@ -1100,6 +1190,7 @@ function UpdateCIS() {
                                         name="monthly_expenses"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.monthly_expenses}
                                     />
                                     </div>
                                 </Col>
@@ -1120,6 +1211,7 @@ function UpdateCIS() {
                                         name="type"
                                         type="select"
                                         onChange={onChange}
+                                        defaultChecked={fields.type}
                                     >
                                         <option>  </option>
                                         <option value={'group'}> Group </option>
@@ -1139,6 +1231,7 @@ function UpdateCIS() {
                                         name="email"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.email}
                                     />
                                     </div>
                                 </Col>
@@ -1155,6 +1248,7 @@ function UpdateCIS() {
                                         name="guarantor"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.guarantor}
                                     />
                                     </div>
                                 </Col>
@@ -1203,6 +1297,7 @@ function UpdateCIS() {
                                         name="enrolled_by"
                                         type="text"
                                         onChange={onChange}
+                                        defaultValue={fields.enrolled_by}
                                     />
                                     </div>
                                 </Col>
@@ -1211,70 +1306,26 @@ function UpdateCIS() {
                             <Row className="mt-2">
                                 <Col md="12">
                                     <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="founder_group_no">
+                                    <Label className="col-4" size={'sm'} for="group_no">
                                        Group No(Temp)
                                     </Label>
                                     <Input 
-                                        id="founder_group_no" 
-                                        name="founder_group_no"
+                                        id="group_no" 
+                                        name="group_no"
                                         type="text"
                                         onChange={onChange}
                                         placeholder='Enter founder group'
+                                        defaultValue={fields.group_no}
                                     />
                                     </div>
                                 </Col>
                             </Row>
 
-                            <CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
-                                <b className='text-primary mx-1'> KYC & OTHER DOCUMENTS </b>          
-                            </CardText>
-
-                            <Row className="mt-2">
-                                <Col md="12">
-                                <div className="d-flex">
-                                    <div className="col-4">
-                                        <Input 
-                                            type='select'
-                                            className={'xs'} 
-                                            style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
-                                            name="kyc_type"
-                                            onChange={onChange}
-                                            defaultValue={fields.kyc_type}
-                                        >
-                                        <option value={'voterID'}> Voter ID </option>
-                                        <option value={'passBook'}> Passbook </option>
-                                        <option value={'aadhaar'}> Aadhaar </option>
-                                        </Input>
-                                    </div>
-                                    <Input
-                                        name="verification"
-                                        type="file"
-                                        onChange={handleFile}
-                                        style={{border:errors.verification ?'1px solid red':''}}
-                                    />
-                                </div>
-                                {doc.b64 && 
-                                    <button 
-                                        type='button'
-                                        className='btn btn-light mt-2'
-                                        onClick={previewUploaded}
-                                        style={{marginLeft:'80%',border:'1px dashed'}}
-                                    >
-                                        Preview <i className='fa fa-eye'/>
-                                    </button>
-                                }
-                                </Col > 
-                            </Row>
-
                         </FormGroup>
                     </CardBody>
-                    <CardFooter className='text-center'>
-                        <Button color='success' className='w-100' size='sm'>
-                            Upload
-                        </Button>
-                    </CardFooter>
                 </Card>
             </div>
+            </Form>
         </div>
     </>
     )

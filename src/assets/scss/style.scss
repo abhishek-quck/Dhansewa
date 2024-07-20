@@ -28,7 +28,9 @@
 video{
     transform: rotate(270deg); 
 }
-
+label{
+    font-weight: 600;
+}
 table > thead{
     background-color: aliceblue!important;
 }
