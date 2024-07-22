@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
+import { Button, Card, CardBody, CardText, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 import { preview } from '../../../attachments'
 import { validate } from '../../../helpers/utils'
 
@@ -90,7 +90,6 @@ function UpdateCIS() {
         reader.readAsDataURL(file); 
         reader.onload = function() {
             setDoc({...doc, b64:reader.result})
-            console.log(reader.result)
         }; 
     }
 
@@ -102,7 +101,6 @@ function UpdateCIS() {
         e.preventDefault()
         delete fields.kyc_document_id
         let {result,shouldGo} = validate(fields)
-        console.log(result)
         if(shouldGo===false)
         {
             toast.error('All fields are required!')
@@ -124,7 +122,6 @@ function UpdateCIS() {
             }
         })
         .then(({data})=>{
-            console.log(data)
             toast.success(data.message)
         })
         .catch(err=>{
@@ -135,6 +132,7 @@ function UpdateCIS() {
     }
 
     useEffect(()=>{ 
+        dispatch({type:'LOADING'})
         axios.get('get-options/all')
 		.then(({data})=>{
 			if(data.state) setStates(data.state)
