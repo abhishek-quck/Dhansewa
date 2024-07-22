@@ -21,6 +21,7 @@ function AccountMaster() {
   const dispatch = useDispatch()
   const [fields, setFields] = useState(initial)
   const [formSubmitted, trigger] = useState(false)
+  const [heads, setHeads] = useState([])
   const app = useSelector(state=>state.auth)
   const [placeholder, setPlaceHolder]=useState(fields)
   const change = e => {
@@ -33,7 +34,7 @@ function AccountMaster() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    trigger(!formSubmitted)  // use `!` instead `true|false` for proper use of useEffect
+    trigger(!formSubmitted)  // use `!` instead `true|false`
     let {result, shouldGo} = validate(fields)
     if(shouldGo===false)
     { 
@@ -68,6 +69,17 @@ function AccountMaster() {
             }
         });
     });
+    // fetching account - heads
+    axios.get('get-account-heads')
+    .then(({data})=>{ 
+        if(typeof data==='object') setHeads(data) 
+    })
+    .catch(err=>{
+        toast.error('An error occurred!')
+        console.log(err.message|err)
+    })
+    .finally(()=>dispatch({type:'STOP_LOADING'}))
+
     return ()=>null
   },[formSubmitted])
 
@@ -109,7 +121,9 @@ function AccountMaster() {
                                     name='ob_head'
                                     onChange={change}
                                 >
-                                    {<option></option>}
+                                    {heads.map( (head,i) => {
+                                        return <option key={i} value={head.name}> {head.name} </option>
+                                    })}
                                     <option value={`branch_and_division`}> Branch & Division </option>
                                 </Input>
                             </Col>

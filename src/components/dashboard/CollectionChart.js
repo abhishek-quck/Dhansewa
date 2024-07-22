@@ -64,7 +64,7 @@ const CollectionChart = () => {
         <Chart
           type="pie"
           width="100%"
-          height="390"
+          height="305"
           options={chartoptions.options}
           series={chartoptions.series}
         />

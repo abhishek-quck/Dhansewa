@@ -44,7 +44,7 @@ const IncomeChart = () => {
     console.log(error) 
   }
   return (
-    <Card className="mt-3">
+    <Card className="mt-4">
         <CardHeader className="text-center fs-4">
             MONTHLY INTEREST INCOME
         </CardHeader>

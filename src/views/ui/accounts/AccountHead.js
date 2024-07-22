@@ -1,4 +1,4 @@
-import $, { error } from 'jquery'
+import $ from 'jquery'
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast';
@@ -9,9 +9,9 @@ import { validate } from '../../../helpers/utils';
 
 function AccountHead() {
     const dispatch = useDispatch()
-    const [name, setName] = useState(null)
-    const [group_name, setGroup] = useState(null)
-    const [type, setType] = useState(null)
+    const [name, setName] = useState('')
+    const [group_name, setGroup] = useState('')
+    const [type, setType] = useState('')
     const [submitState, trigger] = useState(false)
     const typeRef=  useRef('')
     const groupRef=  useRef('')
@@ -39,8 +39,6 @@ function AccountHead() {
         if(shouldGo===false)
         {
             setErrors(result)
-            // if(result.name){
-            // } 
             for (const el in result) {
                 $(`input[name=${el}]`).addClass('placeholder-error').css('1px solid red')
             }
@@ -55,7 +53,6 @@ function AccountHead() {
             type,
         })
         .then(({data})=>{
-            // console.log(data)
             toast.success(data.message??'Record added succesfully!')
             setName(()=>'')
             setGroup(()=>'')

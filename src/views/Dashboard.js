@@ -18,12 +18,18 @@ const Starter = () => {
   let state = useSelector(state=>state.auth)
 
   const MenuList = [
-    {title: 'CIBIL REPORT', image:report, link:'#' },
-    {title: 'LOAN FINDER', image:loan , link:'#'},
-    {title: 'CLIENT FINDER', image:client, link:'#' },
-    {title: 'ENROLLMENT FINDER', image:enroll, link:'/search-enrolled' },
-    {title: 'VIDEO TUTORIAL', image:tutorial, link:'#' },
-    {title: 'PROPOSAL FINDER', image: proposal, link:'#' }
+    [
+      {title: 'CIBIL REPORT', image:report, link:'#' },
+      {title: 'LOAN FINDER', image:loan , link:'#'}
+    ],
+    [
+      {title: 'CLIENT FINDER', image:client, link:'#' },
+      {title: 'ENROLLMENT FINDER', image:enroll, link:'/search-enrolled' },
+    ],
+    [
+      {title: 'VIDEO TUTORIAL', image:tutorial, link:'#' },
+      {title: 'PROPOSAL FINDER', image: proposal, link:'#' }
+    ]
   ]
   const menuStyle={
     background:'white',
@@ -35,7 +41,7 @@ const Starter = () => {
     alignItems:'center',
     marginInline:'10px'
   }
-  const imgStyle={height:100,width:'auto'}
+  const imgStyle={height:60,width:'auto'}
   const [birthDayNotices, setNotice] = useState([
     { branch : 'Head office', staff:'MAHENDER', date:'19/08/1993' }
   ])
@@ -64,42 +70,46 @@ const Starter = () => {
         </Col>
       </Row> 
       <Row>
-        <Col lg="8" xl="7" xxl="8" >
+        <Row>
           <Button
             color="primary"
-            className="col-md-6 " 
+            className="col-md-6 mx-3" 
             style={{backgroundColor:'rgba(0, 143, 251)'}}
-          >Google Location
+          > Google Location
           </Button>
           <Button
             color="danger"
-            className="col-md-5 mx-4"  
+            style={{width:'47%'}}
           >Connect Device
           </Button>
-        </Col>
+        </Row>
         <Col sm="6" lg="6" xl="7" xxl="8" > 
           <IncomeChart />
         </Col>
+        <Col sm="4" lg="4" xl="5" xxl="4" > 
         <div className="d-flex">
         <ComponentCard >
-          <Row className="dashboard-card"> 
             {
-              MenuList.map( item => {
+              MenuList.map( (item,i) => {
                 return (
-                  <Col sm="2" className="mb-sm-4" key={item.title}>
-                    <div style={menuStyle}>
-                      <img className={`fs-2 mt-4`} src={item.image}  style={imgStyle}/>
-                      <Link to={item.link} className="text-decoration-none text-center my-3">
-                        <b>{item.title}</b>
-                      </Link> 
-                    </div>
-                  </Col>
+                  <Row className="dashboard-card mb-2" key={i}> 
+                    { item.map( (seq)=> {
+                      return <Col sm="6" key={seq.title}>
+                        <div style={menuStyle}>
+                          <img className={`fs-2 mt-3`} src={seq.image} style={imgStyle}/>
+                          <Link to={seq.link} className="text-decoration-none text-center my-2">
+                            <b>{seq.title}</b>
+                          </Link> 
+                        </div>
+                      </Col>
+                    } )}
+                  </Row>
                 )
               })
             }
-          </Row>
         </ComponentCard>
         </div> 
+        </Col>
       </Row>
       <Row>
         <div>
