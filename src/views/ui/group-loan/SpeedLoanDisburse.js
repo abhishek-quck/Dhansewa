@@ -193,7 +193,7 @@ const SpeedLoanDisburse = () => {
         <CardHeader tag="h6" className=" d-flex" >
           <b className="mt-2 mb-2"> SPEED LOAN DISBURSEMENT SYSTEM </b>
         </CardHeader>
-        <CardBody className="bg-gray-300">
+        <CardBody className="">
             <Form onSubmit={handleSubmit} name="speedLoan">
               <FormGroup>
                 <Row className="">

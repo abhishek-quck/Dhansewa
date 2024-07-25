@@ -14,6 +14,10 @@ const SalesChart = () => {
 		"June",
 		"July",
 		"Aug",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dec",
 	]
 	let colors
 	if(theme==='Light')
@@ -26,11 +30,11 @@ const SalesChart = () => {
 	series: [
 		{
 			name: "Disbursement",
-			data: [0, 31, 40, 28, 51, 42, 109, 100],
+			data: [0, 31, 40, 28, 51, 42, 109, 100, 28, 51, 42],
 		},
 		{
 			name: "Collection",
-			data: [0, 11, 32, 45, 32, 34, 52, 41],
+			data: [0, 11, 32, 45, 32, 34, 52, 41, 48, 74, 92],
 			backgroundColor:'red',
 		},
 	],
@@ -44,7 +48,7 @@ const SalesChart = () => {
 		grid: {
 			strokeDashArray: 3,
 		},
-		colors: ['#3b58c7', '#E91E63'],
+		colors: ['#0a54c1', '#ff0c23'],
 		stroke: {
 			curve: "smooth",
 			width: 1,
@@ -89,7 +93,7 @@ const SalesChart = () => {
 	<Card>
 		<CardHeader>
 			<div className="d-flex mt-1">
-			<CardTitle tag="h5">
+			<CardTitle tag="h6">
 				<i className="fa-solid fa-chart-simple" /> LIVE Dashboard : 
 				<span className="text-primary">{companyName}</span> 
 			</CardTitle>  

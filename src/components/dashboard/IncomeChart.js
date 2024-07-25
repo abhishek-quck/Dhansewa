@@ -45,7 +45,7 @@ const IncomeChart = () => {
   }
   return (
     <Card className="mt-4">
-        <CardHeader className="text-center fs-4">
+        <CardHeader className="text-center " tag={'h6'}>
             MONTHLY INTEREST INCOME
         </CardHeader>
         <CardBody className="dashboard-card">  

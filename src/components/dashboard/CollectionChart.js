@@ -27,7 +27,7 @@ const CollectionChart = () => {
                 },
             }
         }],
-        colors: ['#3b58c7', '#E91E63'],
+        colors: ['#0a54c1', '#ff0c23'],
         legend: {
             labels: {
               colors: Array(data?.labels?.length).fill( theme==='Dark'? '#ffffff': '#1e2a35'),  

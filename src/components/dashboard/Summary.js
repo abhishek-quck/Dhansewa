@@ -7,7 +7,7 @@ const Summary = () => {
     <>
     <Card>
       <CardHeader>
-        <CardTitle tag="h5"  className="mt-1"> <i className="fa-solid fa-rectangle-list" /> Summary</CardTitle>
+        <CardTitle tag="h6"  className="mt-1"> <i className="fa-solid fa-rectangle-list" /> Summary</CardTitle>
       </CardHeader>
       <CardBody className="dashboard-card">
         <CardSubtitle className="text-muted" tag="h6">

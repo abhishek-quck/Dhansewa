@@ -1,13 +1,16 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Button, Card, CardBody, CardHeader, Col, Input, Label, Row } from 'reactstrap'
 
 function LoanProducts() {
   return (
     <Card>
-        <CardHeader className=''>
-            <i className='fa-solid fa-arrow-down'/> &nbsp;
-            <b>LOAN PRODUCTS:</b>
-        </CardHeader>
+        <CardHeader className="d-flex" style={{justifyContent:'space-between'}}>
+			<b> LOAN PRODUCTS: </b>  
+			<Link to={`/manage-products`} className="btn btn-sm btn-rounded btn-primary">
+				<i className="fa fa-plus"/> New 
+			</Link> 
+		</CardHeader>
         <CardBody>
             <Col>
                 <Row>
@@ -52,7 +55,12 @@ function LoanProducts() {
                                 <td> 0 </td>
                                 <td> 12 </td>
                                 <td> 
-                                    <i className='fa-regular fa-edit'></i>
+                                    <Link 
+										to={'/manage-products/3'} 
+										className="text-decoration-none"
+									> 
+                                        <i className='fa-regular fa-edit'></i>
+									</Link>
                                 </td>
                             </tr>
                         </tbody>

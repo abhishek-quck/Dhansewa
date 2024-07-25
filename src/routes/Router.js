@@ -31,6 +31,7 @@ const PrintDocs = lazy(()=>import("../views/PrintDocs.js"))
 const BankMaster = lazy(()=>import("../views/ui/management/BankMaster.js"))
 const EditEnrollment = lazy(()=>import("../views/ui/enrollment/EditEnrollment.js"))
 const UpdateCIS = lazy(()=>import("../views/ui/enrollment/UpdateCIS.js"))
+const ManageProduct = lazy(()=>import("../views/ui/management/ManageProduct.js"))
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
@@ -73,6 +74,7 @@ const ThemeRoutes = [
       { path: "/client-adv-update", exact: true, element: <ClientADV /> },
       { path: "/client-grt", exact: true, element: <ClientGRT /> },
       { path: "/review-client/:id", exact: true, element: <AddGRT /> },
+      { path: "/manage-products/:id?", exact: true, element: <ManageProduct /> },
       { path: "/client-disbursement", exact: true, element: <ClientDisbursement /> },
       { path: "/speed-loan-disburse", exact: true, element: <SpeedLoanDisburse /> },
       { path: "/ledger-revise", exact: true, element: <LedgerRevise /> },

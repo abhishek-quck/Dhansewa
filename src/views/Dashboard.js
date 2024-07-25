@@ -71,7 +71,7 @@ const Starter = () => {
       <Row>
         <Col sm="8" lg="8" xl="8" xxl="8" >
             <Row>
-                <h4> Quick Navigation </h4>
+                <h5> Quick Navigation </h5>
             </Row>
             <Row>
                 <Col sm="6" lg="6" xl="7" xxl="6" > 
@@ -118,12 +118,12 @@ const Starter = () => {
         <Col>
             <Card>
                 <CardHeader>
-                <CardTitle tag="h5"  className="mt-1"> 
+                <CardTitle tag="h6"  className="mt-1"> 
                     <i className="fa-solid fa-circle-plus text-success" /> Business </CardTitle>
                 </CardHeader>
                 <CardBody>
                     <Container>
-                        <table className="table-bordered table-gold">
+                        <table className="table-bordered table-gold" >
                             <tbody>
                                 <tr>
                                     <td> CENTERS </td>
@@ -160,7 +160,7 @@ const Starter = () => {
                     <h3 className="text-center mt-1"> Notice Board </h3>
                     <small> Recent Birthdays Branch Staff </small>
                 </CardText>
-                <Table hover bordered striped style={{fontSize:'small'}}>
+                <Table hover bordered striped >
                     <thead>
                         <tr>
                             <th> Branch </th>

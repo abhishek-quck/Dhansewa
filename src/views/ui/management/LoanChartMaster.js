@@ -50,12 +50,12 @@ function LoanChartMaster() {
                   <button className='btn btn-primary h-50 ' style={{marginTop:'33px'}}>OK</button>
                 </Col>
               </Row>
-              <Row style={{display:'flex',justifyContent:'space-between'}}>
+              <Row className='mt-3' style={{display:'flex',justifyContent:'space-between'}}>
                 <Col>
-                <button className="btn btn-success"> Bulk Save </button>
+                    <button className="btn btn-success"> Bulk Save </button>
                 </Col>
                 <Col>
-                <button className="btn btn-danger"> Bulk Delete </button>
+                    <button className="btn btn-danger"> Bulk Delete </button>
                 </Col>
               </Row>
             </CardBody>
