@@ -115,9 +115,8 @@ const Starter = () => {
         <Col>
             <Card>
                 <CardHeader>
-                    <CardTitle>
-                        <i classname="fa-solid fa-circle-plus text-success"></i> Business
-                    </CardTitle>
+                <CardTitle tag="h5"  className="mt-1"> 
+                    <i className="fa-solid fa-circle-plus text-success" /> Business </CardTitle>
                 </CardHeader>
                 <CardBody>
                     <Container>
