@@ -65,8 +65,14 @@ table > thead{
 		background-color:#d1e3e7!important
 	}
 }
+.navbar{ 
+    border-bottom:1px solid black
+}
+.card-header{
+    background-color: #c2d1d5!important;
+}
 .dark .card-body, .dark .card-footer {
-    background-color:#c5c6cd!important;
+    // background-color:#c5c6cd!important;
     // label, span, b, p, .card-text, .card-title, .apexcharts-text{
     //     color: white;
     // }

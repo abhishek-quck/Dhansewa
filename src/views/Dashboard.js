@@ -71,6 +71,9 @@ const Starter = () => {
       <Row>
         <Col sm="8" lg="8" xl="8" xxl="8" >
             <Row>
+                <h4> Quick Navigation </h4>
+            </Row>
+            <Row>
                 <Col sm="6" lg="6" xl="7" xxl="6" > 
                     <button style={{backgroundColor:'rgba(0, 143, 251)'}} className="w-100 btn text-white" > 
                         Google Location
