@@ -197,21 +197,21 @@ const LedgerRevise = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <small> Loan Product </small>
+                                                 Loan Product
                                             </td>
                                             <td colSpan={3}>
-                                                <small> <b>{view.loan_product}</b> : (View Chart) </small>
+                                                 <b>{view.loan_product}</b> : (View Chart)
                                             </td> 
                                         </tr>
                                         <tr>
                                             <td>
-                                                <small> Disbursement Date </small>
+                                                 Disbursement Date
                                             </td>
                                             <td >
                                                 <b className="mt-1">{view.created_at} </b>
                                             </td>
                                             <td >
-                                                <small> Loan amount </small>
+                                                 Loan amount
                                             </td>
                                             <td>
                                                 <b className="mt-1">{view.loan_amount} &#8377;</b> 
@@ -219,13 +219,13 @@ const LedgerRevise = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <small> Loan Duration </small>
+                                                 Loan Duration
                                             </td>
                                             <td >
                                                 <b className="mt-1"> N/A </b>
                                             </td>
                                             <td >
-                                                <small> Expected Paidup Date </small>
+                                                 Expected Paidup Date
                                             </td>
                                             <td>
                                                 <b className="mt-1"> N/A </b>
@@ -233,7 +233,7 @@ const LedgerRevise = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <small> Actual Paidup Date </small>
+                                                 Actual Paidup Date
                                             </td>
                                             <td >
                                                 {view.id && 
@@ -251,7 +251,7 @@ const LedgerRevise = () => {
                                                 }
                                             </td>
                                             <td >
-                                                <small> Total Interest Expected </small>
+                                                Total Interest Expected 
                                             </td>
                                             <td>
                                                 <b className="mt-1"> N/A </b>
@@ -259,13 +259,13 @@ const LedgerRevise = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <small> Principal Outstanding </small>
+                                                Principal Outstanding 
                                             </td>
                                             <td >
                                                 <b className="mt-1"> N/A </b>
                                             </td>
                                             <td >
-                                                <small> Interest Outstanding </small>
+                                                Interest Outstanding 
                                             </td>
                                             <td>
                                                 <b className="mt-1"> N/A </b>
@@ -273,13 +273,13 @@ const LedgerRevise = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <small> Principal Arrear </small>
+                                                Principal Arrear 
                                             </td>
                                             <td >
                                                 <b className="mt-1" > 0 </b>
                                             </td>
                                             <td >
-                                                <small> Interest Arrear </small>
+                                                Interest Arrear
                                             </td>
                                             <td>
                                                 <b className="mt-1"> 0 </b>

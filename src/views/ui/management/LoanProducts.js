@@ -1,8 +1,24 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button, Card, CardBody, CardHeader, Col, Input, Label, Row } from 'reactstrap'
 
 function LoanProducts() {
+    
+    const dispatch = useDispatch()
+    const [products, setProducts] = useState([])
+    useEffect(()=>{
+        dispatch({type:'LOADING'})
+        axios.get('get-loan-products')
+        .then(({data})=>{
+            setProducts(data)
+        })
+        .catch(err=>toast.error(err.message))
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
+    },[])
+
   return (
     <Card>
         <CardHeader className="d-flex" style={{justifyContent:'space-between'}}>
@@ -45,24 +61,26 @@ function LoanProducts() {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td> 1 </td>
-                                <td> 15-06-2022 </td>
-                                <td>  </td>
-                                <td> IGL Weekly 12 EMI </td>
-                                <td> 7 </td>
-                                <td> 0 </td>
-                                <td> 0 </td>
-                                <td> 12 </td>
-                                <td> 
-                                    <Link 
-										to={'/manage-products/3'} 
-										className="text-decoration-none"
-									> 
-                                        <i className='fa-regular fa-edit'></i>
-									</Link>
-                                </td>
-                            </tr>
+                            {products.map((row, i)=>{
+                                return <tr key={i}>
+                                    <td>{i+1}</td>
+                                    <td>{row.intro_date}</td>
+                                    <td>{row.removal_date}</td>
+                                    <td>{row.name}</td>
+                                    <td>{row.emi_frequency}</td>
+                                    <td>{row.flat_rate}</td>
+                                    <td>{row.reducing_rate}</td>
+                                    <td>{row.installments}</td>
+                                    <td> 
+                                        <Link 
+                                            to={'/manage-products/'+row.id} 
+                                            className="text-decoration-none"
+                                        > 
+                                            <i className='fa-regular fa-edit'></i>
+                                        </Link>
+                                    </td>
+                                </tr>
+                            })}
                         </tbody>
                     </table>
                 </Col>

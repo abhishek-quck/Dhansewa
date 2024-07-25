@@ -20,6 +20,7 @@ import toast from "react-hot-toast";
 import $ from 'jquery'
 import { useDispatch } from "react-redux";
 import { getCurrentDate, validate } from "../../../helpers/utils";
+import { Link } from "react-router-dom";
 var allData = {branch:{}, center:{}, clients:{}}
 
  
@@ -62,6 +63,18 @@ const SpeedLoanDisburse = () => {
     ]
     const inputChange = e => {
         setFields({...fields, [e.target.name]:e.target.value})
+    }
+
+    const getProductInfo = id => {
+        axios.get('get-product-details/'+id)
+        .then(({data})=>{
+            let obj = fields;
+            obj.gst = data.gst_tax
+            obj.loan_amount = data.amount
+            console.log({...fields, ...obj})
+            setFields({...fields, ...obj})
+        })
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
     const UtilizationRef = useRef(null)
@@ -255,21 +268,27 @@ const SpeedLoanDisburse = () => {
                                     <Label size={'sm'} for="loan_product">
                                         Loan Products
                                     </Label>
-                                    <CreatableSelect
+                                    <ReactSelect
                                         placeholder="Search or select"
                                         isDisabled={sFields.client?.length<1}
-                                        isClearable
-                                        ref={loanProductsRef}
                                         id="loan_product" 
                                         className="loan_product"
-                                        onChange={e=>setFields({...fields,loan_product:e.value})}
+                                        onChange={e=>getProductInfo(e.value)}
                                         name="loan_product"
                                         options={loanProducts}
                                     />
                                 </Col>
                                 <Col sm="4" md="4">
                                     <Label size={'sm'} for="loan_amount" >
-                                        Loan Amount(View Chart)
+                                        Loan Amount(
+                                            <Link 
+                                                to={'/loan-chart-master'}
+                                                className="text-decoration-none"
+                                            >
+                                                View Chart
+                                            </Link>
+                                             
+                                        )
                                     </Label>
                                     <CreatableSelect
                                         placeholder="Search or select"
@@ -278,6 +297,7 @@ const SpeedLoanDisburse = () => {
                                         isClearable
                                         name="loan_amount"
                                         className="loan_amount"
+                                        defaultValue={fields.loan_amount}
                                         onChange={e=>setFields({...fields,loan_amount:e.value})}
                                         options={[{value:'', label:''}]}
                                     />
