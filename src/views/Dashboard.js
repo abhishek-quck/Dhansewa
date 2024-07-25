@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader, CardText, CardTitle, Col, Row, Table } from "reactstrap";
+import { Card, CardBody, CardHeader, CardText, CardTitle, Col, Container, Row, Table } from "reactstrap";
 import SalesChart from "../components/dashboard/SalesChart";
 import Summary from "../components/dashboard/Summary";
 import { useEffect, useState } from "react";
@@ -70,45 +70,90 @@ const Starter = () => {
         </Col>
       </Row> 
       <Row>
-        <Row>
-          <Button
-            color="primary"
-            className="col-md-6 mx-3" 
-            style={{backgroundColor:'rgba(0, 143, 251)'}}
-          > Google Location
-          </Button>
-          <Button
-            color="danger"
-            style={{width:'47%'}}
-          >Connect Device
-          </Button>
-        </Row>
-        <Col sm="6" lg="6" xl="7" xxl="8" > 
-          <IncomeChart />
+        <Col sm="8" lg="8" xl="8" xxl="8" >
+            <Row>
+            <Col sm="6" lg="6" xl="7" xxl="6" > 
+              <button
+                style={{backgroundColor:'rgba(0, 143, 251)'}}
+                className="w-100 btn text-white"
+              > 
+                Google Location
+              </button>
+            </Col>
+            <Col sm="6" lg="6" xl="7" xxl="6" >  
+              <button
+                className="w-100 btn btn-danger"
+              >Connect Device
+              </button>
+            </Col>
+            </Row>
+            <Row>
+              <Col sm="6" lg="6" xl="7" xxl="6" > 
+                <IncomeChart />
+              </Col>
+              <Col sm="4" lg="4" xl="5" xxl="6" > 
+                <div className="d-flex">
+                  <ComponentCard >
+                      {
+                        MenuList.map( (item,i) => {
+                          return (
+                            <Row className="dashboard-card mb-2" key={i}> 
+                              { item.map( (seq)=> {
+                                return <Col sm="6" key={seq.title}>
+                                  <div style={menuStyle}>
+                                    <img className={`fs-2 mt-3`} src={seq.image} style={imgStyle} alt=""/>
+                                    <Link to={seq.link} className="text-decoration-none text-center my-2">
+                                      <b>{seq.title}</b>
+                                    </Link> 
+                                  </div>
+                                </Col>
+                              } )}
+                            </Row>
+                          )
+                        })
+                      }
+                  </ComponentCard>
+                </div> 
+              </Col>
+            </Row>
         </Col>
-        <Col sm="4" lg="4" xl="5" xxl="4" > 
-        <div className="d-flex">
-        <ComponentCard >
-            {
-              MenuList.map( (item,i) => {
-                return (
-                  <Row className="dashboard-card mb-2" key={i}> 
-                    { item.map( (seq)=> {
-                      return <Col sm="6" key={seq.title}>
-                        <div style={menuStyle}>
-                          <img className={`fs-2 mt-3`} src={seq.image} style={imgStyle}/>
-                          <Link to={seq.link} className="text-decoration-none text-center my-2">
-                            <b>{seq.title}</b>
-                          </Link> 
-                        </div>
-                      </Col>
-                    } )}
-                  </Row>
-                )
-              })
-            }
-        </ComponentCard>
-        </div> 
+        <Col>
+            <Card>
+
+                <CardHeader>
+                <CardTitle>
+                    <i class="fa-solid fa-circle-plus text-success"></i> Business
+                </CardTitle>
+                </CardHeader>
+                <CardBody>
+                    <Container>
+                        <table className="table-bordered table-gold">
+                            <tbody>
+                                <tr>
+                                    <td> CENTERS </td>
+                                    <td> 111 </td>
+                                </tr>
+                                <tr>
+                                    <td> LOAN CLIENTS </td>
+                                    <td> 487 </td>
+                                </tr>
+                                <tr>
+                                    <td> PRINCIPAL OUTSTANDING </td>
+                                    <td> 7470653 </td>
+                                </tr>
+                                <tr>
+                                    <td> INTEREST OUTSTANDING </td>
+                                    <td> 1405262 </td>
+                                </tr>
+                                <tr>
+                                    <td> TOTAL OUTSTANDING </td>
+                                    <td> 8875915 </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </Container>
+                </CardBody>
+            </Card>
         </Col>
       </Row>
       <Row>

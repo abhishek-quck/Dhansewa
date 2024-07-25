@@ -88,16 +88,18 @@ const SalesChart = () => {
 	return (
 	<Card>
 		<CardHeader>
-			<div className="d-flex mt-1 mb-1">
-			<CardTitle tag="h5">LIVE Dashboard : <span className="text-primary">{companyName}</span> 
+			<div className="d-flex mt-1">
+			<CardTitle tag="h5">
+				<i className="fa-solid fa-chart-simple" /> LIVE Dashboard : 
+				<span className="text-primary">{companyName}</span> 
 			</CardTitle>  
-			<small> &nbsp;{' 30-11-2023 to 30-11-2024'} </small>
+			<small> &nbsp;{' 30/11/2023 to 30/11/2024'} </small>
 			</div>
-			<Row>
-				<small> MONTHLY DISBURSEMENT & COLLECTION -2024 </small>
-			</Row>
 		</CardHeader>
 		<CardBody className="dashboard-card">
+			<Row>
+				<p> MONTHLY DISBURSEMENT & COLLECTION -2024 </p>
+			</Row>	
 		<Chart
 			type="bar"
 			width="100%"

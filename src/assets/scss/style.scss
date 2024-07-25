@@ -88,10 +88,6 @@ table > thead{
 --main-color: #eaeaea;
 --stroke-color: black;
 }
-/**/
-body {
-background: var(--main-color);
-}
 h1 {
 margin: 100px auto 0 auto;
 color: var(--stroke-color);
@@ -233,4 +229,7 @@ background: var(--main-color);
 }
 .ledger-revise table tr td:nth-child(odd){
     width: 210px;    
+}
+.table-gold tr{ 
+    background:linear-gradient(0.75turn, #ffe599, #f69d3c, #ebf8e1);
 }
