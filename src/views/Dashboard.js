@@ -60,7 +60,6 @@ const Starter = () => {
   },[navigate,state.userToken,state.companyID])
   return (
     <div className="dashboard"> 
-      
       <Row>
         <Col sm="6" lg="6" xl="7" xxl="8">
           <SalesChart />
@@ -72,58 +71,53 @@ const Starter = () => {
       <Row>
         <Col sm="8" lg="8" xl="8" xxl="8" >
             <Row>
-            <Col sm="6" lg="6" xl="7" xxl="6" > 
-              <button
-                style={{backgroundColor:'rgba(0, 143, 251)'}}
-                className="w-100 btn text-white"
-              > 
-                Google Location
-              </button>
-            </Col>
-            <Col sm="6" lg="6" xl="7" xxl="6" >  
-              <button
-                className="w-100 btn btn-danger"
-              >Connect Device
-              </button>
-            </Col>
+                <Col sm="6" lg="6" xl="7" xxl="6" > 
+                    <button style={{backgroundColor:'rgba(0, 143, 251)'}} className="w-100 btn text-white" > 
+                        Google Location
+                    </button>
+                </Col>
+                <Col sm="6" lg="6" xl="7" xxl="6" >  
+                    <button className="w-100 btn btn-danger" >
+                        Connect Device
+                    </button>
+                </Col>
             </Row>
             <Row>
-              <Col sm="6" lg="6" xl="7" xxl="6" > 
-                <IncomeChart />
-              </Col>
-              <Col sm="4" lg="4" xl="5" xxl="6" > 
+                <Col sm="6" lg="6" xl="7" xxl="6" > 
+                    <IncomeChart />
+                </Col>
+                <Col sm="4" lg="4" xl="5" xxl="6" > 
                 <div className="d-flex">
-                  <ComponentCard >
-                      {
+                    <ComponentCard >
+                        {
                         MenuList.map( (item,i) => {
-                          return (
+                            return (
                             <Row className="dashboard-card mb-2" key={i}> 
-                              { item.map( (seq)=> {
+                                { item.map( (seq)=> {
                                 return <Col sm="6" key={seq.title}>
-                                  <div style={menuStyle}>
+                                    <div style={menuStyle}>
                                     <img className={`fs-2 mt-3`} src={seq.image} style={imgStyle} alt=""/>
                                     <Link to={seq.link} className="text-decoration-none text-center my-2">
-                                      <b>{seq.title}</b>
+                                        <b>{seq.title}</b>
                                     </Link> 
-                                  </div>
+                                    </div>
                                 </Col>
-                              } )}
+                                } )}
                             </Row>
-                          )
+                            )
                         })
-                      }
-                  </ComponentCard>
+                        }
+                    </ComponentCard>
                 </div> 
-              </Col>
+                </Col>
             </Row>
         </Col>
         <Col>
             <Card>
-
                 <CardHeader>
-                <CardTitle>
-                    <i class="fa-solid fa-circle-plus text-success"></i> Business
-                </CardTitle>
+                    <CardTitle>
+                        <i classname="fa-solid fa-circle-plus text-success"></i> Business
+                    </CardTitle>
                 </CardHeader>
                 <CardBody>
                     <Container>
@@ -164,26 +158,26 @@ const Starter = () => {
                     <h3 className="text-center mt-1"> Notice Board </h3>
                     <small> Recent Birthdays Branch Staff </small>
                 </CardText>
-              <Table hover bordered striped style={{fontSize:'small'}}>
-                <thead>
-                    <tr>
-                        <th> Branch </th>
-                        <th> Staff Name </th>
-                        <th> DOB </th>
-                    </tr>
-                </thead>
-                <tbody> 
-                  {
-                    birthDayNotices.map( row => {
-                      return <tr key={row.date}>
-                        <td> {row.branch} </td>
-                        <td> {row.staff} </td>
-                        <td> {row.date} </td>
-                      </tr>
-                    })
-                  }
-                </tbody>
-              </Table>
+                <Table hover bordered striped style={{fontSize:'small'}}>
+                    <thead>
+                        <tr>
+                            <th> Branch </th>
+                            <th> Staff Name </th>
+                            <th> DOB </th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                    {
+                        birthDayNotices.map( row => {
+                        return <tr key={row.date}>
+                            <td> {row.branch} </td>
+                            <td> {row.staff} </td>
+                            <td> {row.date} </td>
+                        </tr>
+                        })
+                    }
+                    </tbody>
+                </Table>
             </CardBody>
           </Card>
         </div>

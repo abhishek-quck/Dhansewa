@@ -7,11 +7,11 @@ const Summary = () => {
     <>
     <Card>
       <CardHeader>
-        <CardTitle tag="h5"  className="mt-1"> <i class="fa-solid fa-rectangle-list" /> Summary</CardTitle>
+        <CardTitle tag="h5"  className="mt-1"> <i className="fa-solid fa-rectangle-list" /> Summary</CardTitle>
       </CardHeader>
       <CardBody className="dashboard-card">
         <CardSubtitle className="text-muted" tag="h6">
-            <i class="fa-solid fa-circle-minus text-danger"></i> Today Live Collection Status
+            <i className="fa-solid fa-circle-minus text-danger"></i> Today Live Collection Status
         </CardSubtitle>
         <Container className="mt-2">
             <table className="table-bordered table-gold">
