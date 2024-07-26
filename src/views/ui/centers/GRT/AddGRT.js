@@ -12,6 +12,7 @@ const AddGRT = () => {
     const navigateTo = useNavigate()
     const [docs, setDocuments] = useState([])
     const [doc, setDocument] = useState(null)
+    const [visitPhoto, setVisitPhoto] = useState({b64:null,blob:null})
 	const [districts, fillDistricts] = useState([])
 	const [centers, fillCenters] = useState([])
     let {id}= useParams()
@@ -85,6 +86,18 @@ const AddGRT = () => {
 		preview(data!==undefined?[data]:false, clientID,thisUser.verification_type, 'preview-document')
 	}
 	
+	const previewImage = () => {
+		preview([visitPhoto.b64], thisUser?.grt?.client_id )
+	}
+
+	const uploadVisitPhoto = file => {
+        setVisitPhoto({...visitPhoto, blob:file})
+        var reader = new FileReader();
+        reader.readAsDataURL(file); 
+        reader.onload = function() {
+            setVisitPhoto({...doc, b64:reader.result})
+        }; 
+	}
     useEffect(()=>{
 		
 		if(Object.keys(thisUser).length)
@@ -93,6 +106,7 @@ const AddGRT = () => {
 		}else{
 			axios.post(`get-enrollment-details/${id}`)
 			.then(({data})=>{
+				console.log(data)
 				if(typeof data==='object' && Object.keys(data).length)
 				{
 					let object = {}
@@ -251,7 +265,7 @@ const AddGRT = () => {
 			<Row className="mt-2">
 				<Col md="12">
 				<div className="d-flex">
-					<Label className="col-4" size={'sm'} for="doc"> Upload Document </Label>
+					<Label className="col-4" size={'sm'} for="doc"> Upload GRT Document </Label>
 					<Input
 						id="doc" 
 						name="document"
@@ -261,13 +275,35 @@ const AddGRT = () => {
 				</div>
 				</Col > 
 			</Row>
+			<Row className="mt-2">
+				<Col md="12">
+				<div className="d-flex">
+					<Label className="col-4" size={'sm'} for="visit_photo"> Upload Visit Photo </Label>
+					<Input
+						id="visit_photo" 
+						name="visit_photo"
+						type="file" 
+						onChange={e=>uploadVisitPhoto(e.target.files[0])}
+					/>
+					{visitPhoto.b64 && 
+					 (
+						<>
+						<i className='fa fa-paperclip' onClick={previewImage} />
+						<small className='mx-4'> </small>
+						</>
+					 )
+					}
+				</div>
+				</Col > 
+			</Row>
 			{
 				thisUser.grt ? 
 				<Row className="mt-4">
 					<Col md="12">
 					<div className="d-flex">
 						<Label className="col-4" size={'sm'} for="doc"> Previous Document </Label>
-						<i className='fa fa-paperclip' onClick={previewDoc} />
+						<button className='btn' type='button' onClick={()=>previewDoc()} style={{border:'1px dashed'}}
+						> Preview </button>
 						<small className='mx-4'>{previousDocument}</small>
 					</div>
 					</Col > 

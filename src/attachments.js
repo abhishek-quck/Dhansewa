@@ -22,6 +22,7 @@ var Attachments =
         oImg.src=singlePixel;
         let oUL=oModalBody.appendChild(document.createElement('div')).appendChild(document.createElement('ul'));
         oUL.id='images';
+        console.log('has data : - ', hasData)
         if(hasData)
         {
             if(hasData[0].includes('application/pdf'))
