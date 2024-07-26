@@ -34,9 +34,10 @@ const AddGRT = () => {
     
     const handleSubmit = e => {
         e.preventDefault()
-		let {shouldGo} = validate(fields)
+		let {shouldGo,result} = validate(fields)
 		if(shouldGo===false)
 		{
+			console.log(result);
 			toast.error('Fill the required fields!')
 			return 
 		}
@@ -47,6 +48,7 @@ const AddGRT = () => {
             formData.append(entry, fields[entry])
         }
         formData.append('document', doc)
+        formData.append('visit_photo', visitPhoto.blob)
         axios.post('/update-client-details', formData, {
             headers:{
                 "Accept":"application/json",
@@ -90,19 +92,19 @@ const AddGRT = () => {
 		preview([visitPhoto.b64], thisUser?.grt?.client_id )
 	}
 
-	const uploadVisitPhoto = file => {
-        setVisitPhoto({...visitPhoto, blob:file})
+	const uploadVisitPhoto = e => {
+		let file = e.target.files[0]
         var reader = new FileReader();
         reader.readAsDataURL(file); 
         reader.onload = function() {
-            setVisitPhoto({...doc, b64:reader.result})
+			setVisitPhoto({...doc, b64:reader.result, blob:file})
         }; 
 	}
     useEffect(()=>{
 		
 		if(Object.keys(thisUser).length)
 		{
-			thisUser = thisUser[id]
+			console.log(thisUser)
 		}else{
 			axios.post(`get-enrollment-details/${id}`)
 			.then(({data})=>{
@@ -111,7 +113,8 @@ const AddGRT = () => {
 				{
 					let object = {}
 					object[data.id]=data
-					console.log(data)
+					delete data.other_info
+					delete data.PAN
 					setFields(data)
 					dispatch({type:'PUT_GRTs',payload:object})
 				}
@@ -283,12 +286,13 @@ const AddGRT = () => {
 						id="visit_photo" 
 						name="visit_photo"
 						type="file" 
-						onChange={e=>uploadVisitPhoto(e.target.files[0])}
+						onChange={uploadVisitPhoto}
 					/>
 					{visitPhoto.b64 && 
 					 (
 						<>
-						<i className='fa fa-paperclip' onClick={previewImage} />
+						<button className='btn' type='button' onClick={previewImage} style={{border:'1px dashed'}}
+						> Preview </button> 
 						<small className='mx-4'> </small>
 						</>
 					 )
@@ -297,11 +301,11 @@ const AddGRT = () => {
 				</Col > 
 			</Row>
 			{
-				thisUser.grt ? 
+				previousDocument ? 
 				<Row className="mt-4">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4" size={'sm'} for="doc"> Previous Document </Label>
+						<Label className="col-4" size={'sm'} for="doc"> Previous GRT Document </Label>
 						<button className='btn' type='button' onClick={()=>previewDoc()} style={{border:'1px dashed'}}
 						> Preview </button>
 						<small className='mx-4'>{previousDocument}</small>
