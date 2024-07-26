@@ -222,9 +222,6 @@ function AccountMaster() {
                             <button type='button' className='btn-primary btn btn-sm mx-1'>
                                 <i className='fa fa-search'/>
                             </button>                             
-                            <button className='btn-outline-primary btn btn-sm'>
-                                +
-                            </button>
                         </div>
                     </CardHeader>
                     <CardBody>

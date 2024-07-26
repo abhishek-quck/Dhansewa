@@ -128,7 +128,6 @@ function UpdateCIS() {
             toast.success(data.message)
         })
         .catch(err=>{
-            console.log(err)
             toast.error(err.message)
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
@@ -155,10 +154,17 @@ function UpdateCIS() {
                     data={...data, client_id:data.grt['client_id']}
                 }
                 delete data.grt
-                setDoc({...doc, b64:data.latest_document.data})
-                delete data.latest_document
-                delete data.kyc_document_id
-                updateFields({...fields, ...data}) 
+                let docID 
+                if( data.latest_document?.document_id )
+                {
+                    setDoc({...doc, b64:data.latest_document?.data})
+                    docID = data.latest_document.document_id
+                    delete data.latest_document
+                    delete data.kyc_document_id
+                }else {
+                    docID = ''
+                }
+                updateFields({...fields, ...data, document_id:docID}) 
                 console.log({...fields,...data});
             })
 		}).catch(err=>{
@@ -711,7 +717,7 @@ function UpdateCIS() {
                                         style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
                                         name="kyc_type"
                                         onChange={onChange}
-                                        value={fields.verification_type}
+                                        value={fields.document_id}
                                     >
                                     <option></option>
                                     {KYCtypes.map( opt => {
@@ -757,6 +763,7 @@ function UpdateCIS() {
                                                 value={fields.co_applicant_rel}
                                             >
                                             <option value={'W/O'}> W/O </option>
+                                            <option value={'H/O'}> H/O </option>
                                             <option value={'S/O'}> S/O </option>
                                             </Input>
                                         </div>
@@ -879,7 +886,6 @@ function UpdateCIS() {
                                             value={fields.nominee_kyc_type}
                                         >
                                         <option value={'voterID'}> Voter ID </option>
-                                        <option value={'passBook'}> Passbook </option>
                                         <option value={'aadhaar'}> Aadhaar </option>
                                         </Input>
                                     </div>

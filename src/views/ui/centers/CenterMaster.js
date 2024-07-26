@@ -13,12 +13,18 @@ function CenterMaster() {
 	const dispatch = useDispatch();
 	const search = useSelector(state=>state.auth.search)
 	const getInfo = (e) => {  
-		dispatch({type:'SEARCH', payload:e.target.value})
+		// dispatch({type:'SEARCH', payload:e.target.value})
 		setFields({...fields, branch:e.target.value })
+		console.log(e.target.value)
+		axios.get('get-branch-centers/'+ e.target.value)
+		.then(({data})=>{
+			console.log(data)
+			setCenter(data)
+		})
 	}
 	const debouncedSearchQuery = useDebounce(search, 500);
 	const { data, isLoading } = useSearchCentersQuery(debouncedSearchQuery,{skip:search===''})
-
+	const [fetchcenters, setCenter] = useState([]);
 	const [fields, setFields] = useState({
 		branch:'',
 		center:'',
@@ -133,13 +139,15 @@ function CenterMaster() {
 									</tr>
 								</thead>
 								<tbody>
-									{data?.length ? data.map((row,index)=>{
-										return (<tr key={index}>
-											{Object.keys(row).map((key,td)=>{
-												return (<td key={key}>{row[key]}</td>)
-											})}
+									{ fetchcenters.map( row =>{
+										return (<tr key={row.id}>
+											<td>{row.id}</td> 
+											<td>{row.name}</td> 
+											<td>{row.meeting_days}</td> 
+											<td>{row.id+1}</td> 
+											<td>.</td> 
 										</tr>)
-									}):null}
+									})}
 									<tr></tr>
 								</tbody>
 							</Table>

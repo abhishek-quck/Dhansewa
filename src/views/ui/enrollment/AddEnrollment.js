@@ -131,6 +131,22 @@ const AddEnrollment = () => {
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
+						<Label className="col-4"  size={'sm'} for="exampleEmail"> Group </Label>
+						<Input
+							id="group" 
+							name="group"
+							type="text"
+							onChange={onChange}
+							defaultValue={fields.group}
+							style={{border:errors.group?'1px solid red':''}}
+							placeholder="Enter group no"
+						/>
+					</div>
+					</Col > 
+				</Row>
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
 						<Label className="col-4"  size={'sm'} for="aadhaar">Aadhar (UID)</Label>
 						<Input
 							id="aadhaar" 
@@ -157,8 +173,7 @@ const AddEnrollment = () => {
 								defaultValue={fields.verification_type}
 							>
 							<option value={'voterID'}> Voter ID </option>
-							<option value={'passBook'}> Passbook </option>
-							<option value={'aadhaar'}> Aadhaar </option>
+							<option value={'pan'}> PAN </option>
 							</select>
 						</div>
 						<Input
@@ -166,7 +181,7 @@ const AddEnrollment = () => {
 							name="verification"
 							type="text"
 							onChange={onChange}
-							placeholder="Enter other KYC No"
+							placeholder="Enter KYC No"
 							defaultValue={fields.verification}
 							style={{border:errors.verification ?'1px solid red':''}}
 						/>
@@ -194,8 +209,9 @@ const AddEnrollment = () => {
 					<Col md="12">
 					<div className="d-flex">
 						<div className="col-4">
-							<select type="select" name="relation" className={'xs'} style={{width:90}}>
+							<select type="select" name="relation" onChange={onChange} className={'xs'} style={{width:90}}>
 							<option value={'S/O'}> S/O </option>
+							<option value={'H/O'}> H/O </option>
 							<option value={'W/O'}> W/O </option>
 							</select>
 						</div>
@@ -246,35 +262,26 @@ const AddEnrollment = () => {
 					</div>
 					</Col > 
 				</Row>
+				
+				
+				
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4"  size={'sm'} for="pin">Postal PIN</Label>
+						<Label className="col-4"  size={'sm'} for="exampleEmail">State Name </Label>
 						<Input
-							id="pin" 
-							name="postal_pin"
-							type="text"
+							id="state" 
+							name="state"
+							type="select"
 							onChange={onChange}
-							defaultValue={fields.postal_pin}
-							placeholder="Enter PIN"
-							style={{border:errors.postal_pin ?'1px solid red':''}}
-						/>
-					</div>
-					</Col > 
-				</Row>
-				<Row className="mt-2">
-					<Col md="12">
-					<div className="d-flex">
-						<Label className="col-4"  size={'sm'} for="exampleEmail">Village/City Name</Label>
-						<Input
-							id="exampleSelectMulti" 
-							name="village"
-							type="text"
-							onChange={onChange}
-							defaultValue={fields.village}
-							placeholder="Enter village/city name" 
-							style={{border:errors.village ?'1px solid red':''}}
-						/>
+							defaultValue={fields.state}
+							style={{border:errors.state ?'1px solid red':''}}
+						>
+							<option> Select State </option>
+							{states.map((opt,i)=>{
+							   return <option key={i} value={opt.value}> {opt.label} </option> 
+							})}
+						</Input>
 					</div>
 					</Col > 
 				</Row>
@@ -301,20 +308,32 @@ const AddEnrollment = () => {
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4"  size={'sm'} for="exampleEmail">State Name </Label>
+						<Label className="col-4"  size={'sm'} for="exampleEmail">Village/City Name</Label>
 						<Input
-							id="state" 
-							name="state"
-							type="select"
+							id="exampleSelectMulti" 
+							name="village"
+							type="text"
 							onChange={onChange}
-							defaultValue={fields.state}
-							style={{border:errors.state ?'1px solid red':''}}
-						>
-							<option> Select State </option>
-							{states.map((opt,i)=>{
-							   return <option key={i} value={opt.value}> {opt.label} </option> 
-							})}
-						</Input>
+							defaultValue={fields.village}
+							placeholder="Enter village/city name" 
+							style={{border:errors.village ?'1px solid red':''}}
+						/>
+					</div>
+					</Col > 
+				</Row>
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4"  size={'sm'} for="pin">Postal PIN</Label>
+						<Input
+							id="pin" 
+							name="postal_pin"
+							type="text"
+							onChange={onChange}
+							defaultValue={fields.postal_pin}
+							placeholder="Enter PIN"
+							style={{border:errors.postal_pin ?'1px solid red':''}}
+						/>
 					</div>
 					</Col > 
 				</Row>
@@ -350,22 +369,7 @@ const AddEnrollment = () => {
 					</div>
 					</Col > 
 				</Row>
-				<Row className="mt-2">
-					<Col md="12">
-					<div className="d-flex">
-						<Label className="col-4"  size={'sm'} for="exampleEmail"> Group </Label>
-						<Input
-							id="group" 
-							name="group"
-							type="text"
-							onChange={onChange}
-							defaultValue={fields.group}
-							style={{border:errors.group?'1px solid red':''}}
-							placeholder="Enter group no"
-						/>
-					</div>
-					</Col > 
-				</Row>
+				
 				
 				<Row className="mt-2">
 					<Col md="12">

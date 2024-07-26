@@ -136,7 +136,7 @@ function ManageProduct() {
                                         name="product_type"
                                         type="select"
                                         onChange={change}
-                                        defaultValue={fields.product_type}
+                                        value={fields.product_type}
                                         style={{border:errors.product_type ?'1px solid red':''}}
                                     >
                                         <option></option>
@@ -155,7 +155,7 @@ function ManageProduct() {
                                         name="emi_frequency"
                                         type="select"
                                         onChange={change}
-                                        defaultValue={fields.emi_frequency}
+                                        value={fields.emi_frequency}
                                         style={{border:errors.emi_frequency ?'1px solid red':''}}
                                     >
                                         <option>  </option>
@@ -295,7 +295,7 @@ function ManageProduct() {
                                         name="category"
                                         type="select"
                                         onChange={change}
-                                        defaultValue={fields.category}
+                                        value={fields.category}
                                         style={{border:errors.category ?'1px solid red':''}}
                                     >
                                         <option></option>
@@ -314,7 +314,7 @@ function ManageProduct() {
                                         name="repay_pattern"
                                         type="select"
                                         onChange={change}
-                                        defaultValue={fields.repay_pattern}
+                                        value={fields.repay_pattern}
                                         style={{border:errors.repay_pattern ?'1px solid red':''}}
                                     >
                                         <option></option>

@@ -396,7 +396,7 @@ const SpeedLoanDisburse = () => {
                                         name="utilization"
                                         className="utilization"
                                         onChange={e=>setFields({...fields,utilization:e.value})}
-                                        options={[{value:'',label:''}]}
+                                        options={[{value:'Business Loan',label:'Business Loan'}]}
                                     />
                                 </Col>
                             </Row>
@@ -467,8 +467,8 @@ const SpeedLoanDisburse = () => {
                                     onChange={inputChange}
                                 >
                                     <option></option> 
-                                    <option value={'yes'}> YES </option> 
-                                    <option value={'no'}> NO </option> 
+                                    <option value={1}> YES </option> 
+                                    <option value={0}> NO </option> 
                                 </Input>
                             </Row>
                             <Row className="mt-2 container">
