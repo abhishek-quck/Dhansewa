@@ -15,6 +15,7 @@ function UpdateCIS() {
     const [doc, setDoc] = useState({b64:null,blob:null})
 
     const [fields, updateFields] = useState({
+        client_id:'',
         aadhaar:'',
         applicant_name:'',
         village:'',
@@ -73,6 +74,7 @@ function UpdateCIS() {
         group_no:'',
     })
     const [districts, setDistricts] = useState([])
+    const [KYCtypes, setKYCtypes] = useState([])
     const [states, setStates] = useState([])
     const [errors, setErrors] = useState(fields)
     const onChange = e => {
@@ -85,11 +87,10 @@ function UpdateCIS() {
 
     const handleFile = e => {
         let file = e.target.files[0]
-        setDoc({...doc, blob:file})
         var reader = new FileReader();
         reader.readAsDataURL(file); 
         reader.onload = function() {
-            setDoc({...doc, b64:reader.result})
+            setDoc({...doc, b64:reader.result,blob:file})
         }; 
     }
 
@@ -115,6 +116,7 @@ function UpdateCIS() {
                 formData.append(key, fields[key])
             }
         }
+        formData.append('kyc_doc', doc.blob)
         axios.post('update-additional-enroll-information', formData, {
             headers:{
                 "Accept":"application/json",
@@ -139,6 +141,7 @@ function UpdateCIS() {
 			if(data.state) setStates(data.state)
 			if(data.district) setDistricts(data.district)
 			if(data.branches) setBranches(data.branches)
+			if(data.documents) setKYCtypes(data.documents)
                 
             axios.post('get-enrollment-details/'+id)
             .then(({data})=>{
@@ -147,7 +150,12 @@ function UpdateCIS() {
                     data={...data, ...data.other_info}
                     delete data.other_info
                 }
+                if(data.grt)
+                {
+                    data={...data, client_id:data.grt['client_id']}
+                }
                 delete data.grt
+                setDoc({...doc, b64:data.latest_document.data})
                 delete data.latest_document
                 delete data.kyc_document_id
                 updateFields({...fields, ...data}) 
@@ -223,11 +231,12 @@ function UpdateCIS() {
                                         style={{width:120,border:errors.verification_type ?'1px solid red':''}}
                                         name="verification_type"
                                         onChange={onChange}
-                                        defaultValue={fields.verification_type}
+                                        value={fields.verification_type}
                                     >
-                                    <option value={'voterID'}> Voter ID </option>
-                                    <option value={'passBook'}> Passbook </option>
-                                    <option value={'aadhaar'}> Aadhaar </option>
+                                    <option></option>
+                                    {KYCtypes.map( opt => {
+                                        return <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                    })} 
                                     </Input>
                                 </div>
                                 <Input
@@ -702,11 +711,12 @@ function UpdateCIS() {
                                         style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
                                         name="kyc_type"
                                         onChange={onChange}
-                                        value={fields.kyc_type}
+                                        value={fields.verification_type}
                                     >
-                                    <option value={'voterID'}> Voter ID </option>
-                                    <option value={'passBook'}> Passbook </option>
-                                    <option value={'aadhaar'}> Aadhaar </option>
+                                    <option></option>
+                                    {KYCtypes.map( opt => {
+                                        return <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                    })} 
                                     </Input>
                                 </div>
                                 <Input
