@@ -30,6 +30,7 @@ const SpeedLoanDisburse = () => {
     const [clients, setClients] = useState([]);
     const [loanProducts, setLoanProducts]= useState([])
     const clientRef = useRef(null)
+    const [loanAmount, setLoanAmount] = useState(null)
     const [date, setDate] = useState(getCurrentDate());
 	const [branches, setBranches] = useState([])
     const [fields, setFields] = useState({
@@ -62,17 +63,21 @@ const SpeedLoanDisburse = () => {
         {value:'Banking',label:'Banking'}
     ]
     const inputChange = e => {
-        setFields({...fields, [e.target.name]:e.target.value})
+        if(e.target) {
+            e.target.style.border = ''
+            setFields({...fields, [e.target.name]:e.target.value})
+        }
     }
 
     const getProductInfo = id => {
         axios.get('get-product-details/'+id)
         .then(({data})=>{
-            let obj = fields;
-            obj.gst = data.gst_tax
-            obj.loan_amount = data.amount
-            console.log({...fields, ...obj})
-            setFields({...fields, ...obj})
+            setLoanAmount({value:data.amount, label:data.amount})
+            setFields({...fields, 
+                gst:data.gst_tax, 
+                loan_amount:data.amount,
+                loan_product:data.name
+            })
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
@@ -171,6 +176,7 @@ const SpeedLoanDisburse = () => {
         let {shouldGo, result} = validate(fields)
         if(shouldGo===false)
         { 
+            console.log(result)
             setErrors(result)
             return 
         }
@@ -260,7 +266,7 @@ const SpeedLoanDisburse = () => {
                                         id="loan_date" 
                                         name="loan_date"
                                         type="date" 
-                                        onChange={e=>setFields({...fields,loan_date:e.target.value})}
+                                        onChange={inputChange}
                                         placeholder="Enter disburse date"
                                     /> 
                                 </Col>
@@ -297,7 +303,8 @@ const SpeedLoanDisburse = () => {
                                         isClearable
                                         name="loan_amount"
                                         className="loan_amount"
-                                        defaultValue={fields.loan_amount}
+                                        value={loanAmount}
+                                        styles={{border:errors.loan_amount && '1px solid red'}}
                                         onChange={e=>setFields({...fields,loan_amount:e.value})}
                                         options={[{value:'', label:''}]}
                                     />
@@ -372,6 +379,7 @@ const SpeedLoanDisburse = () => {
                                         id="gst" 
                                         name="gst"
                                         onChange={inputChange}
+                                        defaultValue={fields.gst}
                                         type={'text'}
                                     />
                                 </Col>
@@ -455,10 +463,13 @@ const SpeedLoanDisburse = () => {
                                     disabled={sFields.client?.length<1}
                                     id="schedule_recurring" 
                                     name="schedule_recurring"
-                                    type="text" 
+                                    type="select" 
                                     onChange={inputChange}
-                                    placeholder="Enter Recurring amount"
-                                /> 
+                                >
+                                    <option></option> 
+                                    <option value={'yes'}> YES </option> 
+                                    <option value={'no'}> NO </option> 
+                                </Input>
                             </Row>
                             <Row className="mt-2 container">
                                 <Label  size={'sm'} for="bank_name">

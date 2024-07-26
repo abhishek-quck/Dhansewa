@@ -103,6 +103,7 @@ function UpdateCIS() {
         let {result,shouldGo} = validate(fields)
         if(shouldGo===false)
         {
+            console.log(result)
             toast.error('All fields are required!')
             return 
         }
@@ -150,6 +151,7 @@ function UpdateCIS() {
                 delete data.latest_document
                 delete data.kyc_document_id
                 updateFields({...fields, ...data}) 
+                console.log({...fields,...data});
             })
 		}).catch(err=>{
             console.log(err.message)
@@ -334,7 +336,7 @@ function UpdateCIS() {
                                     name="gender"
                                     type="select"
                                     onChange={onChange}
-                                    defaultValue={fields.gender}
+                                    value={fields.gender}
                                     style={{border:errors.gender ?'1px solid red':''}}
                                 >
                                     <option >   </option>
@@ -353,7 +355,7 @@ function UpdateCIS() {
                                     name="marital_status"
                                     type="select"
                                     onChange={onChange}
-                                    defaultValue={fields.marital_status}
+                                    value={fields.marital_status}
                                     style={{border:errors.marital_status ?'1px solid red':''}}
                                 >
                                     <option > </option>
@@ -389,7 +391,7 @@ function UpdateCIS() {
                                     name="religion"
                                     type="select"
                                     onChange={onChange}
-                                    defaultValue={fields.religion}
+                                    value={fields.religion}
                                     style={{border:errors.religion ?'1px solid red':''}}
                                 >
                                     <option > </option>
@@ -411,7 +413,7 @@ function UpdateCIS() {
                                     name="category"
                                     type="select"
                                     onChange={onChange}
-                                    defaultValue={fields.category}
+                                    value={fields.category}
                                     style={{border:errors.category ?'1px solid red':''}}
                                 >
                                     <option> </option>
@@ -538,7 +540,7 @@ function UpdateCIS() {
                                     name="state"
                                     type="select"
                                     onChange={onChange}
-                                    defaultValue={fields.state}
+                                    value={fields.state}
                                     style={{border:errors.state?'1px solid red':''}}
                                 >
                                     <option> </option>
@@ -561,7 +563,7 @@ function UpdateCIS() {
                                     name="district"
                                     type="select"
                                     onChange={onChange}
-                                    defaultValue={fields.district}
+                                    value={fields.district}
                                     style={{border:errors.district?'1px solid red':''}}
                                 >
                                     <option>  </option>
@@ -676,7 +678,7 @@ function UpdateCIS() {
                                     name="is_account_active"
                                     type="select"
                                     onChange={onChange}
-                                    defaultValue={fields.is_account_active}
+                                    value={fields.is_account_active}
                                     style={{border:errors.is_account_active?'1px solid red':''}}
                                 >
                                     <option>   </option>
@@ -700,7 +702,7 @@ function UpdateCIS() {
                                         style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
                                         name="kyc_type"
                                         onChange={onChange}
-                                        defaultValue={fields.kyc_type}
+                                        value={fields.kyc_type}
                                     >
                                     <option value={'voterID'}> Voter ID </option>
                                     <option value={'passBook'}> Passbook </option>
@@ -742,7 +744,7 @@ function UpdateCIS() {
                                                 style={{width:90,border:errors.co_applicant_rel ?'1px solid red':''}}
                                                 name="co_applicant_rel"
                                                 onChange={onChange}
-                                                defaultValue={fields.co_applicant_rel}
+                                                value={fields.co_applicant_rel}
                                             >
                                             <option value={'W/O'}> W/O </option>
                                             <option value={'S/O'}> S/O </option>
@@ -864,7 +866,7 @@ function UpdateCIS() {
                                             style={{width:150,border:errors.nominee_kyc_type ?'1px solid red':''}}
                                             name="nominee_kyc_type"
                                             onChange={onChange}
-                                            defaultValue={fields.nominee_kyc_type}
+                                            value={fields.nominee_kyc_type}
                                         >
                                         <option value={'voterID'}> Voter ID </option>
                                         <option value={'passBook'}> Passbook </option>
@@ -1098,7 +1100,7 @@ function UpdateCIS() {
                                         name="is_lpg"
                                         type="select"
                                         onChange={onChange}
-                                        defaultChecked={fields.is_lpg}
+                                        value={fields.is_lpg}
                                     >
                                         <option value={'yes'}>Yes</option>
                                         <option value={'no'}>No</option>
@@ -1135,7 +1137,7 @@ function UpdateCIS() {
                                         name="allied_activities"
                                         type="select"
                                         onChange={onChange}
-                                        defaultValue={fields.allied_activities}
+                                        value={fields.allied_activities}
                                     >
                                         <option>  </option>
                                         <option value={'yes'}> Yes </option>
@@ -1156,7 +1158,7 @@ function UpdateCIS() {
                                         name="farmer_category"
                                         type="select"
                                         onChange={onChange}
-                                        defaultChecked={fields.farmer_category}
+                                        value={fields.farmer_category}
                                     >
                                         <option>  </option>
                                         <option value={'yes'}> Yes </option>
@@ -1215,7 +1217,7 @@ function UpdateCIS() {
                                         name="type"
                                         type="select"
                                         onChange={onChange}
-                                        defaultChecked={fields.type}
+                                        value={fields.type}
                                     >
                                         <option>  </option>
                                         <option value={'group'}> Group </option>

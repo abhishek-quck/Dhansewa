@@ -97,6 +97,7 @@ const AddGRT = () => {
 				{
 					let object = {}
 					object[data.id]=data
+					console.log(data)
 					setFields(data)
 					dispatch({type:'PUT_GRTs',payload:object})
 				}
@@ -188,7 +189,7 @@ const AddGRT = () => {
 						id="name" 
 						name="center"
 						type="select"
-						defaultValue={fields.center}
+						value={fields.center_id??fields.center}
 						onChange={onChange}
 					> 
 						<option> Select Center </option>
@@ -209,7 +210,7 @@ const AddGRT = () => {
 						name="district"
 						type="select"
 						onChange={onChange}
-						defaultValue={fields.district}
+						value={fields.district}
 					>
 						{districts.map((option,i)=>{
 							return <option key={i} value={option.value}>{option.label}</option>
@@ -227,7 +228,7 @@ const AddGRT = () => {
 							className={''} 
 							name='verification_type'
 							onChange={onChange}
-							defaultValue={fields.verification_type}
+							value={fields.verification_type}
 						>
 							<option> Select KYC </option>
 							{docs.map((option,i)=>{
