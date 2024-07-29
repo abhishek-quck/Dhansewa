@@ -13,7 +13,6 @@ const FullLayout = () => {
   const sidebarStyle = { position:'fixed', overflow:'scroll' }
   const {userToken, companyID} = useSelector(state=>state.auth)
   let isLoading = useSelector(state => state.auth.loading)
-  let state = useSelector(state => state.auth)
   let isLoggedIn = userToken && (companyID || localStorage.getItem('companyID'))
   const [loading, setLoading] = useState(isLoading) 
   useEffect(()=> {  
@@ -21,7 +20,7 @@ const FullLayout = () => {
     return ()=>null
   },[userToken , isLoading, navigate ])
   return (
-    <main className={state.theme.toLowerCase()} >
+    <main className={'light'} >
 	  <Toaster/>	 
       <div className="pageWrapper d-lg-flex">
         <div className={`${loading?'item':"item d-none"}`}> 

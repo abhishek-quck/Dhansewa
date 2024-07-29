@@ -183,6 +183,16 @@ const Header = () => {
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
+          <UncontrolledDropdown inNavbar nav>
+            <DropdownToggle caret nav>
+              <Link 
+                to={'/download-documents'} 
+                className="text-decoration-none text-dark"
+              >
+                <i className={`fa fa-file`} /> Documents
+              </Link>
+            </DropdownToggle>
+          </UncontrolledDropdown>
         </Nav>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle color={theme==='Dark'?"secondary":''}>
@@ -200,15 +210,6 @@ const Header = () => {
 			      </DropdownItem>
             <DropdownItem>
               <i className="fa-regular fa-pen-to-square"/> &nbsp;Edit Profile 
-            </DropdownItem>
-            <DropdownItem onClick={changeTheme}>
-              <i className={`fa-solid ${theme==='Light'?'bi-moon':'bi-sun'}`}/>&nbsp;{theme==='Light'?'Dark':'Light'} Mode 
-            </DropdownItem>
-            <DropdownItem>
-              <i className="fa-solid fa-indian-rupee-sign"/> &nbsp;My Balance
-            </DropdownItem>
-            <DropdownItem>
-              <i className="fa-regular fa-envelope"/> &nbsp;Inbox
             </DropdownItem>
             <DropdownItem>
               <Link 

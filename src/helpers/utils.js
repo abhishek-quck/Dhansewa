@@ -1,21 +1,47 @@
 import $ from 'jquery'
+import toast from 'react-hot-toast';
 export const validate = (fields,rules=[]) => {
     let result={}
     let shouldGo=true
-    for(let field in fields)
+    for(let f in fields)
     {
-        if(fields[field]==null || fields[field].length===0)
+        let errorMsg = '';
+        let invalid = false;
+        let tInput = $(`input[name=${f}]`) || $(`select[name=${f}]`) || $(`textarea[name=${f}]`) || $(`.${f}`)
+        if(fields[f]==null || fields[f].length===0)
         {
-            result[field]=`Required!`
-            shouldGo=false
-        }
-    }
-    for (const el in fields) {
-        if (result[el]) {
-            $(`input[name=${el}], select[name=${el}], textarea[name=${el}], .${el}`).addClass('placeholder-error').attr('placeholder', result[el] ).css('border','1px solid red');
+            result[f]=`Required!`;
+            shouldGo=false;
+            invalid = true;
         } else {
-            $(`input[name=${el}], select[name=${el}], textarea[name=${el}]`).removeClass('placeholder-error').attr('placeholder',result[el]).css('border','');
-            // no border on valid inputs
+            invalid = false;
+        }
+        let minLength = $(tInput).attr('min')
+        let type = $(tInput).attr('cast')
+        if(minLength)
+        {
+            if($(tInput).val().length < parseInt(minLength))
+            { 
+                invalid = true;
+                result[f]= f[0].toUpperCase()+ f.slice(1)+` should be of at least ${minLength} characters!`;
+            }
+        }
+        if(type)
+        { 
+            if(tInput.val() && type === 'num')
+            {
+                if(isNaN(parseInt($(tInput).val()))) {
+                    errorMsg= f[0].toUpperCase()+ f.slice(1)+` should be in numbers!`;
+                    invalid = true;
+                    result[f]= errorMsg; 
+                    toast.error(errorMsg)
+                }
+            }
+        }
+        if(invalid){
+            $(tInput).addClass('placeholder-error').attr('placeholder',result[f]).css('border','1px solid red');
+        } else {
+            $(tInput).removeClass('placeholder-error').attr('placeholder',result[f]).css('border','');
         }
     }
     return {result, shouldGo};

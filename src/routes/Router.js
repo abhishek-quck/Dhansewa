@@ -101,6 +101,7 @@ const ThemeRoutes = [
       { path: "/credit-report", exact: true, element: <CreditReport /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
       { path: "/print-documents", exact: true, element: <PrintDocs /> },
+      { path: "/download-documents", exact: true, element: <PrintDocs /> },
     ],
   },
 ];

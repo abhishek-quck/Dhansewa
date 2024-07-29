@@ -155,6 +155,8 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							value={fields.aadhaar}
 							placeholder="Enter Aadhaar no"
+							min="12"
+							cast="num"
 							style={{border:errors.branch ?'1px solid red':''}}
 						/>
 					</div>
@@ -364,6 +366,8 @@ const AddEnrollment = () => {
 							onChange={onChange}
 							defaultValue={fields.phone}
 							placeholder={"Enter phone"}
+							min="10"
+							cast="num"
 							style={{border:errors.phone ?'1px solid red':''}}
 						/>
 					</div>

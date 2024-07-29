@@ -74,19 +74,19 @@ const Starter = () => {
                 <h5> Quick Navigation </h5>
             </Row>
             <Row>
-                <Col sm="6" lg="6" xl="7" xxl="6" > 
+                <Col sm="6" lg="6" xl="5" xxl="6" > 
                     <button style={{backgroundColor:'rgba(0, 143, 251)'}} className="w-100 btn text-white" > 
                         Google Location
                     </button>
                 </Col>
-                <Col sm="6" lg="6" xl="7" xxl="6" >  
+                <Col sm="6" lg="6" xl="5" xxl="6" >  
                     <button className="w-100 btn btn-danger" >
                         Connect Device
                     </button>
                 </Col>
             </Row>
             <Row>
-                <Col sm="6" lg="6" xl="7" xxl="6" > 
+                <Col sm="6" lg="6" xl="6" xxl="6" > 
                     <IncomeChart />
                 </Col>
                 <Col sm="4" lg="4" xl="5" xxl="6" > 
