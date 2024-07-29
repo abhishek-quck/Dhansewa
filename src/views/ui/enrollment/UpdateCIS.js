@@ -70,8 +70,6 @@ function UpdateCIS() {
         type:'',
         email:'',
         guarantor:'',
-        enrolled_by:'',
-        group_no:'',
     })
     const [districts, setDistricts] = useState([])
     const [KYCtypes, setKYCtypes] = useState([])
@@ -1293,56 +1291,6 @@ function UpdateCIS() {
                                 </Col>
                             </Row>
 
-                            <Row className="mt-2">
-                                <Col md="12">
-                                    <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="loan_request">
-                                       Loan Request
-                                    </Label>
-                                    <Input 
-                                        id="loan_request" 
-                                        name="loan_request"
-                                        type="text"
-                                        onChange={onChange}
-                                    />
-                                    </div>
-                                </Col>
-                            </Row>
-
-                            <Row className="mt-2">
-                                <Col md="12">
-                                    <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="enrolled_by">
-                                       Enrolled By
-                                    </Label>
-                                    <Input 
-                                        id="enrolled_by" 
-                                        name="enrolled_by"
-                                        type="text"
-                                        onChange={onChange}
-                                        defaultValue={fields.enrolled_by}
-                                    />
-                                    </div>
-                                </Col>
-                            </Row>
-
-                            <Row className="mt-2">
-                                <Col md="12">
-                                    <div className="d-flex">
-                                    <Label className="col-4" size={'sm'} for="group_no">
-                                       Group No(Temp)
-                                    </Label>
-                                    <Input 
-                                        id="group_no" 
-                                        name="group_no"
-                                        type="text"
-                                        onChange={onChange}
-                                        placeholder='Enter founder group'
-                                        defaultValue={fields.group_no}
-                                    />
-                                    </div>
-                                </Col>
-                            </Row>
 
                         </FormGroup>
                     </CardBody>
