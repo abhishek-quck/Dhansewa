@@ -156,6 +156,7 @@ const AddEnrollment = () => {
 							value={fields.aadhaar}
 							placeholder="Enter Aadhaar no"
 							min="12"
+							max="12"
 							cast="num"
 							style={{border:errors.branch ?'1px solid red':''}}
 						/>
@@ -182,6 +183,8 @@ const AddEnrollment = () => {
 							id="voterID" 
 							name="verification"
 							type="text"
+							min="12"
+							max="12"
 							onChange={onChange}
 							placeholder="Enter KYC No"
 							defaultValue={fields.verification}
@@ -211,7 +214,9 @@ const AddEnrollment = () => {
 					<Col md="12">
 					<div className="d-flex">
 						<div className="col-4">
-							<select type="select" name="relation" onChange={onChange} className={'xs'} style={{width:90}}>
+							<select type="select" name="relation" onChange={onChange} className={'xs'} style={{width:90}}
+							value={fields.relation}
+							>
 							<option value={'S/O'}> S/O </option>
 							<option value={'H/O'}> H/O </option>
 							<option value={'W/O'}> W/O </option>
@@ -367,6 +372,7 @@ const AddEnrollment = () => {
 							defaultValue={fields.phone}
 							placeholder={"Enter phone"}
 							min="10"
+							max="10"
 							cast="num"
 							style={{border:errors.phone ?'1px solid red':''}}
 						/>

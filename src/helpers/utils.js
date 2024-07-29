@@ -13,17 +13,22 @@ export const validate = (fields,rules=[]) => {
             result[f]=`Required!`;
             shouldGo=false;
             invalid = true;
-        } else {
-            invalid = false;
         }
         let minLength = $(tInput).attr('min')
+        let maxLength = $(tInput).attr('max')
         let type = $(tInput).attr('cast')
-        if(minLength)
+        if(minLength || maxLength)
         {
             if($(tInput).val().length < parseInt(minLength))
             { 
                 invalid = true;
                 result[f]= f[0].toUpperCase()+ f.slice(1)+` should be of at least ${minLength} characters!`;
+            }
+            if($(tInput).val().length > parseInt(maxLength))
+            { 
+                invalid = true;
+                result[f]= f[0].toUpperCase()+ f.slice(1)+` should be equal to ${maxLength} characters!`;
+                errorMsg = result[f]
             }
         }
         if(type)
@@ -34,9 +39,12 @@ export const validate = (fields,rules=[]) => {
                     errorMsg= f[0].toUpperCase()+ f.slice(1)+` should be in numbers!`;
                     invalid = true;
                     result[f]= errorMsg; 
-                    toast.error(errorMsg)
                 }
             }
+        }
+        if(errorMsg)
+        {
+            toast.error(errorMsg)
         }
         if(invalid){
             $(tInput).addClass('placeholder-error').attr('placeholder',result[f]).css('border','1px solid red');
