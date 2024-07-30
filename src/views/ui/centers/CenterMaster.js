@@ -97,7 +97,7 @@ function CenterMaster() {
 		})
 		.catch( err => {
 			console.log(err.message)
-			s(!e)
+			s(true)
 		})
 	},[e])
 
