@@ -1,48 +1,20 @@
 import { Spinner } from "reactstrap";
 import { useGetCollectionsQuery } from "../../features/api";
-import Chart from "react-apexcharts";  
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-
+// import Chart from "react-apexcharts";  
+import { Chart } from "react-google-charts";
+import { useEffect, useState } from "react";
+let collections = [];
 const CollectionChart = () => {
-  const {theme} = useSelector(state=>state.collections)
   const { data, isLoading, isSuccess, error } = useGetCollectionsQuery()
-  
-  let chartoptions = {
-    series:[],
-    options: {
-        chart: {
-            width: 380,
-            type: 'pie',
-        },
-        labels: [],
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                chart: {
-                    width: 200
-                },
-                legend: {
-                    position: 'bottom'
-                },
-            }
-        }],
-        colors: ['#0a54c1', '#ff0c23'],
-        legend: {
-            labels: {
-              colors: Array(data?.labels?.length).fill( theme==='Dark'? '#ffffff': '#1e2a35'),  
-              useSeriesColors: false // If true, the legend will use the colors of the series
-            },
-            position: 'bottom',  
-        },
-    },
-  };
-  useEffect(()=>{},[theme])
-  
+  useEffect(()=>{},[])
   if(isSuccess)
   {
-    chartoptions.series=data.series
-    chartoptions.options.labels=data.labels
+    let fill = [["Task", "Hours per Day"]];
+    for(var i=0; i < data.series.length; i++)
+    {
+      fill.push([data.labels[i], data.series[i]])
+    }
+    collections = fill 
   } 
   if(isLoading) return <Spinner />
   if(error)
@@ -50,13 +22,18 @@ const CollectionChart = () => {
     console.log(error) 
   }
   return ( 
-        <Chart
-          type="pie"
-          width="100%"
-          height="268"
-          options={chartoptions.options}
-          series={chartoptions.series}
-        /> 
+      (<>
+      { collections && <Chart
+        chartType="PieChart"
+        data={collections}
+        options={{
+          is3D: true,
+        }}
+        width={"100%"}
+        height={"245px"}
+      />
+      }
+      </>)
   );
 };
 

@@ -43,7 +43,7 @@ export const validate = (fields,exceptions=[]) => {
             { 
                 if(input.val() && type === 'num')
                 {
-                    if(parseInt($(input).val()).length !== $(input).val().length) {
+                    if(parseInt($(input).val().length )!== $(input).val().length) {
                         shout= `Should be in numbers!`;
                         invalid = true;
                         result[f]= shout; 

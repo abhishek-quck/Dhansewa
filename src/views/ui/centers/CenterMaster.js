@@ -34,7 +34,6 @@ function CenterMaster() {
 		staff:'',
 		meetingDays:'',
 		meetingTime:'',
-		centerID:'',
 		formationDate:'',
 		cityName:'',
 		block:'',
@@ -267,6 +266,7 @@ function CenterMaster() {
 												id='staffName'
 												name="staff"
 												type="text"
+												min={5}
 												onChange={onChange}
 											/>
 										</div>
@@ -302,20 +302,6 @@ function CenterMaster() {
 												name="meetingTime"
 												type="time" 
 												onChange={onChange}
-											/>
-										</div>
-									</Col > 
-									</Row>
-									<Row className="mt-2">
-									<Col md="12">
-										<div className="d-flex">
-											<Label className="col-4"  size={'sm'} for="centerID"> New Center ID </Label>
-											<Input 
-												id="centerID"
-												name="centerID"
-												type="text"
-												onChange={onChange}
-												placeholder="Enter new Center ID 3 digit" 
 											/>
 										</div>
 									</Col > 
@@ -377,6 +363,7 @@ function CenterMaster() {
 												name="centerLeader"
 												type="text" 
 												onChange={onChange}
+												min={5}
 												placeholder='Enter center leader name'
 											/>
 										</div>

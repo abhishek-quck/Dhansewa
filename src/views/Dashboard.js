@@ -12,10 +12,12 @@ import client from '../assets/images/user.jfif'
 import proposal from '../assets/images/proposal.webp'
 import tutorial from '../assets/images/tutorial.png'
 import ComponentCard from "../components/ComponentCard";
+import axios from "axios";
 
 const Starter = () => {
   let navigate = useNavigate()
   let state = useSelector(state=>state.auth)
+  const [summary, setSummary] = useState({centers:0,loan_clients:0})
 
   const MenuList = [
     [
@@ -55,6 +57,11 @@ const Starter = () => {
       }
       navigate('/login')  
     }
+    axios.get('summary').then(({data})=>{
+      setSummary(data)
+    }).catch(err=>{
+      console.log(err.message)
+    })
     return ()=>null
 
   },[navigate,state.userToken,state.companyID])
@@ -127,11 +134,11 @@ const Starter = () => {
                             <tbody>
                                 <tr>
                                     <td> CENTERS </td>
-                                    <td> 111 </td>
+                                    <td> {summary.centers} </td>
                                 </tr>
                                 <tr>
                                     <td> LOAN CLIENTS </td>
-                                    <td> 487 </td>
+                                    <td> {summary.loan_clients} </td>
                                 </tr>
                                 <tr>
                                     <td> PRINCIPAL OUTSTANDING </td>
