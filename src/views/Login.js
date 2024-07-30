@@ -76,11 +76,14 @@ function Login() {
           axios.defaults.headers.common['Authorization'] = `Bearer `+data.access_token;
           navigate('/landing')
         }
-      }).catch(()=>toast.error('Invalid credentials!') )
+      }).catch(()=>{
+        toast.error('Invalid credentials!') 
+        localStorage.clear()
+      })
       .finally(()=>dispatch({type:'STOP_LOADING'}))
     } catch (error) {
-      alert(error.message)
       console.log(error)
+      localStorage.clear()
     }
   }  
 
