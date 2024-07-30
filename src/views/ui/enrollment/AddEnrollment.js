@@ -53,7 +53,7 @@ const AddEnrollment = () => {
 	
 	const handleSubmit = ev => {
 		ev.preventDefault()
-		let {result, shouldGo} = validate(fields)
+		let {result, shouldGo} = validate(fields,['advDetails','nomineeDetails','creditReport'])
 		if(shouldGo===false)
 		{
 			setErrors(result)

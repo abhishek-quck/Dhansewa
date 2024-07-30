@@ -1,57 +1,68 @@
 import $ from 'jquery'
-import toast from 'react-hot-toast';
-export const validate = (fields,rules=[]) => {
+export const validate = (fields,exceptions=[]) => {
     let result={}
-    let shouldGo=true
-    for(let f in fields)
+    var shouldGo=true;
+    if(exceptions.length)
+    {
+        exceptions.forEach( item => {
+            delete fields[item]
+        })
+    }
+    Object.keys(fields).forEach(f =>
     {
         let errorMsg = '';
         let invalid = false;
-        let tInput = $(`input[name=${f}]`) || $(`select[name=${f}]`) || $(`textarea[name=${f}]`) || $(`.${f}`)
+        let tInputs = [$(`input[name=${f}]`), $(`select[name=${f}]`), $(`textarea[name=${f}]`), $(`.${f}`)]
         if(fields[f]==null || fields[f].length===0)
         {
             result[f]=`Required!`;
             shouldGo=false;
             invalid = true;
         }
-        let minLength = $(tInput).attr('min')
-        let maxLength = $(tInput).attr('max')
-        let type = $(tInput).attr('cast')
-        if(minLength || maxLength)
-        {
-            if($(tInput).val().length < parseInt(minLength))
-            { 
-                invalid = true;
-                result[f]= f[0].toUpperCase()+ f.slice(1)+` should be of at least ${minLength} characters!`;
-            }
-            if($(tInput).val().length > parseInt(maxLength))
-            { 
-                invalid = true;
-                result[f]= f[0].toUpperCase()+ f.slice(1)+` should be equal to ${maxLength} characters!`;
-                errorMsg = result[f]
-            }
-        }
-        if(type)
-        { 
-            if(tInput.val() && type === 'num')
+        tInputs.forEach( input => {
+
+            let minLength = $(input).attr('min');
+            let maxLength = $(input).attr('max');
+            let type = $(input).attr('cast');
+            if(minLength || maxLength)
             {
-                if(isNaN(parseInt($(tInput).val()))) {
-                    errorMsg= f[0].toUpperCase()+ f.slice(1)+` should be in numbers!`;
+                if($(input).val().length < parseInt(minLength))
+                { 
                     invalid = true;
-                    result[f]= errorMsg; 
+                    result[f] = f[0].toUpperCase()+ f.slice(1)+` should be of at least ${minLength} characters!`;
+                }
+                if($(input).val().length > parseInt(maxLength))
+                { 
+                    invalid = true;
+                    result[f] = f[0].toUpperCase()+ f.slice(1)+` should be equal to ${maxLength} characters!`;
+                     
                 }
             }
-        }
-        if(errorMsg)
-        {
-            toast.error(errorMsg)
-        }
-        if(invalid){
-            $(tInput).addClass('placeholder-error').attr('placeholder',result[f]).css('border','1px solid red');
-        } else {
-            $(tInput).removeClass('placeholder-error').attr('placeholder',result[f]).css('border','');
-        }
-    }
+            if(type)
+            { 
+                if(input.val() && type === 'num')
+                {
+                    if(isNaN(parseInt($(input).val()))) {
+                        errorMsg= f[0].toUpperCase()+ f.slice(1)+` should be in numbers!`;
+                        invalid = true;
+                        result[f]= errorMsg; 
+                    }
+                }
+            }
+            if(invalid || errorMsg)
+            {
+                $(input).parents('.col-md-12')
+                .append('<small class="text-danger offset-4">'+errorMsg+'</small>')
+            }
+            if(invalid){
+                shouldGo = false;
+                $(input).addClass('placeholder-error')
+                .attr('placeholder',result[f]).css('border','1px solid red');
+            } else {
+                $(input).removeClass('placeholder-error').attr('placeholder',result[f]).css('border','');
+            }
+        })
+    })
     return {result, shouldGo};
 }
 
