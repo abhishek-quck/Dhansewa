@@ -10,7 +10,7 @@ export const validate = (fields,exceptions=[]) => {
     }
     Object.keys(fields).forEach(f =>
     {
-        let errorMsg = '';
+        let shout = '';
         let invalid = false;
         let tInputs = [$(`input[name=${f}]`), $(`select[name=${f}]`), $(`textarea[name=${f}]`), $(`.${f}`)]
         if(fields[f]==null || fields[f].length===0)
@@ -24,35 +24,43 @@ export const validate = (fields,exceptions=[]) => {
             let minLength = $(input).attr('min');
             let maxLength = $(input).attr('max');
             let type = $(input).attr('cast');
-            if(minLength || maxLength)
+            if($(input).val()?.length && (minLength || maxLength))
             {
                 if($(input).val().length < parseInt(minLength))
                 { 
                     invalid = true;
-                    result[f] = f[0].toUpperCase()+ f.slice(1)+` should be of at least ${minLength} characters!`;
+                    shout = `Should be of at least ${minLength} characters!`
+                    result[f] = shout;
                 }
                 if($(input).val().length > parseInt(maxLength))
                 { 
                     invalid = true;
-                    result[f] = f[0].toUpperCase()+ f.slice(1)+` should be equal to ${maxLength} characters!`;
-                     
+                    shout = `Should be equal to ${maxLength} characters!`;
+                    result[f] = shout;
                 }
             }
             if(type)
             { 
                 if(input.val() && type === 'num')
                 {
-                    if(isNaN(parseInt($(input).val()))) {
-                        errorMsg= f[0].toUpperCase()+ f.slice(1)+` should be in numbers!`;
+                    if(parseInt($(input).val()).length !== $(input).val().length) {
+                        shout= `Should be in numbers!`;
                         invalid = true;
-                        result[f]= errorMsg; 
+                        result[f]= shout; 
                     }
                 }
             }
-            if(invalid || errorMsg)
+            if(shout)
             {
-                $(input).parents('.col-md-12')
-                .append('<small class="text-danger offset-4">'+errorMsg+'</small>')
+                if($(input).parents('.col-md-12').find('small.text-danger').length)
+                {
+                    $(input).parents('.col-md-12').find('small.text-danger').text(shout)
+                } else {
+                    $(input).parents('.col-md-12')
+                    .append('<small class="text-danger offset-4">'+shout+'</small>')
+                }
+            } else {
+                $(input).parents('.col-md-12').find('small.text-danger').remove()
             }
             if(invalid){
                 shouldGo = false;

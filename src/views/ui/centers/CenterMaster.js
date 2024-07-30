@@ -202,13 +202,21 @@ function CenterMaster() {
 									<Row className="mt-2">
 									<Col md="12">
 										<div className="d-flex">
-											<Label className="col-4" size={'sm'} for="address">Local Address </Label>
+											<Label className="col-4"  size={'sm'} for="exampleEmail"> State Name </Label>
 											<Input 
-												name="localAddress"
-												type="text"
-												onChange={onChange}
-												placeholder="Enter address"
-											/>
+												name="state"
+												type="select"
+												onChange={onChange} 
+											>
+												<option> Select State </option>
+												{states.map((option, index)=>{
+												 	return (
+														<option key={index} value={option.value}>
+															{option.label} 
+														</option>
+													)
+												})}
+											</Input>   
 										</div>
 									</Col > 
 									</Row>
@@ -238,21 +246,13 @@ function CenterMaster() {
 									<Row className="mt-2">
 									<Col md="12">
 										<div className="d-flex">
-											<Label className="col-4"  size={'sm'} for="exampleEmail"> State Name </Label>
+											<Label className="col-4" size={'sm'} for="address">Local Address </Label>
 											<Input 
-												name="state"
-												type="select"
-												onChange={onChange} 
-											>
-												<option> Select State </option>
-												{states.map((option, index)=>{
-												 	return (
-														<option key={index} value={option.value}>
-															{option.label} 
-														</option>
-													)
-												})}
-											</Input>   
+												name="localAddress"
+												type="text"
+												onChange={onChange}
+												placeholder="Enter address"
+											/>
 										</div>
 									</Col > 
 									</Row>
@@ -388,6 +388,9 @@ function CenterMaster() {
 												id="centerLeaderPhone"
 												name="centerLeaderPhone"
 												type="text" 
+												cast="num"
+												min="10"
+												max="10"
 												onChange={onChange}
 												placeholder='Enter center leader phone'
 											/>

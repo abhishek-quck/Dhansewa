@@ -184,14 +184,14 @@ const Header = () => {
             </DropdownMenu>
           </UncontrolledDropdown>
           <UncontrolledDropdown inNavbar nav>
-            <DropdownToggle caret nav>
+            <span aria-haspopup="true" className="dropdown-toggle nav-link">
               <Link 
                 to={'/download-documents'} 
                 className="text-decoration-none text-dark"
               >
                 <i className={`fa fa-file`} /> Documents
-              </Link>
-            </DropdownToggle>
+              </Link> 
+            </span>
           </UncontrolledDropdown>
         </Nav>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
