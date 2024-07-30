@@ -39,12 +39,18 @@ const Enrollment = () => {
 		hitSearch(a=>!a)
 		dispatch({type:'SEARCH_ENROLLED', payload:fields})
 	}
+	const [e,s] = useState(false); // sometimes request returns unauthenticated due to lack of token in request
+	// it needs to make another try
 	useEffect(()=>{
 		axios.get('get-branches')
 		.then(({data})=>{
 			setBranches(data)
 		})
-	},[])
+		.catch( err => {
+			console.log(err.message)
+			s(true)
+		})
+	},[e])
 	return (
 	<div> 
 		<Card>

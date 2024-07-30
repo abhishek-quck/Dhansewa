@@ -84,19 +84,22 @@ function CenterMaster() {
 		})
 		.finally(()=> dispatch({type:'STOP_LOADING'}))
 	}
-
+	const [e,s] = useState(false)
 	useEffect(()=>{
 		axios.get('get-options/all')
 		.then(({data})=>{
 			if(data.state) fillStates(data.state)
 			if(data.district) fillDistricts(data.district)
+			axios.get('get-branches')
+			.then(({data})=>{
+				setBranches(data)
+			})
 		})
-		axios.get('get-branches')
-		.then(({data})=>{
-			console.log(data)
-			setBranches(data)
+		.catch( err => {
+			console.log(err.message)
+			s(!e)
 		})
-	},[])
+	},[e])
 
 	return (
 	<>
@@ -279,6 +282,7 @@ function CenterMaster() {
 												type="select" 
 												onChange={onChange}
 											>
+												<option></option>
 												<option value={'monday'}> Monday </option>
 												<option value={'tuesdays'}> Tuesday </option>
 												<option value={'wednesday'}> Wednesday </option>
