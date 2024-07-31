@@ -6,7 +6,10 @@ import {navigation} from './SidebarData'
 import { useSelector } from "react-redux";
 const Sidebar = () => {
   let location = useLocation(); 
-  const theme = useSelector(state=>state.auth.theme)
+  let navigationMenus = navigation
+  const visibleMenus = useSelector(state=>state.auth.menus)
+  const isAdmin = useSelector(state=>state.auth.isAdmin)
+  const [navs, setNavigation] = useState([]);
   const [toggler, toggle] = useState({
     setting:false,
     enroll:false,
@@ -18,12 +21,21 @@ const Sidebar = () => {
     insurance:false
   })
   
-  useEffect(()=>{},[location])
+  useEffect( () => {
+    if(isAdmin)
+    {
+        navigationMenus = navigation
+    } else {
+        navigationMenus = navigationMenus.filter( item => visibleMenus.includes(navigationMenus.indexOf(item)))
+    }
+    setNavigation(navigationMenus)
+    return ()=>null
+  },[location])
 
   const showMobilemenu = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
-  const setToggle = ( name) => {    
+  const setToggle = ( name ) => {    
     let state = toggler
     let nextValue = !state[name]
     Object.keys(state).forEach(key=>state[key]=false)
@@ -33,7 +45,7 @@ const Sidebar = () => {
 
   
   return (
-    <div className={`p-3 ${theme.toLowerCase()}-theme`} >
+    <div className={`p-3 light-theme`} >
       <div className="d-flex align-items-center" style={{flexDirection:'column'}}>
         <Logo />  
         <CardTitle>Micro Foundations</CardTitle>
@@ -48,7 +60,7 @@ const Sidebar = () => {
       </div>
       <div className="pt-2">
         <Nav vertical className="sidebarNav"  >
-          {navigation.map((navi, index) => (
+          {navs.map((navi, index) => (
             <NavItem key={index} 
               className={`mt-1 sidenav-bg ${location.pathname === navi.href || 
               navi.links?.includes(location.pathname) ? 'nav-link-active':''}`}

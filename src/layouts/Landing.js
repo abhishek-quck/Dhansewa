@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { navigation } from './SidebarData';
 
 function Landing() {
   const navigate = useNavigate()
@@ -12,28 +13,45 @@ function Landing() {
   const [company, select] = useState(companyID);
   const [companies, fillCompanies] = useState([]);
   const toggle = () => setModal(!modal); 
-  const setCompany = () => { 
-    dispatch(
-	{
-		type:'SET_COMPANY', 
-		payload:{
-			id:document.getElementById('company').value,
-			name:document.querySelectorAll('option:checked')[0].text 
-		}
-	})
-  }
+    const setCompany = () => { 
+        dispatch(
+        {
+            type:'SET_COMPANY', 
+            payload:{
+                id:document.getElementById('company').value,
+                name:document.querySelectorAll('option:checked')[0].text 
+            }
+        })
+    }
 
   useEffect(()=>{
     if( companyID===null )
     {   
       setModal(true)     
-      axios.get('get-companies').then(response=>{
+      axios.get('get-companies').then(({data})=>{
          
-        if(response.data.length)
+        if(data.length)
         {
-          fillCompanies(response.data)
+          fillCompanies(data)
         }
+        axios.get('permitted-menus').then(({data})=>{
+            let ids;
+            if(data.admin)
+            {
+                dispatch({type:'SET_ADMIN_STATUS',payload:true })
+                localStorage.setItem('isAdmin', true)
+                ids = Object.keys(navigation)
+            }else {
+                dispatch({type:'SET_ADMIN_STATUS',payload:false })
+                localStorage.setItem('isAdmin', false)
+                let menus = data.menu
+                ids = menus.map( r => r['menu_id'])
+            }
+            localStorage.setItem('menus', JSON.stringify(ids))
+            dispatch({type:'SET_DASHBOARD_MENU', payload: ids })
+        })
       })
+      .catch(err=>err.message)
     }else
     { 
       navigate('/dashboard')

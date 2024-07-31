@@ -1,6 +1,7 @@
 import axios from "axios" 
 let userToken = localStorage.getItem('auth-token') ?? null
-
+const menus = JSON.parse(localStorage.getItem('menus'))??[];
+const isAdmin = JSON.parse(localStorage.getItem('isAdmin'))??false;
 async function getUserDetails ()
 {
   try
@@ -26,6 +27,8 @@ const initialState = {
     enrollTerm:null,
     enrollBranch:'',
     GRTs:{},
+    menus,
+    isAdmin
 }
 
 const authReducer = (state=initialState,action) => {
@@ -122,7 +125,16 @@ const authReducer = (state=initialState,action) => {
                     [action.payload.id]:action.payload
                 }
 			}
-        
+        case 'SET_DASHBOARD_MENU':
+			return {
+				...state, 
+                menus:action.payload
+			}
+        case 'SET_ADMIN_STATUS':
+            return {
+                ...state,
+                isAdmin:action.payload
+            }
         default : return state
     }
 }
