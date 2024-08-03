@@ -45,10 +45,7 @@ const SpeedLoanDisburse = () => {
         utilization:'',
         first_installment:'',
         number_of_emis:'',
-        payment_mode:'',
-        schedule_recurring:'',
-        bank_name:'',
-        cross_sale_products:''
+        payment_mode:''
     })
     const [sFields, setSearchField] = useState({
         branch:'',
@@ -251,7 +248,7 @@ const SpeedLoanDisburse = () => {
                 </Row>   
               </FormGroup> 
               <div className="d-flex"> 
-                <div className="col-md-8">
+                <div className="col-md-11">
                     <Card>
                         <CardHeader>
                             <CardTitle> New Loan Disbursement For </CardTitle>
@@ -352,7 +349,7 @@ const SpeedLoanDisburse = () => {
                                         onChange={e=>setFields({...fields,policy:e.value})}
                                         name="policy" 
                                         className="policy" 
-                                        options={[{value:'',label:''}]}
+                                        options={[{value:'double',label:'Double'}]}
                                     />
                                 </Col>
                             </Row>
@@ -447,62 +444,13 @@ const SpeedLoanDisburse = () => {
                                 </Col>
                             </Row>
                         </CardBody>
-                    </Card>
-                </div> 
-                <div className="col-md-4 mx-1">
-                    <Card className="mx-1">
-                        <CardHeader>
-                            <CardTitle> Other Info </CardTitle>
-                        </CardHeader>
-                        <CardBody>
-                            <Row className="container">
-                                <Label size={'sm'} for="schedule_recurring">
-                                    Schedule Recurring 
-                                </Label>
-                                <Input
-                                    disabled={sFields.client?.length<1}
-                                    id="schedule_recurring" 
-                                    name="schedule_recurring"
-                                    type="select" 
-                                    onChange={inputChange}
-                                >
-                                    <option></option> 
-                                    <option value={1}> YES </option> 
-                                    <option value={0}> NO </option> 
-                                </Input>
-                            </Row>
-                            <Row className="mt-2 container">
-                                <Label  size={'sm'} for="bank_name">
-                                    Bank Name
-                                </Label>
-                                <CreatableSelect
-                                    isDisabled={sFields.client?.length<1}
-                                    id="bank_name" 
-                                    name="bank_name"
-                                    onChange={e=>setFields({...fields,bank_name:e.value})}
-                                    options={[{value:'',label:''}]}
-                                />
-                            </Row>
-                            <Row className="mt-2 container mb-3">
-                                <Label  size={'sm'} for="cross_sale_products">
-                                    Cross Sale Products
-                                </Label>
-                                <CreatableSelect
-                                    isDisabled={sFields.client?.length<1}
-                                    id="cross_sale_products" 
-                                    name="cross_sale_products"
-                                    onChange={e=>setFields({...fields,cross_sale_products:e.value})}
-                                    options={[{value:'',label:''}]}
-                                />
-                            </Row> 
-                        </CardBody>
                         <CardFooter>
                             <Button type="submit" color="success" className="mt-2 w-100">
                                 Save & Disburse
                             </Button>
                         </CardFooter>
                     </Card>
-                </div>
+                </div> 
               </div>
             </Form>
         </CardBody>
