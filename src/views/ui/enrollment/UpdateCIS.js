@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Button, Card, CardBody, CardText, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 import { preview } from '../../../attachments'
@@ -9,7 +9,6 @@ import { validate } from '../../../helpers/utils'
 
 function UpdateCIS() {
     const dispatch = useDispatch()
-    const {loading} = useSelector(state=>state.auth)
     const {id} = useParams()
     const submitStyle = {position:'fixed',maxWidth:'360px',left:'40%',top:'90%',zIndex:'121'}
     const [doc, setDoc] = useState({b64:null,blob:null})
@@ -18,6 +17,7 @@ function UpdateCIS() {
         client_id:'',
         aadhaar:'',
         applicant_name:'',
+        father_name:'',
         village:'',
         PAN:'',
         postal_pin:'',
@@ -281,9 +281,9 @@ function UpdateCIS() {
                                     name="father_name"
                                     type="text"
                                     onChange={onChange}
-                                    defaultValue={fields.applicant_name}
+                                    defaultValue={fields.father_name}
                                     placeholder="Enter father name"
-                                    style={{border:errors.applicant_name ?'1px solid red':''}}
+                                    style={{border:errors.father_name ?'1px solid red':''}}
                                 /> 
                                     
                             </div>
