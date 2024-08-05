@@ -105,17 +105,14 @@ const AddEnrollment = () => {
 		let finalObj = fields;
 		if(bankDetails)
 		{
-			alert('bank hai')
 			finalObj = {...finalObj, ...bank }
 		}
 		if(nominee)
 		{
-			alert('nominee hai')
 			finalObj = {...finalObj, ...Nominee} 
 		}
 		if(advance)
 		{
-			alert('advance hai')
 			finalObj = {...finalObj, ...advanceDetail} 
 		}
 		console.log(Object.keys(finalObj).length,finalObj); 
@@ -415,7 +412,7 @@ const AddEnrollment = () => {
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4"  size={'sm'} for="DOB"> Date of Birth (Today) </Label>
+						<Label className="col-4"  size={'sm'} for="DOB"> Date of Birth </Label>
 						<Input
 							id="DOB" 
 							name="date_of_birth"

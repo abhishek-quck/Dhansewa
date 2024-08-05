@@ -24,6 +24,7 @@ export const validate = (fields,exceptions=[]) => {
             let minLength = $(input).attr('min');
             let maxLength = $(input).attr('max');
             let type = $(input).attr('cast');
+            let isDate = $(input).attr('type')==='date';
             if($(input).val()?.length && (minLength || maxLength))
             {
                 if($(input).val().length < parseInt(minLength))
@@ -35,7 +36,7 @@ export const validate = (fields,exceptions=[]) => {
                 if($(input).val().length > parseInt(maxLength))
                 { 
                     invalid = true;
-                    shout = `Should be equal to ${maxLength} characters!`;
+                    shout = `Should not be greater than ${maxLength} characters!`;
                     result[f] = shout;
                 }
             }
@@ -50,7 +51,11 @@ export const validate = (fields,exceptions=[]) => {
                     }
                 }
             }
-            if(shout)
+            if(isDate)
+            {
+                console.log(isValidDate($(input).val(),18))
+            }
+            if(shout)   
             {
                 if($(input).parents('.col-md-12').find('small.text-danger').length)
                 {
@@ -74,14 +79,28 @@ export const validate = (fields,exceptions=[]) => {
     return {result, shouldGo};
 }
 
-export const getCurrentDate = () => {
+export const getCurrentDate = (delimiter='-') => {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
     const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return `${year+delimiter+month+delimiter+day}`;
 }
 
+export const formatDate = (date,format='Ymd') => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    if(format[0]==='Y')
+    {
+        return `${year}-${month}-${day}`;
+    }
+    if(format[0]==='d')
+    {
+        return `${day}-${month}-${year}`;
+    }
+}
 export const toBase64 = blob => {
 
 }
@@ -96,4 +115,11 @@ export const dataURLtoFile = (dataurl, filename) => {
         u8arr[n] = bstr.charCodeAt(n);
     }
     return new File([u8arr], filename, {type:mime});
+}
+
+export const isValidDate = ( date, range ) => {
+    let today = getCurrentDate();
+    let year = today.split('-')[0];
+    let intended = new Date(today.replace(year, (parseInt(year)-range)));
+    return intended > new Date(date)
 }
