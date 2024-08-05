@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react"; 
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { 
   Card,
   CardBody,
@@ -12,8 +11,8 @@ import {
   Input, 
   Row,
   Col,
-  CardFooter,
-  CardHeader 
+  CardText,
+  Button
 } from "reactstrap";
 import { validate } from "../../../helpers/utils";
 
@@ -23,9 +22,13 @@ const AddEnrollment = () => {
 	const [branches, setBranches] = useState([])
 	const [states, fillStates] = useState([])
 	const [districts, fillDistricts] = useState([])
+	const submitStyle = {position:'fixed',maxWidth:'360px',left:'40%',top:'90%',zIndex:'121'}
+	const [advance, addAdvanceDetail] = useState(false)
+	const [nominee, addNomineeDetails] = useState(false)
+	const [bankDetails, addBankDetails] = useState(false)
 	const [fields, setFields] = useState({
 		applicant_name:'',
-		branch:'',
+		branch_id:'',
 		aadhaar:'',
 		phone:'',
 		district:'',
@@ -43,17 +46,80 @@ const AddEnrollment = () => {
 		advDetails:'',
 		nomineeDetails:'',
 		creditReport:'',
+		father_name:'',
+		co_applicant_rel:'',
+		co_applicant:'',
+		co_applicant_dob:'',
+		co_applicant_industry_type:'',
+		co_applicant_job_type:'',
+        co_applicant_income_freq:'',
+		member_in_family:'',
+        mature_in_family:'',
+        minor_in_family:'',
+        earning_person_in_family:'',
+        depend_person_in_family:'',
+        house_land:'',
+        house_type:'',
+        durable_access:'',
+        is_lpg:'',
+        total_land:'',
+        allied_activities:'',
+        farmer_category:'',
+        total_monthly_income:'',
+        monthly_expenses:'', 
 	})
+
+	const [bank, setBank]= useState({
+        ifsc:'',
+        bank:'',
+        bank_branch:'',
+        account_num:'',
+        is_debit_card:'',
+        is_account_active:'',  
+	}) 
+
+	const [Nominee, setNominee] = useState({
+		nominee:'',
+        nominee_dob:'',
+        nominee_relation:'',
+        nominee_aadhaar:'',
+        nominee_kyc_type:'',
+        nominee_kyc:'',
+	})
+
+	const [advanceDetail, setAdvance] = useState({
+		type:'',
+        email:'',
+        guarantor:'',
+	})
+
 	const onChange = e => {
 		e.target.style.border=''
 		const {name, value} = e.target;
 		setFields({...fields, [name]:value})
 	}
 	const [errors, setErrors] = useState(fields)
-	
+	const [KYCtypes, setKYCtypes] = useState([])
 	const handleSubmit = ev => {
 		ev.preventDefault()
-		let {result, shouldGo} = validate(fields,['advDetails','nomineeDetails','creditReport'])
+		let finalObj = fields;
+		if(bankDetails)
+		{
+			alert('bank hai')
+			finalObj = {...finalObj, ...bank }
+		}
+		if(nominee)
+		{
+			alert('nominee hai')
+			finalObj = {...finalObj, ...Nominee} 
+		}
+		if(advance)
+		{
+			alert('advance hai')
+			finalObj = {...finalObj, ...advanceDetail} 
+		}
+		console.log(Object.keys(finalObj).length,finalObj); 
+		let {result, shouldGo} = validate(finalObj,['advDetails','nomineeDetails','creditReport'])
 		if(shouldGo===false)
 		{
 			setErrors(result)
@@ -65,19 +131,21 @@ const AddEnrollment = () => {
 		axios.post('/add-enrollment', fields )
 		.then(({data})=>{ 
 			toast.success(data.message)
-			reset()
-			hit(!submitted)
+			// reset()
+			// hit(!submitted)
 		}).catch(({response})=> {
 			console.log(response.data);	
 			toast.error('Something went wrong')
-		}).finally(()=> {  
-			dispatch({type:'STOP_LOADING'}) 
-		})
+		}).finally(()=> dispatch({type:'STOP_LOADING'}) )
 	}
 	const reset = () => {
 		let state = fields
 		Object.keys(state).forEach(key=>state[key]='')
 		setFields(state)
+	}
+
+	const handleFile = e => {
+		console.log(e.target.files[0])
 	}
 	useEffect(()=>{
 	
@@ -85,12 +153,11 @@ const AddEnrollment = () => {
 		.then(({data})=>{
 			if(data.state) fillStates(data.state)
 			if(data.district) fillDistricts(data.district)
+			if(data.documents) setKYCtypes(data.documents)
 		})
 
 		axios.get('get-branches')
-		.then(({data})=>{
-			setBranches(data)
-		}).catch(err=>{
+		.then(({data})=>setBranches(data)).catch(err=>{
 			console.log(err)
 			toast.error('Something went wrong!')
 		})
@@ -98,13 +165,14 @@ const AddEnrollment = () => {
 	},[])
 
 	return (
-	<div> 
-		<Card className="col-7">
-		<Form onSubmit={handleSubmit}>
-		<CardHeader tag="h6" className="mb-0 d-flex" >
-			<b className="mb-2 mt-2">BASIC INFORMATION</b>
-		</CardHeader>
-		<CardBody className="bg-gray-300">
+	<>
+	<div className="d-flex"> 
+		<Form className="w-100 d-flex" onSubmit={handleSubmit}>
+		<Card className="col-6">
+		<CardBody >
+			<CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+				<b className='text-primary mx-1'> BASIC INFORMATION </b>          
+			</CardText>
 				<FormGroup>
 				<Row className="mt-2">
 					<Col md="12">
@@ -114,11 +182,11 @@ const AddEnrollment = () => {
 						</Label>
 						<Input
 							id="branch" 
-							name="branch"
+							name="branch_id"
 							type="select"
-							defaultValue={fields.branch}
+							defaultValue={fields.branch_id}
 							onChange={onChange}
-							style={{border:errors.branch ?'1px solid red':''}}
+							style={{border:errors.branch_id ?'1px solid red':''}}
 						>
 							<option > Select Branch </option>
 							{branches.map((option,i)=>{
@@ -379,8 +447,121 @@ const AddEnrollment = () => {
 					</div>
 					</Col > 
 				</Row>
+
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4" size={'sm'} for="alt_phone"> ALT Mobile </Label>
+						<Input
+							id="alt_phone" 
+							name="alt_phone"
+							type="text"
+							onChange={onChange}
+							defaultValue={fields.alt_phone}
+							placeholder={"Enter alternate phone number"}
+							style={{border:errors.alt_phone ?'1px solid red':''}}
+						/>
+					</div>
+					</Col > 
+				</Row> 
 				
-				
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4"  size={'sm'} for="father_name"> Father Name</Label>
+						<Input
+							id="father_name" 
+							name="father_name"
+							type="text"
+							onChange={onChange}
+							defaultValue={fields.father_name}
+							placeholder="Enter father name"
+							style={{border:errors.father_name ?'1px solid red':''}}
+						/> 
+							
+					</div>
+					</Col > 
+				</Row>
+
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4" size={'sm'} for="marital_status"> Marital Status </Label>
+						<Input
+							id="marital_status" 
+							name="marital_status"
+							type="select"
+							onChange={onChange}
+							value={fields.marital_status}
+							style={{border:errors.marital_status ?'1px solid red':''}}
+						>
+							<option > </option>
+							<option value="male"> Single </option>
+							<option value="female"> Married </option> 
+						</Input>
+					</div>
+					</Col > 
+				</Row>
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4" size={'sm'} for="education"> 
+							Education
+						</Label>
+						<Input
+							id="education" 
+							name="education"
+							type="text"
+							onChange={onChange}
+							defaultValue={fields.education}
+							style={{border:errors.education ?'1px solid red':''}}
+						/>
+					</div>
+					</Col > 
+				</Row>
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4" size={'sm'} for="religion"> Religion </Label>
+						<Input
+							id="religion" 
+							name="religion"
+							type="select"
+							onChange={onChange}
+							value={fields.religion}
+							style={{border:errors.religion ?'1px solid red':''}}
+						>
+							<option > </option>
+							<option value={'Hindu'}> Hindu </option>
+							<option value={'Muslim'}> Muslim </option>
+							<option value={'Christ'}> Christ </option>
+						</Input>
+					</div>
+					</Col > 
+				</Row>
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4" size={'sm'} for="category">
+							Caste Category 
+						</Label>
+						<Input
+							id="category" 
+							name="category"
+							type="select"
+							onChange={onChange}
+							value={fields.category}
+							style={{border:errors.category ?'1px solid red':''}}
+						>
+							<option> </option>
+							<option value={'Gen'}>  General </option>
+							<option value={'OBC'}> OBC(other backward category) </option>
+							<option value={'SC/ST'}>    SC/ST   </option>
+						</Input>
+					</div>
+					</Col > 
+				</Row> 
+
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
@@ -389,7 +570,7 @@ const AddEnrollment = () => {
 							id="advDetails" 
 							name="advDetails"
 							type="checkbox" 
-							onChange={onChange}
+							onChange={()=>addAdvanceDetail(!advance)}
 							defaultChecked={fields.advDetails}
 						/>
 					</div>
@@ -403,7 +584,7 @@ const AddEnrollment = () => {
 							id="nomineeDetails" 
 							name="nomineeDetails"
 							type="checkbox" 
-							onChange={onChange}
+							onChange={()=>addNomineeDetails(!nominee)}
 							defaultChecked={fields.nomineeDetails}
 						/>
 					</div>
@@ -412,32 +593,800 @@ const AddEnrollment = () => {
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4" size={'sm'} for="creditReport"> Credit Report & Upload </Label>
+						<Label className="col-4" size={'sm'} for="nomineeDetails"> Bank Details </Label>
 						<Input
-							id="creditReport" 
-							name="creditReport"
+							id="nomineeDetails" 
+							name="nomineeDetails"
 							type="checkbox" 
-							onChange={onChange}
-							defaultChecked={fields.creditReport}
+							onChange={()=>addBankDetails(!bankDetails)} 
 						/>
 					</div>
 					</Col > 
 				</Row>
+
+				<CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+					<b className='text-primary mx-1'> FULL ADDRESS </b>          
+				</CardText>
+
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4"  size={'sm'} for="door_num"> Door No </Label>
+						<Input
+							id="door_num" 
+							name="door_num"
+							type="text"
+							onChange={onChange}
+							defaultValue={fields.door_num}
+							style={{border:errors.door_num?'1px solid red':''}}
+							placeholder="Enter door no"
+						/>
+					</div>
+					</Col > 
+				</Row> 
+				
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4"  size={'sm'} for="crossing"> Crossing </Label>
+						<Input
+							id="crossing" 
+							name="crossing"
+							type="text"
+							onChange={onChange}
+							defaultValue={fields.crossing}
+							style={{border:errors.crossing?'1px solid red':''}}
+							placeholder="Enter crossing"
+						/>
+					</div>
+					</Col > 
+				</Row> 
+				
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4"  size={'sm'} for="street"> Street </Label>
+						<Input
+							id="street" 
+							name="street"
+							type="text"
+							onChange={onChange}
+							defaultValue={fields.street}
+							style={{border:errors.street?'1px solid red':''}}
+							placeholder="Enter street"
+						/>
+					</div>
+					</Col > 
+				</Row> 
+				
+				<Row className="mt-2">
+					<Col md="12">
+					<div className="d-flex">
+						<Label className="col-4" size={'sm'} for="landmark"> Landmark </Label>
+						<Input
+							id="landmark" 
+							name="landmark"
+							type="text"
+							onChange={onChange}
+							defaultValue={fields.landmark}
+							style={{border:errors.landmark?'1px solid red':''}}
+							placeholder="Enter landmark"
+						/>
+					</div>
+					</Col > 
+				</Row>  
+
+				<CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+							<b className='text-primary mx-1'> 
+								CO-APPLICANT EMPLOYMENT 
+							</b>          
+					</CardText>
+				
+						<Row>
+							<Col md="12">
+								<div className="d-flex">
+									<div className="col-4">
+										<Input 
+											type="select" 
+											className={'xs'} 
+											style={{width:90,border:errors.co_applicant_rel ?'1px solid red':''}}
+											name="co_applicant_rel"
+											onChange={onChange}
+											value={fields.co_applicant_rel}
+										>
+										<option value={'W/O'}> W/O </option>
+										<option value={'H/O'}> H/O </option>
+										<option value={'S/O'}> S/O </option>
+										</Input>
+									</div>
+									<Input
+										id="voterID" 
+										name="co_applicant"
+										type="text"
+										onChange={onChange}
+										placeholder="Enter name"
+										defaultValue={fields.co_applicant}
+										style={{border:errors.co_applicant ?'1px solid red':''}}
+									/>
+								</div>
+							</Col>
+						</Row>
+						<Row className="mt-2">
+							<Col md="12">
+								<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="co_applicant_dob">
+									DOB
+								</Label>
+								<Input 
+									id="co_applicant_dob" 
+									name="co_applicant_dob"
+									type="date"
+									onChange={onChange}
+									defaultValue={fields.co_applicant_dob}
+								/>
+								</div>
+							</Col>
+						</Row>
+						<Row className="mt-2">
+							<Col md="12">
+								<div className="d-flex"> 
+								<Label className="col-4" size={'sm'} for="co_applicant_industry_type">
+									Industry Type
+								</Label>
+								<Input 
+									id="co_applicant_industry_type" 
+									name="co_applicant_industry_type"
+									type="text"
+									onChange={onChange}
+									defaultValue={fields.co_applicant_industry_type}
+								/>
+								</div>
+							</Col>
+						</Row>
+						<Row className="mt-2">
+							<Col md="12">
+								<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="co_applicant_job_type">
+									Job Type
+								</Label>
+								<Input 
+									id="co_applicant_job_type" 
+									name="co_applicant_job_type"
+									type="text"
+									onChange={onChange}
+									defaultValue={fields.co_applicant_job_type}
+								/>
+								</div>
+							</Col>
+						</Row>
+						<Row className="mt-2">
+							<Col md="12">
+								<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="co_applicant_income_freq">
+									Income Freq.
+								</Label>
+								<Input 
+									id="co_applicant_income_freq" 
+									name="co_applicant_income_freq"
+									type="text"
+									onChange={onChange}
+									defaultValue={fields.co_applicant_income_freq}
+								/>
+								</div>
+							</Col>
+						</Row>
+				
 				</FormGroup> 
 			<div className="mt-3" id="resultArea">  
 			</div>
 		</CardBody>
-		<CardFooter>
-			<Row className="d-flex" style={{justifyContent:'space-between'}}>
-				<button className="col-3 btn btn-success" style={{marginLeft:'5px'}}> Save & Process </button>
-				<Link to={`/dashboard`} className="col-2 btn bg-gray-300" style={{marginRight:'5px'}}> Home </Link>
-			</Row>
-		</CardFooter>
-		</Form>
 		</Card>
-		{/* --------------------------------------------------------------------------------*/}
-		{/* Card-2*/}  
+		<div className='col-6'>
+			<Card>
+				<CardBody >
+					<FormGroup>
+					{
+						bankDetails && 
+						(<>
+						<CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+							<b className='text-primary mx-1'> BANK INFORMATION </b>          
+						</CardText>
+
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="ifsc"> IFSC </Label>
+								<Input
+									id="ifsc" 
+									name="ifsc"
+									type="text"
+									onChange={e=>setBank({...bank, ifsc:e.target.value })}
+									defaultValue={bank.ifsc}
+									style={{border:errors.ifsc?'1px solid red':''}}
+								/>
+							</div>
+							</Col > 
+						</Row> 
+
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="bank"> 
+									Bank Name 
+								</Label>
+								<Input
+									id="bank" 
+									name="bank"
+									type="text"
+									onChange={e=>setBank({...bank, bank:e.target.value })}
+									defaultValue={bank.bank}
+									style={{border:errors.bank?'1px solid red':''}}
+								/>
+							</div>
+							</Col > 
+						</Row> 
+							
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="bank_branch"> 
+									Bank Branch 
+								</Label>
+								<Input
+									id="bank_branch" 
+									name="bank_branch"
+									type="text"
+									onChange={e=>setBank({...bank, bank_branch:e.target.value })}
+									defaultValue={bank.bank_branch}
+									style={{border:errors.bank_branch?'1px solid red':''}}
+								/>
+							</div>
+							</Col > 
+						</Row> 
+						
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="account_num"> 
+									Account No 
+								</Label>
+								<Input
+									id="account_num" 
+									name="account_num"
+									type="text"
+									onChange={e=>setBank({...bank, account_num:e.target.value })}
+									defaultValue={bank.account_num}
+									style={{border:errors.account_num?'1px solid red':''}}
+								/>
+							</div>
+							</Col > 
+						</Row> 
+
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="is_debit_card"> 
+									Is Debit Card 
+								</Label>
+								<Input
+									id="is_debit_card" 
+									name="is_debit_card"
+									type="text"
+									onChange={e=>setBank({...bank, is_debit_card:e.target.value })}
+									defaultValue={bank.is_debit_card}
+									style={{border:errors.is_debit_card?'1px solid red':''}}
+								/>
+							</div>
+							</Col > 
+						</Row> 
+						
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="is_account_active"> 
+									Is Account Active 
+								</Label>
+								<Input
+									id="is_account_active" 
+									name="is_account_active"
+									type="select"
+									onChange={e=>setBank({...bank, is_account_active:e.target.value })}
+									value={bank.is_account_active}
+									style={{border:errors.is_account_active?'1px solid red':''}}
+								>
+									<option>   </option>
+									<option value={'yes'}> Yes </option>
+									<option value={'no'}> No </option>
+								</Input>
+							</div>
+							</Col > 
+						</Row> 
+						</>)
+					}
+					
+					<CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+						<b className='text-primary mx-1'> KYC & OTHER DOCUMENTS </b>          
+					</CardText>
+
+					<Row className="mt-2">
+						<Col md="12">
+						<div className="d-flex">
+							<div className="col-4">
+								<Input 
+									type='select'
+									className={'xs'} 
+									style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
+									name="kyc_type"
+									onChange={onChange}
+									value={fields.document_id}
+								>
+								<option></option>
+								{KYCtypes.map( opt => {
+									return <option key={opt.id} value={opt.id}>{opt.name}</option>
+								})} 
+								</Input>
+							</div>
+							<Input
+								type="file"
+								name='doc'
+								onChange={handleFile}
+								style={{border:errors.verification ?'1px solid red':''}}
+							/>
+						</div> 
+						</Col > 
+					</Row>
+					{nominee && 
+					(<>
+						<CardText className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+							<b className='text-primary mx-1'> Nominee Information </b>
+						</CardText>
+						<Row >
+							<Col md="12"> 
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="nominee_aadhaar"> Aadhaar </Label>
+								<Input
+									id="nominee_aadhaar" 
+									name="nominee_aadhaar"
+									type="text"
+									onChange={e=>setNominee({...Nominee, nominee_aadhaar: e.target.value})}
+									defaultValue={Nominee.nominee_aadhaar}
+									placeholder={"Enter nominee nominee_aadhaar"}
+									style={{border:errors.phone ?'1px solid red':''}}
+								/>
+							</div>
+							</Col > 
+						</Row> 
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<div className="col-4">
+									<Input 
+										type="select" 
+										className={'xs'} 
+										style={{width:150,border:errors.nominee_kyc_type ?'1px solid red':''}}
+										name="nominee_kyc_type"
+										onChange={e=>setNominee({...Nominee, nominee_kyc_type: e.target.value})}
+										value={Nominee.nominee_kyc_type}
+									>
+									<option value={'voterID'}> Voter ID </option>
+									<option value={'aadhaar'}> Aadhaar </option>
+									</Input>
+								</div>
+								<Input 
+									name="nominee_kyc"
+									type="text"
+									onChange={e=>setNominee({...Nominee, nominee_kyc: e.target.value})}
+									placeholder="Enter other KYC No"
+									defaultValue={Nominee.nominee_kyc}
+									style={{border:errors.nominee_kyc ?'1px solid red':''}}
+								/>
+							</div>
+							</Col > 
+						</Row>
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="nominee"> Nominee Name </Label>
+								<Input
+									id="nominee" 
+									name="nominee"
+									type="text"
+									onChange={e=>setNominee({...Nominee, nominee: e.target.value})}
+									defaultValue={Nominee.nominee}
+									placeholder={"Enter nominee name"}
+									style={{border:errors.nominee ?'1px solid red':''}}
+								/>
+							</div>
+							</Col > 
+						</Row> 
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="nominee_dob"> Nominee DOB </Label>
+								<Input
+									id="nominee_dob" 
+									name="nominee_dob"
+									type="date"
+									onChange={e=>setNominee({...Nominee, nominee_dob: e.target.value})}
+									defaultValue={Nominee.nominee_dob}
+									style={{border:errors.nominee_dob ?'1px solid red':''}}
+								/>
+							</div>
+							</Col > 
+						</Row> 
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="nominee_relation"> 
+									Nominee Relationship 
+								</Label>
+								<Input
+									id="nominee_relation" 
+									name="nominee_relation"
+									type="text"
+									onChange={e=>setNominee({...Nominee, nominee_relation: e.target.value})}
+									defaultValue={Nominee.nominee_relation}
+									style={{border:errors.nominee_relation ?'1px solid red':''}}
+								/>
+							</div>
+							</Col> 
+						</Row> 
+						<Row className="mt-2">
+							<Col md="12">
+							<div className="d-flex">
+								<Label className="col-4" size={'sm'} for="rel_proof"> 
+									Relationship Proof 
+								</Label>
+								<Input
+									id="rel_proof" 
+									name="rel_proof"
+									type="select"
+									onChange={e=>setNominee({...Nominee, rel_proof: e.target.value})}
+									style={{border:errors.rel_proof ?'1px solid red':''}}
+								>
+									<option></option>
+								</Input>
+							</div>
+							</Col> 
+						</Row>  
+					</>)
+					} 
+
+					<CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+						<b className='text-primary mx-1'> FINANCIAL LIABILITIES </b>          
+					</CardText>
+
+					<Row >
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="member_in_family">
+								Member In Family
+							</Label>
+							<Input 
+								id="member_in_family" 
+								name="member_in_family"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.member_in_family}
+							/>
+							</div>
+						</Col>
+					</Row>
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="mature_in_family">
+								Mature in Family
+							</Label>
+							<Input 
+								id="mature_in_family" 
+								name="mature_in_family"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.mature_in_family}
+							/>
+							</div>
+						</Col>
+					</Row>
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="minor_in_family">
+								Minor in Family
+							</Label>
+							<Input 
+								id="minor_in_family" 
+								name="minor_in_family"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.minor_in_family}
+							/>
+							</div>
+						</Col>
+					</Row>
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="earning_person_in_family">
+								Earning Person
+							</Label>
+							<Input 
+								id="earning_person_in_family" 
+								name="earning_person_in_family"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.earning_person_in_family}
+							/>
+							</div>
+						</Col>
+					</Row>
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="depend_person_in_family">
+								Depend Person
+							</Label>
+							<Input 
+								id="depend_person_in_family" 
+								name="depend_person_in_family"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.depend_person_in_family}
+							/>
+							</div>
+						</Col>
+					</Row>
+					
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="house_land">
+								House Land
+							</Label>
+							<Input 
+								id="house_land" 
+								name="house_land"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.house_land}
+							/>
+							</div>
+						</Col>
+					</Row>
+					
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="house_type">
+								House Type
+							</Label>
+							<Input 
+								id="house_type" 
+								name="house_type"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.house_type}
+							/>
+							</div>
+						</Col>
+					</Row>
+					
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="durable_access">
+								Durable Access
+							</Label>
+							<Input 
+								id="durable_access" 
+								name="durable_access"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.durable_access}
+							/>
+							</div>
+						</Col>
+					</Row>
+					
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="is_lpg">
+								IsLPG
+							</Label>
+							<Input 
+								id="is_lpg" 
+								name="is_lpg"
+								type="select"
+								onChange={onChange}
+								value={fields.is_lpg}
+							>
+								<option value={'yes'}>Yes</option>
+								<option value={'no'}>No</option>
+							</Input>
+							</div>
+						</Col>
+					</Row>
+					
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="total_land">
+								Total Land
+							</Label>
+							<Input 
+								id="total_land" 
+								name="total_land"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.total_land}
+							/>
+							</div>
+						</Col>
+					</Row>
+					
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="allied_activities">
+								Allied Activities
+							</Label>
+							<Input 
+								id="allied_activities" 
+								name="allied_activities"
+								type="select"
+								onChange={onChange}
+								value={fields.allied_activities}
+							>
+								<option>  </option>
+								<option value={'yes'}> Yes </option>
+								<option value={'no'}> No </option>
+							</Input>
+							</div>
+						</Col>
+					</Row>
+					
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="farmer_category">
+								Farmer Category
+							</Label>
+							<Input 
+								id="farmer_category" 
+								name="farmer_category"
+								type="select"
+								onChange={onChange}
+								value={fields.farmer_category}
+							>
+								<option>  </option>
+								<option value={'yes'}> Yes </option>
+								<option value={'no'}> No </option>
+							</Input>
+							</div>
+						</Col>
+					</Row>
+					
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="total_monthly_income">
+								T.Monthly Income
+							</Label>
+							<Input 
+								id="total_monthly_income" 
+								name="total_monthly_income"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.total_monthly_income}
+							/>
+							</div>
+						</Col>
+					</Row>
+					
+					<Row className="mt-2">
+						<Col md="12">
+							<div className="d-flex">
+							<Label className="col-4" size={'sm'} for="monthly_expenses">
+								Monthly Expenses
+							</Label>
+							<Input 
+								id="monthly_expenses" 
+								name="monthly_expenses"
+								type="text"
+								onChange={onChange}
+								defaultValue={fields.monthly_expenses}
+							/>
+							</div>
+						</Col>
+					</Row>
+						{advance && 
+						(<>
+							<CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
+								<b className='text-primary mx-1'> ADVANCE INFORMATION </b>          
+							</CardText>
+
+							<Row className="mt-2">
+								<Col md="12">
+									<div className="d-flex">
+									<Label className="col-4" size={'sm'} for="type">
+										Type
+									</Label>
+									<Input 
+										id="type" 
+										name="type"
+										type="select"
+										onChange={e=>setAdvance({...advanceDetail, type:e.target.value })}
+										value={advanceDetail.type}
+									>
+										<option>  </option>
+										<option value={'group'}> Group </option>
+									</Input>
+									</div>
+								</Col>
+							</Row>
+
+							<Row className="mt-2">
+								<Col md="12">
+									<div className="d-flex">
+									<Label className="col-4" size={'sm'} for="email">
+										Email
+									</Label>
+									<Input 
+										id="email" 
+										name="email"
+										type="text"
+										onChange={e=>setAdvance({...advanceDetail, email:e.target.value })}
+										defaultValue={advanceDetail.email}
+									/>
+									</div>
+								</Col>
+							</Row>
+
+							<Row className="mt-2">
+								<Col md="12">
+									<div className="d-flex">
+									<Label className="col-4" size={'sm'} for="guarantor">
+										Guarantor
+									</Label>
+									<Input 
+										id="guarantor" 
+										name="guarantor"
+										type="text"
+										onChange={e=>setAdvance({...advanceDetail, guarantor:e.target.value })}
+										defaultValue={advanceDetail.guarantor}
+									/>
+									</div>
+								</Col>
+							</Row>
+
+							<Row className="mt-2">
+								<Col md="12">
+									<div className="d-flex">
+									<Label className="col-4" size={'sm'} for="PAN">
+										PAN
+									</Label>
+									<Input 
+										id="PAN" 
+										name="PAN"
+										type="text"
+										onChange={onChange}
+										defaultValue={fields.PAN}
+									/>
+									</div>
+								</Col>
+							</Row>
+						</>)
+						}
+				</FormGroup> 
+			</CardBody>
+			</Card>            
+		</div>
+		<Button color="success" className="w-100" style={submitStyle}> Add Enrollment </Button>
+		</Form>
+		 
 	</div>
+	</>
 	);
 };
 
