@@ -47,6 +47,14 @@ const AddEnrollment = () => {
 		nomineeDetails:'',
 		creditReport:'',
 		father_name:'',
+		marital_status:'',
+		education:'',
+		religion:'',
+		category:'',
+		door_num:'',
+		crossing:'',
+		street:'',
+		landmark:'',
 		co_applicant_rel:'',
 		co_applicant:'',
 		co_applicant_dob:'',
@@ -551,9 +559,9 @@ const AddEnrollment = () => {
 							style={{border:errors.category ?'1px solid red':''}}
 						>
 							<option> </option>
-							<option value={'Gen'}>  General </option>
+							<option value={'Gen'}> General </option>
 							<option value={'OBC'}> OBC(other backward category) </option>
-							<option value={'SC/ST'}>    SC/ST   </option>
+							<option value={'SC/ST'}> SC/ST </option>
 						</Input>
 					</div>
 					</Col > 

@@ -40,7 +40,7 @@ export const validate = (fields,exceptions=[]) => {
                     result[f] = shout;
                 }
             }
-            if(type)
+            if(type && invalid===false)
             { 
                 if(input.val() && type === 'num')
                 {
@@ -51,11 +51,25 @@ export const validate = (fields,exceptions=[]) => {
                     }
                 }
             }
-            if(isDate)
+            if(isDate && invalid===false)
             {
-                console.log(isValidDate($(input).val(),18))
+                if(!isValidDate($(input).val(),18))
+                {
+                    invalid = true
+                    shout = 'Invalid date';
+                    result[f] = shout;
+                } else {
+                    shout = '';
+                }
+                if($(input).parents('.col-md-12').find('small.text-danger').length)
+                {
+                    $(input).parents('.col-md-12').find('small.text-danger').text(shout)
+                } else {
+                    $(input).parents('.col-md-12').append('<small class="text-danger offset-4">'+shout+'</small>')
+                }
+                // return
             }
-            if(shout)   
+            if(shout && invalid===false)   
             {
                 if($(input).parents('.col-md-12').find('small.text-danger').length)
                 {
