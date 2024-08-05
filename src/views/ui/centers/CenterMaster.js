@@ -5,22 +5,23 @@ import $ from 'jquery';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardText, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
 import { useSearchCentersQuery } from '../../../features/centerSlice';
 import { validate } from '../../../helpers/utils';
 
 function CenterMaster() {
 	const dispatch = useDispatch();
-	const search = useSelector(state=>state.auth.search)
+	const search = useSelector(state=>state.auth.search);
+	const submitStyle = {position:'fixed',maxWidth:'360px',left:'40%',top:'90%',zIndex:'121'}
 	const getInfo = (e) => {  
 		// dispatch({type:'SEARCH', payload:e.target.value})
 		setFields({...fields, branch:e.target.value })
-		console.log(e.target.value)
+		if(e.target.value ==='') {
+			setCenter([])
+			return 
+		}
 		axios.get('get-branch-centers/'+ e.target.value)
-		.then(({data})=>{
-			console.log(data)
-			setCenter(data)
-		})
+		.then(({data})=>setCenter(data))
 	}
 	const debouncedSearchQuery = useDebounce(search, 500);
 	const { data, isLoading } = useSearchCentersQuery(debouncedSearchQuery,{skip:search===''})
@@ -45,7 +46,6 @@ function CenterMaster() {
 	const [states, fillStates] = useState([])
 	const [districts, fillDistricts] = useState([])
 	const [branches, setBranches] = useState([])
-	const [centers, populateCenter] = useState([])
 	
 	const onChange = e => {
 		if(e.target)
@@ -157,13 +157,13 @@ function CenterMaster() {
 						</Row>
 					</Col>
 					<Col md={6} >
+						<Form onSubmit={handleSubmit}>
+						<FormGroup>
 						<Card>
 							<CardHeader tag="h6" className="border-bottom d-flex card-custom-header">
 								<b className='mt-1 mb-1'>CENTER INFORMATION</b>
 							</CardHeader>
-							<CardBody className="bg-gray-300">
-								<Form onSubmit={handleSubmit}>
-								<FormGroup>
+							<CardBody >
 									<Row className="mt-2">
 									<Col md="12">
 										<div className="d-flex">
@@ -306,6 +306,13 @@ function CenterMaster() {
 										</div>
 									</Col > 
 									</Row>
+									</CardBody>
+							</Card>
+							<Card>
+								<CardHeader tag="h6" className="border-bottom d-flex card-custom-header">
+									<b className='text-primary mt-1 mb-1'> OTHER INFO </b>
+								</CardHeader>
+								<CardBody>
 									<Row className="mt-2">
 									<Col md="12">
 										<div className="d-flex">
@@ -405,15 +412,17 @@ function CenterMaster() {
 									</Col > 
 									</Row> 
 									<Row className="mt-2">
-									<Col md="12">
-										<button type='submit' className='btn btn-success btn-sm btn-rounded'> Create </button>
-									</Col > 
+										<Col md="10">
+											<Button color='success' className='w-50' style={submitStyle} size='sm'>
+												Create
+											</Button>
+										</Col> 
 									</Row> 
+							</CardBody>
+						</Card>
 								</FormGroup> 
 								</Form>
 							
-							</CardBody>
-						</Card>
 					
 					</Col>
 				</Row>
