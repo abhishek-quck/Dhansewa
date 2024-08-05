@@ -200,7 +200,7 @@ const Starter = () => {
             <Card>
                 <CardBody>
                     <Row>
-                        <div className={'col-2 align-items-center'}>
+                        <div className={'col-2 col-xl-3 align-items-center'}>
                             < img
                                 src={user}
                                 alt="profile"
