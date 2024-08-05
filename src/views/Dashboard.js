@@ -4,6 +4,10 @@ import Summary from "../components/dashboard/Summary";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"; 
+import user from "../assets/images/logos/profile.jpg";
+import fileSetting from "../assets/images/file_settings.webp";
+import activeUser from "../assets/images/activeUser.png";
+import locate from "../assets/images/locate.jpg";
 import IncomeChart from "../components/dashboard/IncomeChart";
 import loan from '../assets/images/loan.jpg'
 import report from '../assets/images/report.jpg'
@@ -190,6 +194,90 @@ const Starter = () => {
             </CardBody>
           </Card>
         </div>
+      </Row>
+      <Row>
+        <Col md={4}>
+            <Card>
+                <CardBody>
+                    <Row>
+                        <div className={'col-2 align-items-center'}>
+                            < img
+                                src={user}
+                                alt="profile"
+                                className="mt-3 rounded-circle"
+                                width="60"
+                            />
+                        </div>
+                        <div className={'col-9'}>
+                            <div> Nodal Officer </div>
+                            <div> Rajeev Kumar </div>
+                            <div> Contact No.: 8958597910 </div>
+                            <div> Email: mismgr@dhanseva.co.in </div>
+                        </div>
+                    </Row>
+                </CardBody>
+            </Card>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={12}>
+            <div className="d-flex">
+                <Col md={2} xl={2}>
+                    <div className="d-flex justify-content-center">
+                        <i className="fa fa-people-group mt-2 fs-2"/>
+                        <div>
+                            <b className="ms-3 fs-3">5Cr+</b> <br/>
+                            <small>Loan Distributions</small>
+                        </div>
+                    </div> 
+                </Col>
+                <Col md={2} xl={2}>
+                    <div className="d-flex justify-content-center">
+                        <i className="fa fa-user mt-2 fs-2"/>
+                        <div>
+                            <b className="ms-3 fs-3"> 500+ </b> <br/>
+                            <small> Clients </small>
+                        </div>
+                    </div> 
+                </Col>
+                <Col md={2} xl={2}>
+                    <div className="d-flex justify-content-center">
+                        <img src={fileSetting} alt="" className="img-icon mt-2 fs-2"/>
+                         <div>
+                            <b className="ms-3 fs-3"> 27 </b> <br/>
+                            <small> Staffs </small>
+                        </div> 
+                    </div> 
+                </Col>
+                <Col md={2} xl={2}>
+                    <div className="d-flex justify-content-center">
+                        <img src={activeUser} alt={''} className="img-icon mt-2 fs-2"/>
+                         <div>
+                            <b className="ms-3 fs-3"> 6 </b> <br/>
+                            <small> Branches </small>
+                        </div>
+                    </div> 
+                </Col>
+                <Col md={2} xl={2}>
+                    <div className="d-flex justify-content-center">
+                        <img src={activeUser} alt={''} className="img-icon mt-2 fs-2"/>
+                        <div>
+                            <b className="ms-3 fs-3"> 4 </b> <br/>
+                            <small> Districts </small>
+                        </div>
+                    </div> 
+                </Col>
+                <Col md={2} xl={2}>
+                    <div className="d-flex justify-content-center">
+                        <img src={locate} alt="" className="img-icon mt-2 fs-2"/>
+                         <div>
+                            <b className="ms-3 fs-3"> 1 </b> <br/>
+                            <small> State </small>
+                        </div>
+                    </div> 
+                </Col>
+            </div>
+        </Col>
       </Row>
     </div>
   );
