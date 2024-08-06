@@ -24,7 +24,7 @@ export const validate = (fields,exceptions=[]) => {
             let minLength = $(input).attr('min');
             let maxLength = $(input).attr('max');
             let type = $(input).attr('cast');
-            let isDate = $(input).attr('type')==='date';
+            let isDate = $(input).attr('type')==='date' && $(input).attr('req');
             if($(input).val()?.length && (minLength || maxLength))
             {
                 if($(input).val().length < parseInt(minLength))

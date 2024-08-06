@@ -427,6 +427,7 @@ const AddEnrollment = () => {
 							type="date"
 							onChange={onChange}
 							defaultValue={fields.date_of_birth}
+							req="true"
 							placeholder="Enter Date of Birth"
 							style={{border:errors.date_of_birth ?'1px solid red':''}}
 						/>
@@ -726,6 +727,7 @@ const AddEnrollment = () => {
 									id="co_applicant_dob" 
 									name="co_applicant_dob"
 									type="date"
+									req="true"
 									onChange={onChange}
 									defaultValue={fields.co_applicant_dob}
 								/>

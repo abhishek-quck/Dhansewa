@@ -48,7 +48,7 @@ const BranchMaster = () => {
 
     const handleSubmit = e => {
         e.preventDefault() 
-        let {shouldGo, result} = validate(fields)
+        let {shouldGo, result} = validate(fields,['branch_account','payout_month_and_year','dissolved_date','cash_account','branch_account','loan_charge_auto','cash_balance','closing_enabled','reporting_mail','reporting_phone_sms','mobile_verify'])
         if(shouldGo===false)
         {
             for (const el in fields) {
@@ -80,7 +80,6 @@ const BranchMaster = () => {
     useEffect(()=>{
         axios.get('/get-state-codes')
         .then(({data})=>{
-            console.log(data)
             if(data.length)
             {
                 setCodes(data)
@@ -184,6 +183,7 @@ const BranchMaster = () => {
                             name={'payout_month_and_year'} 
                             style={inputStyle} 
                             type='date' 
+                            noreq={'true'}
                             value={fields.payout_month_and_year}
                         />
                     </Col>
