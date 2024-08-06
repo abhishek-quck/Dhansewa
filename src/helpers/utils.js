@@ -40,7 +40,7 @@ export const validate = (fields,exceptions=[]) => {
                     result[f] = shout;
                 }
             }
-            if(type && invalid===false)
+            if(type)
             { 
                 if(input.val() && type === 'num')
                 {
@@ -51,7 +51,7 @@ export const validate = (fields,exceptions=[]) => {
                     }
                 }
             }
-            if(isDate && invalid===false)
+            if(isDate)
             {
                 if(!isValidDate($(input).val(),18))
                 {
@@ -69,7 +69,7 @@ export const validate = (fields,exceptions=[]) => {
                 }
                 // return
             }
-            if(shout && invalid===false)   
+            if(shout)   
             {
                 if($(input).parents('.col-md-12').find('small.text-danger').length)
                 {
