@@ -185,7 +185,7 @@ function UpdateCIS() {
                     <CardBody >
                         <FormGroup>
                         <CardText className='mt-2' style={{backgroundColor:'beige',padding:5}}>
-                            <b className='text-primary mx-1'> Personal Information : {id} </b>
+                            <b className='text-primary mx-1'> Personal Information : Client ID - {id} </b>
                         </CardText>
                         <Row className="mt-2">
                             <Col md="12">
