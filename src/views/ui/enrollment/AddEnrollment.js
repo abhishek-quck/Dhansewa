@@ -43,7 +43,6 @@ const AddEnrollment = () => {
 		PAN:'',
 		postal_pin:'',
 		village:'',
-		advDetails:'',
 		nomineeDetails:'',
 		creditReport:'',
 		father_name:'',
@@ -60,21 +59,7 @@ const AddEnrollment = () => {
 		co_applicant_dob:'',
 		co_applicant_industry_type:'',
 		co_applicant_job_type:'',
-        co_applicant_income_freq:'',
-		member_in_family:'',
-        mature_in_family:'',
-        minor_in_family:'',
-        earning_person_in_family:'',
-        depend_person_in_family:'',
-        house_land:'',
-        house_type:'',
-        durable_access:'',
-        is_lpg:'',
-        total_land:'',
-        allied_activities:'',
-        farmer_category:'',
-        total_monthly_income:'',
-        monthly_expenses:'', 
+        co_applicant_income_freq:'', 
 	})
 
 	const [bank, setBank]= useState({
@@ -95,12 +80,6 @@ const AddEnrollment = () => {
         nominee_kyc:'',
 	})
 
-	const [advanceDetail, setAdvance] = useState({
-		type:'',
-        email:'',
-        guarantor:'',
-	})
-
 	const onChange = e => {
 		e.target.style.border=''
 		const {name, value} = e.target;
@@ -118,10 +97,6 @@ const AddEnrollment = () => {
 		if(nominee)
 		{
 			finalObj = {...finalObj, ...Nominee} 
-		}
-		if(advance)
-		{
-			finalObj = {...finalObj, ...advanceDetail} 
 		}
 		console.log(Object.keys(finalObj).length,finalObj); 
 		let {result, shouldGo} = validate(finalObj,['advDetails','nomineeDetails','creditReport'])
@@ -256,8 +231,8 @@ const AddEnrollment = () => {
 							id="voterID" 
 							name="verification"
 							type="text"
-							min="12"
-							max="12"
+							min="10"
+							max="10"
 							onChange={onChange}
 							placeholder="Enter KYC No"
 							defaultValue={fields.verification}
@@ -1059,332 +1034,6 @@ const AddEnrollment = () => {
 					</>)
 					} 
 
-					<CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
-						<b className='text-primary mx-1'> FINANCIAL LIABILITIES </b>          
-					</CardText>
-
-					<Row >
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="member_in_family">
-								Member In Family
-							</Label>
-							<Input 
-								id="member_in_family" 
-								name="member_in_family"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.member_in_family}
-							/>
-							</div>
-						</Col>
-					</Row>
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="mature_in_family">
-								Mature in Family
-							</Label>
-							<Input 
-								id="mature_in_family" 
-								name="mature_in_family"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.mature_in_family}
-							/>
-							</div>
-						</Col>
-					</Row>
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="minor_in_family">
-								Minor in Family
-							</Label>
-							<Input 
-								id="minor_in_family" 
-								name="minor_in_family"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.minor_in_family}
-							/>
-							</div>
-						</Col>
-					</Row>
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="earning_person_in_family">
-								Earning Person
-							</Label>
-							<Input 
-								id="earning_person_in_family" 
-								name="earning_person_in_family"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.earning_person_in_family}
-							/>
-							</div>
-						</Col>
-					</Row>
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="depend_person_in_family">
-								Depend Person
-							</Label>
-							<Input 
-								id="depend_person_in_family" 
-								name="depend_person_in_family"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.depend_person_in_family}
-							/>
-							</div>
-						</Col>
-					</Row>
-					
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="house_land">
-								House Land
-							</Label>
-							<Input 
-								id="house_land" 
-								name="house_land"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.house_land}
-							/>
-							</div>
-						</Col>
-					</Row>
-					
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="house_type">
-								House Type
-							</Label>
-							<Input 
-								id="house_type" 
-								name="house_type"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.house_type}
-							/>
-							</div>
-						</Col>
-					</Row>
-					
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="durable_access">
-								Durable Access
-							</Label>
-							<Input 
-								id="durable_access" 
-								name="durable_access"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.durable_access}
-							/>
-							</div>
-						</Col>
-					</Row>
-					
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="is_lpg">
-								IsLPG
-							</Label>
-							<Input 
-								id="is_lpg" 
-								name="is_lpg"
-								type="select"
-								onChange={onChange}
-								value={fields.is_lpg}
-							>
-								<option value={'yes'}>Yes</option>
-								<option value={'no'}>No</option>
-							</Input>
-							</div>
-						</Col>
-					</Row>
-					
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="total_land">
-								Total Land
-							</Label>
-							<Input 
-								id="total_land" 
-								name="total_land"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.total_land}
-							/>
-							</div>
-						</Col>
-					</Row>
-					
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="allied_activities">
-								Allied Activities
-							</Label>
-							<Input 
-								id="allied_activities" 
-								name="allied_activities"
-								type="select"
-								onChange={onChange}
-								value={fields.allied_activities}
-							>
-								<option>  </option>
-								<option value={'yes'}> Yes </option>
-								<option value={'no'}> No </option>
-							</Input>
-							</div>
-						</Col>
-					</Row>
-					
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="farmer_category">
-								Farmer Category
-							</Label>
-							<Input 
-								id="farmer_category" 
-								name="farmer_category"
-								type="select"
-								onChange={onChange}
-								value={fields.farmer_category}
-							>
-								<option>  </option>
-								<option value={'yes'}> Yes </option>
-								<option value={'no'}> No </option>
-							</Input>
-							</div>
-						</Col>
-					</Row>
-					
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="total_monthly_income">
-								T.Monthly Income
-							</Label>
-							<Input 
-								id="total_monthly_income" 
-								name="total_monthly_income"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.total_monthly_income}
-							/>
-							</div>
-						</Col>
-					</Row>
-					
-					<Row className="mt-2">
-						<Col md="12">
-							<div className="d-flex">
-							<Label className="col-4" size={'sm'} for="monthly_expenses">
-								Monthly Expenses
-							</Label>
-							<Input 
-								id="monthly_expenses" 
-								name="monthly_expenses"
-								type="text"
-								onChange={onChange}
-								defaultValue={fields.monthly_expenses}
-							/>
-							</div>
-						</Col>
-					</Row>
-						{advance && 
-						(<>
-							<CardText  className='mt-2' style={{backgroundColor:'beige',padding:5}}>
-								<b className='text-primary mx-1'> ADVANCE INFORMATION </b>          
-							</CardText>
-
-							<Row className="mt-2">
-								<Col md="12">
-									<div className="d-flex">
-									<Label className="col-4" size={'sm'} for="type">
-										Type
-									</Label>
-									<Input 
-										id="type" 
-										name="type"
-										type="select"
-										onChange={e=>setAdvance({...advanceDetail, type:e.target.value })}
-										value={advanceDetail.type}
-									>
-										<option>  </option>
-										<option value={'group'}> Group </option>
-									</Input>
-									</div>
-								</Col>
-							</Row>
-
-							<Row className="mt-2">
-								<Col md="12">
-									<div className="d-flex">
-									<Label className="col-4" size={'sm'} for="email">
-										Email
-									</Label>
-									<Input 
-										id="email" 
-										name="email"
-										type="text"
-										onChange={e=>setAdvance({...advanceDetail, email:e.target.value })}
-										defaultValue={advanceDetail.email}
-									/>
-									</div>
-								</Col>
-							</Row>
-
-							<Row className="mt-2">
-								<Col md="12">
-									<div className="d-flex">
-									<Label className="col-4" size={'sm'} for="guarantor">
-										Guarantor
-									</Label>
-									<Input 
-										id="guarantor" 
-										name="guarantor"
-										type="text"
-										onChange={e=>setAdvance({...advanceDetail, guarantor:e.target.value })}
-										defaultValue={advanceDetail.guarantor}
-									/>
-									</div>
-								</Col>
-							</Row>
-
-							<Row className="mt-2">
-								<Col md="12">
-									<div className="d-flex">
-									<Label className="col-4" size={'sm'} for="PAN">
-										PAN
-									</Label>
-									<Input 
-										id="PAN" 
-										name="PAN"
-										type="text"
-										onChange={onChange}
-										defaultValue={fields.PAN}
-									/>
-									</div>
-								</Col>
-							</Row>
-						</>)
-						}
 				</FormGroup> 
 			</CardBody>
 			</Card>            

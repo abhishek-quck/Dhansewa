@@ -28,6 +28,9 @@ const ClientDisbursement = lazy(()=>import("../views/ui/ClientDisbursement.js"))
 const AddGRT = lazy(()=>import("../views/ui/centers/GRT/AddGRT.js"))
 const BranchMaster = lazy(()=>import("../views/ui/management/BranchMaster.js"))
 const PrintDocs = lazy(()=>import("../views/PrintDocs.js"))
+const PreviewDocs = lazy(()=>import("../views/PreviewDocs.js"))
+const UserAccess = lazy(()=>import("../views/ui/hr/UserAccess.js"))
+const EditProfile = lazy(()=>import("../views/EditProfile.js"))
 const BankMaster = lazy(()=>import("../views/ui/management/BankMaster.js"))
 const EditEnrollment = lazy(()=>import("../views/ui/enrollment/EditEnrollment.js"))
 const UpdateCIS = lazy(()=>import("../views/ui/enrollment/UpdateCIS.js"))
@@ -59,6 +62,7 @@ const ThemeRoutes = [
       { path: "/", element: <Navigate to="/dashboard" /> },
       { path: "/login", exact: true, element: <Login /> },
       { path: "/signup", exact: true, element: <Signup /> },
+      { path: "/edit-profile", exact: true, element: <EditProfile /> },
       { path: "/landing", exact: true, element: <Landing /> },
       { path: "/dashboard", exact: true, element: <Dashboard /> },
       { path: "/about", exact: true, element: <About /> },
@@ -89,6 +93,7 @@ const ThemeRoutes = [
       { path: "/buttons", exact: true, element: <Buttons /> },
       { path: "/cards", exact: true, element: <Cards /> },
       { path: "/grid", exact: true, element: <Grid /> },
+      { path: "/user-access", exact: true, element: <UserAccess /> },
       { path: "/management", exact: true, element: <Tables /> },
       { path: "/loan-products", exact: true, element: <LoanProducts /> },
       { path: "/bank-master", exact: true, element: <BankMaster /> },
@@ -101,7 +106,7 @@ const ThemeRoutes = [
       { path: "/credit-report", exact: true, element: <CreditReport /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
       { path: "/print-documents", exact: true, element: <PrintDocs /> },
-      { path: "/download-documents", exact: true, element: <PrintDocs /> },
+      { path: "/download-documents", exact: true, element: <PreviewDocs /> },
     ],
   },
 ];
