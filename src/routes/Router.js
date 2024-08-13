@@ -29,6 +29,7 @@ const AddGRT = lazy(()=>import("../views/ui/centers/GRT/AddGRT.js"))
 const BranchMaster = lazy(()=>import("../views/ui/management/BranchMaster.js"))
 const PrintDocs = lazy(()=>import("../views/PrintDocs.js"))
 const PreviewDocs = lazy(()=>import("../views/PreviewDocs.js"))
+const EmployeeMaster = lazy(()=>import("../views/ui/hr/EmployeeMaster.js"))
 const UserAccess = lazy(()=>import("../views/ui/hr/UserAccess.js"))
 const EditProfile = lazy(()=>import("../views/EditProfile.js"))
 const BankMaster = lazy(()=>import("../views/ui/management/BankMaster.js"))
@@ -93,6 +94,7 @@ const ThemeRoutes = [
       { path: "/buttons", exact: true, element: <Buttons /> },
       { path: "/cards", exact: true, element: <Cards /> },
       { path: "/grid", exact: true, element: <Grid /> },
+      { path: "/employee-master", exact: true, element: <EmployeeMaster /> },
       { path: "/user-access", exact: true, element: <UserAccess /> },
       { path: "/management", exact: true, element: <Tables /> },
       { path: "/loan-products", exact: true, element: <LoanProducts /> },
