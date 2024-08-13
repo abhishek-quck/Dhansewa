@@ -20,6 +20,7 @@ const AddEnrollment = () => {
 	const dispatch = useDispatch()
 	const [submitted, hit]=useState(false)
 	const [branches, setBranches] = useState([])
+	const [KYCdoc, setKYCdoc] = useState(null)
 	const [states, fillStates] = useState([])
 	const [districts, fillDistricts] = useState([])
 	const submitStyle = {position:'fixed',maxWidth:'360px',left:'40%',top:'90%',zIndex:'121'}
@@ -107,8 +108,18 @@ const AddEnrollment = () => {
 			return 
 		}
 		dispatch({type:'LOADING'})
- 
-		axios.post('/add-enrollment', fields )
+		let fd = new FormData()
+		for (const key in fields) {
+			fd.append(key, fields[key])
+		}
+		fd.append('kyc', KYCdoc )
+		axios.post('/add-enrollment', fd , {
+			headers:{
+				"Accept":"application/json",
+				"Content-Type": "multipart/form-data",
+				"Authorization":"Bearer "+localStorage.getItem('auth-token')
+			}
+		})
 		.then(({data})=>{ 
 			toast.success(data.message)
 			// reset()
@@ -126,6 +137,7 @@ const AddEnrollment = () => {
 
 	const handleFile = e => {
 		console.log(e.target.files[0])
+		setKYCdoc(e.target.files[0])
 	}
 	useEffect(()=>{
 	
@@ -893,21 +905,6 @@ const AddEnrollment = () => {
 					<Row className="mt-2">
 						<Col md="12">
 						<div className="d-flex">
-							<div className="col-4">
-								<Input 
-									type='select'
-									className={'xs'} 
-									style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
-									name="kyc_type"
-									onChange={onChange}
-									value={fields.document_id}
-								>
-								<option></option>
-								{KYCtypes.map( opt => {
-									return <option key={opt.id} value={opt.id}>{opt.name}</option>
-								})} 
-								</Input>
-							</div>
 							<Input
 								type="file"
 								name='doc'
