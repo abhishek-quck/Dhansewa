@@ -561,10 +561,10 @@ const AddEnrollment = () => {
 						<Label className="col-4" size={'sm'} for="nomineeDetails"> Nominee Details </Label>
 						<Input
 							id="nomineeDetails" 
-							name="nomineeDetails"
+							name="nominee_details"
 							type="checkbox" 
 							onChange={()=>addNomineeDetails(!nominee)}
-							defaultChecked={fields.nomineeDetails}
+							defaultChecked={fields.nominee_details}
 						/>
 					</div>
 					</Col > 
@@ -572,10 +572,9 @@ const AddEnrollment = () => {
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
-						<Label className="col-4" size={'sm'} for="nomineeDetails"> Bank Details </Label>
+						<Label className="col-4" size={'sm'} for="bankDetails"> Bank Details </Label>
 						<Input
-							id="nomineeDetails" 
-							name="nomineeDetails"
+							id="bankDetails"  
 							type="checkbox" 
 							onChange={()=>addBankDetails(!bankDetails)} 
 						/>
