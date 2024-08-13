@@ -44,8 +44,8 @@ const AddEnrollment = () => {
 		PAN:'',
 		postal_pin:'',
 		village:'',
-		nomineeDetails:'',
-		creditReport:'',
+		nominee_details:'',
+		credit_report:'',
 		father_name:'',
 		marital_status:'',
 		education:'',
@@ -100,7 +100,7 @@ const AddEnrollment = () => {
 			finalObj = {...finalObj, ...Nominee} 
 		}
 		console.log(Object.keys(finalObj).length,finalObj); 
-		let {result, shouldGo} = validate(finalObj,['advDetails','nomineeDetails','creditReport'])
+		let {result, shouldGo} = validate(finalObj,['advDetails','nominee_details','credit_report'])
 		if(shouldGo===false)
 		{
 			setErrors(result)
@@ -555,20 +555,6 @@ const AddEnrollment = () => {
 					</Col > 
 				</Row> 
 
-				<Row className="mt-2">
-					<Col md="12">
-					<div className="d-flex">
-						<Label className="col-4" size={'sm'} for="advDetails"> Advance Details </Label>
-						<Input
-							id="advDetails" 
-							name="advDetails"
-							type="checkbox" 
-							onChange={()=>addAdvanceDetail(!advance)}
-							defaultChecked={fields.advDetails}
-						/>
-					</div>
-					</Col > 
-				</Row>
 				<Row className="mt-2">
 					<Col md="12">
 					<div className="d-flex">
