@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardText, Col, Form, Input, Label, Row, Table } from 'reactstrap'
 import { validate } from '../../../helpers/utils';
 
 const EmployeeMaster = () => {
@@ -9,6 +9,7 @@ const EmployeeMaster = () => {
     const [fields, setFields] = useState({})
     const [users, setUsers] = useState([])
     const inputStyle = {fontSize:14}
+    const [designations, setDesignations] = useState([])
 
     const change = e => {
         if(e?.target)
@@ -36,11 +37,8 @@ const EmployeeMaster = () => {
     }
 
     useEffect(()=>{
-        axios.get('users')
-        .then(({data})=>{
-            setUsers(data)
-        }).catch(err=>console.log(err.message))
-
+        axios.get('users').then(({data})=> setUsers(data)).catch(err=>console.log(err.message))
+        axios.get('designations').then(({data})=>setDesignations(data)).catch()
     },[])
     return (
     <>
@@ -57,11 +55,14 @@ const EmployeeMaster = () => {
                                 <Label> Employee Type </Label>
                                 <Input 
                                     onChange={change}
-                                    name={'name'} 
-                                    value={fields.name}
+                                    name={'emp_type'} 
+                                    value={fields.emp_type}
                                     style={inputStyle} 
-                                    type='text' 
-                                />
+                                    type='select' 
+                                >
+                                    <option value={'field'}> FIELD </option>
+                                    <option value={'office'}> OFFICE </option>
+                                </Input>
                             </Col>
                             <Col className='d-flex'>
                                 <div>
@@ -70,10 +71,15 @@ const EmployeeMaster = () => {
                                         onChange={change} 
                                         name={'address'} 
                                         style={inputStyle} 
-                                        type='text'
+                                        type='select'
                                         value={fields.address}
                                         placeholder='Enter Address'
-                                    /> 
+                                    >
+                                        <option> Choose </option>
+                                        {designations.map(item=>{
+                                            return <option value={item.abbr}>{item.name}</option>
+                                        })}
+                                    </Input> 
                                 </div>
                             </Col>
                         </Row>
