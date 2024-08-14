@@ -6,11 +6,36 @@ import { validate } from '../../../helpers/utils';
 
 const EmployeeMaster = () => {
     const dispatch = useDispatch();
-    const [fields, setFields] = useState({})
+    const [fields, setFields] = useState({
+        emp_type:'',
+        designation:'',
+        first_name:'',
+        last_name:'',
+        phone:'',
+        branch:'',
+        access_branch:'',
+        address:'',
+        login_id:'',
+        password:'',
+        married:'',
+        gender:'',
+        motorization:'',
+        dashboard:'',
+        approval_limit:'',
+        dob:'',
+        app_login:'',
+        exit_date:'',
+        join_date:'',
+        email:'',
+        pan:'',
+        aadhaar:'',
+        bank:'',
+        bank_branch:'',
+    })
     const [users, setUsers] = useState([])
     const inputStyle = {fontSize:14}
     const [designations, setDesignations] = useState([])
-
+    const [branches, setBranches] = useState([])
     const change = e => {
         if(e?.target)
         {
@@ -20,7 +45,7 @@ const EmployeeMaster = () => {
     }
     const handleSubmit = e => {
         e.preventDefault();
-        let {shouldGo,result} = validate(fields)
+        let {shouldGo,result} = validate(fields,['motorization','married','email','pan','bank','bank_branch'])
         if(shouldGo===false)
         {
             console.log(result)
@@ -39,6 +64,7 @@ const EmployeeMaster = () => {
     useEffect(()=>{
         axios.get('users').then(({data})=> setUsers(data)).catch(err=>console.log(err.message))
         axios.get('designations').then(({data})=>setDesignations(data)).catch()
+        axios.get('get-branches').then(({data})=>setBranches(data)).catch()
     },[])
     return (
     <>
@@ -69,11 +95,10 @@ const EmployeeMaster = () => {
                                     <Label> Designation <small className='text-danger'>*</small> </Label>
                                     <Input 
                                         onChange={change} 
-                                        name={'address'} 
+                                        name={'designation'} 
                                         style={inputStyle} 
                                         type='select'
-                                        value={fields.address}
-                                        placeholder='Enter Address'
+                                        value={fields.designation} 
                                     >
                                         <option> Choose </option>
                                         {designations.map(item=>{
@@ -88,8 +113,8 @@ const EmployeeMaster = () => {
                                 <Label> First Name <small className='text-danger'>*</small></Label>
                                 <Input 
                                     onChange={change}
-                                    name={'name'} 
-                                    value={fields.name}
+                                    name={'first_name'} 
+                                    value={fields.first_name}
                                     style={inputStyle} 
                                     type='text' 
                                 />
@@ -113,8 +138,8 @@ const EmployeeMaster = () => {
                                 <Label> Mobile <small className='text-danger'>*</small></Label>
                                 <Input 
                                     onChange={change}
-                                    name={'name'} 
-                                    value={fields.name}
+                                    name={'phone'} 
+                                    value={fields.phone}
                                     style={inputStyle} 
                                     type='text' 
                                 />
@@ -124,12 +149,16 @@ const EmployeeMaster = () => {
                                     <Label> Posting Branch <small className='text-danger'>*</small> </Label>
                                     <Input 
                                         onChange={change} 
-                                        name={'address'} 
+                                        name={'branch'} 
                                         style={inputStyle} 
-                                        type='text'
-                                        value={fields.address}
+                                        type='select'
+                                        value={fields.branch}
                                         placeholder='Enter Address'
-                                    /> 
+                                    >
+                                        {branches.map( branch => {
+                                            return <option key={branch.id} value={branch.id}>{branch.name}</option>
+                                        })}
+                                    </Input> 
                                 </div>
                             </Col>
                         </Row>
@@ -208,7 +237,7 @@ const EmployeeMaster = () => {
                                         type='select'
                                         value={fields.gender}
                                     > 
-                                        <option >  </option>
+                                        <option > Choose </option>
                                         <option value={'male'}> Male </option>
                                         <option value={'female'}> Female </option>
                                     </Input>
@@ -254,7 +283,7 @@ const EmployeeMaster = () => {
                                     name={'approval_limit'} 
                                     value={fields.approval_limit}
                                     style={inputStyle} 
-                                    type='number' 
+                                    type='text' 
                                 />
                             </Col>
                             <Col className='d-flex'>
@@ -279,6 +308,7 @@ const EmployeeMaster = () => {
                                     name={'app_login'} 
                                     value={fields.app_login}
                                     style={inputStyle} 
+                                    defaultValue ='yes'
                                     type='select' 
                                 >
                                     <option value={'yes'}> Yes </option>
@@ -316,7 +346,7 @@ const EmployeeMaster = () => {
                                         onChange={change} 
                                         name={'email'} 
                                         style={inputStyle} 
-                                        type='date'
+                                        type='text'
                                         value={fields.email}
                                         placeholder='Email ID'
                                     /> 
@@ -337,6 +367,7 @@ const EmployeeMaster = () => {
                                     value={fields.pan}
                                     style={inputStyle} 
                                     type='text' 
+                                    placeholder='Enter PAN number'
                                 />
                             </Col>
                             <Col className='d-flex'>
@@ -348,7 +379,9 @@ const EmployeeMaster = () => {
                                         style={inputStyle} 
                                         type='number'
                                         value={fields.aadhaar}
-                                        placeholder='Email ID'
+                                        placeholder='Enter aadhaar'
+                                        min={12}
+                                        max={12}
                                     /> 
                                 </div>
                             </Col>
@@ -358,10 +391,11 @@ const EmployeeMaster = () => {
                                 <Label> Bank Name </Label>
                                 <Input 
                                     onChange={change}
-                                    name={'pan'} 
-                                    value={fields.pan}
+                                    name={'bank'} 
+                                    value={fields.bank}
                                     style={inputStyle} 
                                     type='text' 
+                                    placeholder='Enter Bank Name'
                                 />
                             </Col>
                             <Col className='d-flex'>
@@ -369,11 +403,11 @@ const EmployeeMaster = () => {
                                     <Label> Bank Branch </Label>
                                     <Input 
                                         onChange={change} 
-                                        name={'aadhaar'} 
+                                        name={'bank_branch'} 
                                         style={inputStyle} 
-                                        type='number'
-                                        value={fields.aadhaar}
-                                        placeholder='Email ID'
+                                        type='text'
+                                        value={fields.bank_branch}
+                                        placeholder='Enter Bank Branch'
                                     /> 
                                 </div>
                             </Col>

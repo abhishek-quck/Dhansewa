@@ -13,6 +13,7 @@ function UserAccess() {
         if(e?.target)
         {
             setFields({...fields, [e.target.name]:e.target.value })
+            e.target.style.border = ''
         }
     }
     const handleSubmit = e => {

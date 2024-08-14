@@ -911,10 +911,12 @@ const AddEnrollment = () => {
 								<Input
 									id="nominee_aadhaar" 
 									name="nominee_aadhaar"
-									type="text"
+									type="number"
 									onChange={e=>setNominee({...Nominee, nominee_aadhaar: e.target.value})}
 									defaultValue={Nominee.nominee_aadhaar}
 									placeholder={"Enter nominee nominee_aadhaar"}
+									min={12}
+									max={12}
 									style={{border:errors.phone ?'1px solid red':''}}
 								/>
 							</div>
