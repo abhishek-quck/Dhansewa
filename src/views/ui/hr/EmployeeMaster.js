@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { Button, Card, CardBody, CardHeader, CardText, Col, Form, Input, Label, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, Form, Input, Label, Row, Table } from 'reactstrap'
 import { validate } from '../../../helpers/utils';
 
 const EmployeeMaster = () => {
@@ -377,11 +377,12 @@ const EmployeeMaster = () => {
                                         onChange={change} 
                                         name={'aadhaar'} 
                                         style={inputStyle} 
-                                        type='number'
+                                        type='text'
                                         value={fields.aadhaar}
                                         placeholder='Enter aadhaar'
                                         min={12}
                                         max={12}
+                                        cast='num'
                                     /> 
                                 </div>
                             </Col>
@@ -412,6 +413,9 @@ const EmployeeMaster = () => {
                                 </div>
                             </Col>
                         </Row>
+                        <CardFooter>
+                            <Button color='success' className='w-100 mt-4'> Submit </Button>
+                        </CardFooter>
                     </CardBody> 
                     </Form>
                 </Card>
