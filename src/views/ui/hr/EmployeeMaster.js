@@ -85,7 +85,7 @@ const EmployeeMaster = () => {
                         </Row>
                         <Row className='mt-2'>
                             <Col>
-                                <Label> First Name</Label>
+                                <Label> First Name <small className='text-danger'>*</small></Label>
                                 <Input 
                                     onChange={change}
                                     name={'name'} 
@@ -110,7 +110,7 @@ const EmployeeMaster = () => {
                         </Row>
                         <Row className='mt-2'>
                             <Col>
-                                <Label> Mobile </Label>
+                                <Label> Mobile <small className='text-danger'>*</small></Label>
                                 <Input 
                                     onChange={change}
                                     name={'name'} 
@@ -135,7 +135,7 @@ const EmployeeMaster = () => {
                         </Row>
                         <Row className='mt-2'>
                             <Col>
-                                <Label> Access Branch </Label>
+                                <Label> Access Branch <small className='text-danger'>*</small></Label>
                                 <Input 
                                     onChange={change}
                                     name={'access_branch'} 
@@ -161,7 +161,7 @@ const EmployeeMaster = () => {
                         </Row>
                         <Row className='mt-2'>
                             <Col>
-                                <Label> User Login ID </Label>
+                                <Label> User Login ID <small className='text-danger'>*</small></Label>
                                 <Input 
                                     onChange={change}
                                     name={'login_id'} 
@@ -248,7 +248,7 @@ const EmployeeMaster = () => {
                         </Row>
                         <Row className='mt-2'>
                             <Col>
-                                <Label> Approval Limit </Label>
+                                <Label> Approval Limit <small className='text-danger'>*</small></Label>
                                 <Input 
                                     onChange={change}
                                     name={'approval_limit'} 
@@ -273,7 +273,7 @@ const EmployeeMaster = () => {
                         </Row>
                         <Row className='mt-2'>
                             <Col>
-                                <Label> App Login Allow </Label>
+                                <Label> App Login Allow <small className='text-danger'>*</small></Label>
                                 <Input 
                                     onChange={change}
                                     name={'app_login'} 
@@ -300,7 +300,7 @@ const EmployeeMaster = () => {
                         </Row>
                         <Row className='mt-2'>
                             <Col>
-                                <Label> Join Date </Label>
+                                <Label> Join Date <small className='text-danger'>*</small></Label>
                                 <Input 
                                     onChange={change}
                                     name={'join_date'} 
@@ -311,7 +311,7 @@ const EmployeeMaster = () => {
                             </Col>
                             <Col className='d-flex'>
                                 <div>
-                                    <Label> Email ID <small className='text-danger'>*</small> </Label>
+                                    <Label> Email ID </Label>
                                     <Input 
                                         onChange={change} 
                                         name={'email'} 
@@ -330,7 +330,7 @@ const EmployeeMaster = () => {
 
                         <Row className='mt-2'>
                             <Col>
-                                <Label> PAN <small className='text-danger'>*</small></Label>
+                                <Label> PAN  </Label>
                                 <Input 
                                     onChange={change}
                                     name={'pan'} 
@@ -355,7 +355,7 @@ const EmployeeMaster = () => {
                         </Row>
                         <Row className='mt-2'>
                             <Col>
-                                <Label> Bank Name <small className='text-danger'>*</small></Label>
+                                <Label> Bank Name </Label>
                                 <Input 
                                     onChange={change}
                                     name={'pan'} 
@@ -366,7 +366,7 @@ const EmployeeMaster = () => {
                             </Col>
                             <Col className='d-flex'>
                                 <div>
-                                    <Label> Bank Branch <small className='text-danger'>*</small> </Label>
+                                    <Label> Bank Branch </Label>
                                     <Input 
                                         onChange={change} 
                                         name={'aadhaar'} 
