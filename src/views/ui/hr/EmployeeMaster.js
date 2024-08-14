@@ -141,6 +141,9 @@ const EmployeeMaster = () => {
                                     name={'phone'} 
                                     value={fields.phone}
                                     style={inputStyle} 
+                                    min={10}
+                                    max={10}
+                                    cast="num"
                                     type='text' 
                                 />
                             </Col>

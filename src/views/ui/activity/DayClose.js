@@ -1,7 +1,12 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 import { Button, Card, CardBody, CardHeader, Col, Input, Label, Row } from 'reactstrap'
 
 function DayClose() {
+    const [branches, setBranches] = useState([])
+    useEffect(()=>{
+        axios.get('get-branches').then(({data})=>setBranches(data)).catch()
+    },[])
   return (
     <Card>
         <CardHeader className='bg-secondary text-white'>
@@ -19,7 +24,9 @@ function DayClose() {
                                 className='col-6'
                                 style={{width:'50%'}}
                             >
-                                <option value={'benipur'}> Benipur </option>
+                                {branches.map(opt => {
+                                    return <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                })}
                             </Input>
                             <Button color="primary">Find</Button>
                         </div>
