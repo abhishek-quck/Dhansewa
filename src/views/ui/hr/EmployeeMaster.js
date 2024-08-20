@@ -38,6 +38,7 @@ const EmployeeMaster = () => {
     const inputStyle = {fontSize:14}
     const [designations, setDesignations] = useState([])
     const [branches, setBranches] = useState([])
+    const [reload, setReload] = useState(false)
     const [set , settingUp ] = useState(false)
     const [selectedEmp, selectEmp] = useState(null)
     const change = e => {
@@ -56,7 +57,8 @@ const EmployeeMaster = () => {
             return
         }
         dispatch({type:'LOADING'})
-        axios.post('add-employee',fields).then(({data})=>{
+        let url = selectedEmp ? 'update-employee/'+selectedEmp :'add-employee';  
+        axios.post( url,fields ).then(({data})=>{
             console.log(data)
             if(data.status)
             {
@@ -73,10 +75,15 @@ const EmployeeMaster = () => {
 
     const selectRow = e => {
         let empID = $(e.target).parents('tr:first').find('td.emp_id').text()
-        $(e.target).parents('tr').find('td').each(function(k,va){
+        if(selectedEmp && empID!==selectedEmp) return 
+        $(e.target).parents('tr:first').find('td').each(function(k,va){
             $(va).toggleClass('selected')
         })
         selectEmp(()=> ($(e.target).is(':checked')? empID : null))
+        if(!$(e.target).is(':checked'))
+        {
+            setFields(initial)
+        }
     }
 
     const populateForm = e => {
@@ -86,6 +93,7 @@ const EmployeeMaster = () => {
             axios.get('get-employee/'+ selectedEmp)
             .then(({data})=>{
                 setFields(data)
+                setReload(!reload)
             }).catch()
             .finally(()=>dispatch({type:'STOP_LOADING'}))
         }
@@ -93,9 +101,9 @@ const EmployeeMaster = () => {
     }
     useEffect(()=>{
         axios.get('employees').then(({data})=> setEmployees(data)).catch(err=>console.log(err.message))
-        axios.get('designations').then(({data})=>setDesignations(data)).catch()
-        axios.get('get-branches').then(({data})=>setBranches(data)).catch()
-    },[])
+        axios.get('designations').then(({data})=>setDesignations(data)).catch(err=>console.log(err.message))
+        axios.get('get-branches').then(({data})=>setBranches(data)).catch(err=>console.log(err.message))
+    },[reload])
     return (
     <>
             <Col className='d-flex'>
@@ -452,13 +460,13 @@ const EmployeeMaster = () => {
                     </Form>
                 </Card>
             </Col>
-            <Col md={7} style={{fontSize:''}}  className='ms-4'>
+            <Col md={7} style={{fontSize:''}} className='ms-4'>
                 <Card>
                     <CardBody>
                         <Row  >
                             <div className='d-flex'>
                                 <Button type='button' className='bg-white text-dark' onClick={populateForm} >
-                                    <i className="fa-solid fa-bars"></i>
+                                    <i className={`${set===false?'fa-solid fa-bars':'fa fa-download'}`}></i>
                                 </Button>
                                 <Input type='select' style={{width:170}}>
                                     <option value={'active'}> Active </option>
@@ -487,16 +495,17 @@ const EmployeeMaster = () => {
                             <tbody>
                                 {employees.map( (row,i)=>{
                                     return <tr key={i}>
-                                        <td>{set ? <Input type='checkbox' onClick={selectRow}/> :++i}</td>
-                                        <td className='emp_id'>{row.id}</td>
-                                        <td>{row.first_name+' '+row.last_name}</td>
-                                        <td>{row.branch??''}</td>
-                                        <td>{row.emp_type??''}</td>
-                                        <td>{row.designation??''}</td>
-                                        <td>{row.phone??''}</td>
-                                        <td>{row.login_id??''}</td>
-                                        <td>{row.dashboard??''}</td>
-                                        <td>{row.app_login??''}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected':''}>
+                                            {set || selectedEmp ? <Input type='checkbox' checked={selectedEmp==row.id} onClick={selectRow}/> :++i}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected emp_id':'emp_id'}>{row.id}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected':''}>{row.first_name+' '+row.last_name}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected':''}>{row.branch??''}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected':''}>{row.emp_type??''}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected':''}>{row.designation??''}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected':''}>{row.phone??''}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected loginID':'loginID'}>{row.login_id??''}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected':''}>{row.dashboard??''}</td>
+                                        <td className={row.id===parseInt(selectedEmp)?'selected':''}>{row.app_login??''}</td>
                                     </tr>
                                 })}
                             </tbody>
