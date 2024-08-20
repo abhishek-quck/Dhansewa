@@ -49,13 +49,13 @@ const EmployeeMaster = () => {
         if(shouldGo===false)
         {
             console.log(result)
-            dispatch({type:'STOP_LOADING'})
+            return
         }
+        dispatch({type:'LOADING'})
         axios.post('',fields).then(({data})=>{
             console.log(data)
         })
         .catch(err=>{
-            dispatch({type:'LOADING'})
             console.log(err.message)
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
