@@ -50,7 +50,13 @@ const EmployeeMaster = () => {
     }
     const handleSubmit = e => {
         e.preventDefault();
-        let {shouldGo,result} = validate(fields,['motorization','married','email','pan','bank','exit_date','bank_branch'])
+        let unrequired = ['motorization','married','email','pan','bank','exit_date','bank_branch']
+        if(selectedEmp) {
+            unrequired.push('password')
+        } else {
+            unrequired.splice(unrequired.indexOf('password'),1);
+        }
+        let {shouldGo,result} = validate(fields,unrequired)
         if(shouldGo===false)
         {
             toast.error('Fill the required fields!')
