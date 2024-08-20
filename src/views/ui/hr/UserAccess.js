@@ -4,14 +4,23 @@ import { validate } from '../../../helpers/utils'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
+import { navigation } from '../../../layouts/SidebarData';
 function UserAccess() {
     const dispatch = useDispatch()
     const [users, setUsers] = useState([])
+    const [user, setUser] = useState({})
     const [fields, setFields] = useState({})
+    const [menuItems, setMenus] = useState([])
     const boxStyled = { border:'1px solid lightgray',padding: '8px 0 0 19px'}
 
     const populateForm = id => {
-        console.log(id)
+        dispatch({type:'LOADING'})
+        axios.get('get-employee/'+id)
+        .then(({data})=>{
+            console.log(data)
+            setUser(data)
+        }).catch(err=>err.message)
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
     const change = e=>{
         if(e?.target)
@@ -38,7 +47,17 @@ function UserAccess() {
     }
 
     useEffect(()=>{
-        axios.get('users').then(({data})=>{
+        console.log(navigation)
+        let menus = [];
+        navigation.forEach(item=>{
+            menus.push(item.title)
+            if(item.sub)
+            {
+                menus = [...menus, ...item.sub.map(row=>row.title)]
+            }
+        })
+        setMenus(menus)
+        axios.get('employees').then(({data})=>{
             console.log(data)
             setUsers(data)
         }).catch(err=>console.log(err.message))
@@ -67,7 +86,7 @@ function UserAccess() {
                             <tbody>
                                 {users.map( (row,i)=>{
                                     return <tr key={i}>
-                                        <td> 
+                                        <td className={`${row.id===user.id?'selected':''}`}> 
                                             <Button 
                                                 className='bg-white btn-sm text-dark' 
                                                 type='button' 
@@ -75,10 +94,16 @@ function UserAccess() {
                                                 onClick={()=>populateForm(row.id)}><i className='fa fa-upload'/>
                                             </Button> 
                                         </td>
-                                        <td>{row.id}</td>
-                                        <td>{row.name}</td>
-                                        <td>{row.name}</td>
-                                        <td>{row.name}</td>
+                                        <td className={`${row.id===user.id?'selected':''}`}>{row.id}</td>
+                                        <td className={`${row.id===user.id?'selected':''}`}>
+                                            {row.first_name+' '+row.last_name}
+                                        </td>
+                                        <td className={`${row.id===user.id?'selected':''}`}>
+                                            {row.designation}
+                                        </td>
+                                        <td className={`${row.id===user.id?'selected':''}`}>
+                                            {row.branch}
+                                        </td>
                                     </tr>
                                 })}
                             </tbody>
@@ -101,15 +126,15 @@ function UserAccess() {
                                 <p> User Details </p> 
                                 <FormGroup> 
                                     <Label>Employee ID</Label>
-                                    <Input type='text'  disabled/>
+                                    <Input type='text' value={user.id} disabled/>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label> Name </Label>
-                                    <Input type='text' disabled />
+                                    <Input type='text' value={user.first_name!==undefined ? user.first_name+' '+user.last_name:''} disabled />
                                 </FormGroup>
                                 <FormGroup>
                                     <Label> Designation </Label>
-                                    <Input type='text' placeholder='Designation'  disabled/>
+                                    <Input type='text' placeholder='Designation' value={user?.designation??''} disabled/>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label> Report Access Code </Label>
@@ -218,7 +243,22 @@ function UserAccess() {
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    {user.id ? 
+                                     menuItems.map( (row,i)=>{
+                                        return (
+                                            <tr key={i}>
+                                                <td>{++i}</td>
+                                                <td>0</td>
+                                                <td>{row}</td>
+                                                <td>{row}</td>
+                                                <td><Input type='checkbox'/></td>
+                                                <td><Input type='checkbox'/></td>
+                                                <td><Input type='checkbox'/></td>
+                                                <td><Input type='checkbox'/></td>
+                                            </tr>
+                                        )
+                                    }) 
+                                    :''}
                                 </tbody>
                             </Table>
                         </Form>          
