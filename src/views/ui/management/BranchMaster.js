@@ -245,7 +245,7 @@ const BranchMaster = () => {
                 </CardText>
                 <Row className={'mt-2 mb-3'} style={{fontSize:'small'}}>
                     <Col md={4}>
-                        <Label> Multi Loan Allowed <small className='text-danger'>*</small> </Label>
+                        <Label> Multi Loan Allowed  </Label>
                         <Input 
                             onChange={handleChange} 
                             name={'multi_loan_allowed'} 
@@ -259,7 +259,7 @@ const BranchMaster = () => {
                         </Input> 
                     </Col>
                     <Col md={4}>
-                        <Label> SPML Allowed <small className='text-danger'>*</small> </Label>
+                        <Label> SPML Allowed </Label>
                         <Input 
                             onChange={handleChange} 
                             name={'spml_allowed'} 
@@ -290,7 +290,7 @@ const BranchMaster = () => {
                 <Row className={'mt-2'} style={{fontSize:'small'}}>
                     <Col className='d-flex'>
                         <div>
-                            <Label> Bank Account <small className='text-danger'>*</small> </Label>
+                            <Label> Bank Account  </Label>
                             <Input 
                                 onChange={handleChange} 
                                 name={'bank_account'} 
@@ -303,7 +303,7 @@ const BranchMaster = () => {
                     </Col>
                     <Col className='d-flex'>
                         <div>
-                            <Label> Cash Account <small className='text-danger'>*</small> </Label>
+                            <Label> Cash Account  </Label>
                             <Input 
                                 onChange={handleChange} 
                                 name={'cash_account'} 
@@ -318,7 +318,7 @@ const BranchMaster = () => {
                 <Row className={'mt-2 mb-3'} style={{fontSize:'small'}}>
                     <Col md={3} className='d-flex'>
                         <div>
-                            <Label> Branch Account <small className='text-danger'>*</small> </Label>
+                            <Label> Branch Account  </Label>
                             <Input 
                                 onChange={handleChange} 
                                 name={'branch_account'} 
@@ -331,7 +331,7 @@ const BranchMaster = () => {
                     </Col>
                     <Col md={3} className='d-flex'>
                         <div>
-                            <Label> Loan Charge Auto <small className='text-danger'>*</small> </Label>
+                            <Label> Loan Charge Auto  </Label>
                             <Input 
                                 onChange={handleChange} 
                                 name={'loan_charge_auto'} 
@@ -347,7 +347,7 @@ const BranchMaster = () => {
                     </Col>
                     <Col md={3} className='d-flex'>
                         <div>
-                            <Label> Cash Balance <small className='text-danger'>*</small> </Label>
+                            <Label> Cash Balance  </Label>
                             <Input 
                                 onChange={handleChange} 
                                 name={'cash_balance'} 
@@ -360,7 +360,7 @@ const BranchMaster = () => {
                     </Col>
                     <Col md={3} className='d-flex'>
                         <div>
-                            <Label> Closing Enable <small className='text-danger'>*</small> </Label>
+                            <Label> Closing Enable  </Label>
                             <Input 
                                 onChange={handleChange} 
                                 name={'closing_enabled'} 
@@ -380,7 +380,7 @@ const BranchMaster = () => {
                 </CardText>
                 <Row className={'mt-2'} style={{fontSize:'small'}}>
                     <Col>
-                        <Label> Reporting Mail <small className='text-danger'>*</small></Label>
+                        <Label> Reporting Mail </Label>
                         <Input 
                             onChange={handleChange} 
                             name={'reporting_mail'} 
@@ -390,7 +390,7 @@ const BranchMaster = () => {
                     </Col>
                     <Col className='d-flex'>
                         <div>
-                            <Label> Aadhaar Verify <small className='text-danger'>*</small> </Label>
+                            <Label> Aadhaar Verify  </Label>
                             <Input 
                                 onChange={handleChange} 
                                 name={'aadhaar_verify'} 
@@ -407,7 +407,7 @@ const BranchMaster = () => {
                 </Row>
                 <Row className={'mt-2 mb-4'} style={{fontSize:'small'}}>
                     <Col>
-                        <Label> Reporting Phone SMS <small className='text-danger'>*</small></Label>
+                        <Label> Reporting Phone SMS </Label>
                         <Input 
                             onChange={handleChange} 
                             name={'reporting_phone_sms'} 
@@ -419,7 +419,7 @@ const BranchMaster = () => {
                     </Col>
                     <Col className='d-flex'>
                         <div>
-                            <Label> Mobile Verify <small className='text-danger'>*</small> </Label>
+                            <Label> Mobile Verify  </Label>
                             <Input 
                                 onChange={handleChange} 
                                 name={'mobile_verify'} 
