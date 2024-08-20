@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
@@ -37,6 +38,8 @@ const EmployeeMaster = () => {
     const inputStyle = {fontSize:14}
     const [designations, setDesignations] = useState([])
     const [branches, setBranches] = useState([])
+    const [set , settingUp ] = useState(false)
+    const [selectedEmp, selectEmp] = useState(null)
     const change = e => {
         if(e?.target)
         {
@@ -68,6 +71,26 @@ const EmployeeMaster = () => {
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
+    const selectRow = e => {
+        let empID = $(e.target).parents('tr:first').find('td.emp_id').text()
+        $(e.target).parents('tr').find('td').each(function(k,va){
+            $(va).toggleClass('selected')
+        })
+        selectEmp(()=> ($(e.target).is(':checked')? empID : null))
+    }
+
+    const populateForm = e => {
+        if(set===true && selectedEmp)
+        {
+            dispatch({type:'LOADING'})
+            axios.get('get-employee/'+ selectedEmp)
+            .then(({data})=>{
+                setFields(data)
+            }).catch()
+            .finally(()=>dispatch({type:'STOP_LOADING'}))
+        }
+        settingUp(!set)
+    }
     useEffect(()=>{
         axios.get('employees').then(({data})=> setEmployees(data)).catch(err=>console.log(err.message))
         axios.get('designations').then(({data})=>setDesignations(data)).catch()
@@ -89,7 +112,7 @@ const EmployeeMaster = () => {
                                 <Input 
                                     onChange={change}
                                     name={'emp_type'} 
-                                    value={fields.emp_type}
+                                    defaultValue={fields.emp_type}
                                     style={inputStyle} 
                                     type='select' 
                                 >
@@ -105,7 +128,7 @@ const EmployeeMaster = () => {
                                         name={'designation'} 
                                         style={inputStyle} 
                                         type='select'
-                                        value={fields.designation} 
+                                        value={fields.designation??''} 
                                     >
                                         <option> Choose </option>
                                         {designations.map(item=>{
@@ -162,7 +185,7 @@ const EmployeeMaster = () => {
                                         name={'branch'} 
                                         style={inputStyle} 
                                         type='select'
-                                        value={fields.branch}
+                                        value={fields.branch??''}
                                         placeholder='Enter Address'
                                     >
                                         {branches.map( branch => {
@@ -229,7 +252,7 @@ const EmployeeMaster = () => {
                                 <Input 
                                     onChange={change}
                                     name={'married'} 
-                                    value={fields.married}
+                                    value={fields.married??''}
                                     style={inputStyle} 
                                     type='select' 
                                 >
@@ -245,7 +268,7 @@ const EmployeeMaster = () => {
                                         name={'gender'} 
                                         style={inputStyle} 
                                         type='select'
-                                        value={fields.gender}
+                                        value={fields.gender??''}
                                     > 
                                         <option > Choose </option>
                                         <option value={'male'}> Male </option>
@@ -260,7 +283,7 @@ const EmployeeMaster = () => {
                                 <Input 
                                     onChange={change}
                                     name={'motorization'} 
-                                    value={fields.motorization}
+                                    value={fields.motorization??''}
                                     style={inputStyle} 
                                     type='select' 
                                 >
@@ -276,7 +299,7 @@ const EmployeeMaster = () => {
                                         name={'dashboard'} 
                                         style={inputStyle} 
                                         type='select'
-                                        value={fields.dashboard} 
+                                        value={fields.dashboard??''} 
                                     > 
                                         <option value={'branch'}> BRANCH </option>
                                         <option value={'company'}> COMPANY </option>
@@ -356,7 +379,7 @@ const EmployeeMaster = () => {
                                         name={'email'} 
                                         style={inputStyle} 
                                         type='text'
-                                        value={fields.email}
+                                        value={fields.email??''}
                                         placeholder='Email ID'
                                     /> 
                                 </div>
@@ -373,7 +396,7 @@ const EmployeeMaster = () => {
                                 <Input 
                                     onChange={change}
                                     name={'pan'} 
-                                    value={fields.pan}
+                                    value={fields.pan??''}
                                     style={inputStyle} 
                                     type='text' 
                                     placeholder='Enter PAN number'
@@ -402,7 +425,7 @@ const EmployeeMaster = () => {
                                 <Input 
                                     onChange={change}
                                     name={'bank'} 
-                                    value={fields.bank}
+                                    value={fields.bank??''}
                                     style={inputStyle} 
                                     type='text' 
                                     placeholder='Enter Bank Name'
@@ -416,7 +439,7 @@ const EmployeeMaster = () => {
                                         name={'bank_branch'} 
                                         style={inputStyle} 
                                         type='text'
-                                        value={fields.bank_branch}
+                                        value={fields.bank_branch??''}
                                         placeholder='Enter Bank Branch'
                                     /> 
                                 </div>
@@ -434,7 +457,7 @@ const EmployeeMaster = () => {
                     <CardBody>
                         <Row  >
                             <div className='d-flex'>
-                                <Button type='button' className='bg-white text-dark'>
+                                <Button type='button' className='bg-white text-dark' onClick={populateForm} >
                                     <i className="fa-solid fa-bars"></i>
                                 </Button>
                                 <Input type='select' style={{width:170}}>
@@ -464,11 +487,11 @@ const EmployeeMaster = () => {
                             <tbody>
                                 {employees.map( (row,i)=>{
                                     return <tr key={i}>
-                                        <td>{++i}</td>
-                                        <td>{row.id}</td>
+                                        <td>{set ? <Input type='checkbox' onClick={selectRow}/> :++i}</td>
+                                        <td className='emp_id'>{row.id}</td>
                                         <td>{row.first_name+' '+row.last_name}</td>
                                         <td>{row.branch??''}</td>
-                                        <td>{row.type??''}</td>
+                                        <td>{row.emp_type??''}</td>
                                         <td>{row.designation??''}</td>
                                         <td>{row.phone??''}</td>
                                         <td>{row.login_id??''}</td>
