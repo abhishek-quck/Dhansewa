@@ -16,6 +16,35 @@ function AccountHead() {
     const typeRef=  useRef('')
     const groupRef=  useRef('')
     const [data, fillData] = useState([])
+    const natureOptions = [
+        {value:'Assets',label:'Assets'},
+        {value:'Liabilities',label:'Liabilities'},
+        {value:'Income',label:'Income'},
+        {value:'Expenditure',label:'Expenditure'},
+        {value:'Equity',label:'Equity'},
+    ]
+
+    const groups = [
+        {value:'Branch & Division',label:'Branch & Division'},
+        {value:'Capital Accounts',label:'Capital Accounts'},
+        {value:'Loans',label:'Loans'},
+        {value:'Suspense Account',label:'Suspense Account'},
+        {value:'Current Liabilities',label:'Current Liabilities'},
+        {value:'Fixed Assets',label:'Fixed Assets'},
+        {value:'Investments',label:'Investments'},
+        {value:'Sales Accounts',label:'Sales Accounts'},
+        {value:'Indirect Expenses',label:'Indirect Expenses'},
+        {value:'Indirect Income',label:'Indirect Income'},
+        {value:'Misc. Expenses',label:'Misc. Expenses'},
+        {value:'Direct Income',label:'Direct Income'},
+        {value:'Direct Expenses',label:'Direct Expenses'},
+        {value:'Reserves & Surplus',label:'Reserves & Surplus'},
+        {value:'Duties & Taxes',label:'Duties & Taxes'},
+        {value:'Deposits',label:'Deposits'},
+        {value:'Stock in Hand',label:'Stock in Hand'},
+        {value:'Secured Loans',label:'Secured Loans'},
+        {value:'Equity',label:'Equity'},
+    ]
     const changeName = e => {
         e.target.style.border=''
         setName(e.target.value)
@@ -125,7 +154,7 @@ function AccountHead() {
                                 <Label> A/C Nature </Label>
                                 <CreatableSelect 
                                     isClearable
-                                    options={[{value:'',label:''}]}
+                                    options={natureOptions}
                                     name='type'
                                     ref={typeRef}
                                     defaultValue={type}
@@ -140,7 +169,7 @@ function AccountHead() {
                                 <Label> Primary Groups </Label>
                                 <CreatableSelect 
                                     isClearable
-                                    options={[{value:'',label:'Branch & Division'}]}
+                                    options={groups}
                                     name='group_name'
                                     ref={groupRef}
                                     defaultValue={group_name}

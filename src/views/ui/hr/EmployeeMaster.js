@@ -469,7 +469,7 @@ const EmployeeMaster = () => {
                         <Row  >
                             <div className='d-flex'>
                                 <Button type='button' className='bg-white text-dark' onClick={populateForm} >
-                                    <i className={`${set===false?'fa-solid fa-bars':'fa fa-download'}`}></i>
+                                    <i className={`${set===false?'fa-solid fa-bars':'fa fa-upload'}`}></i>
                                 </Button>
                                 <Input type='select' style={{width:170}}>
                                     <option value={'active'}> Active </option>
