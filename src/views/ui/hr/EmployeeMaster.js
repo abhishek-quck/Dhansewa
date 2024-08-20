@@ -46,7 +46,7 @@ const EmployeeMaster = () => {
     }
     const handleSubmit = e => {
         e.preventDefault();
-        let {shouldGo,result} = validate(fields,['motorization','married','email','pan','bank','bank_branch'])
+        let {shouldGo,result} = validate(fields,['motorization','married','email','pan','bank','exit_date','bank_branch'])
         if(shouldGo===false)
         {
             console.log(result)
@@ -326,7 +326,7 @@ const EmployeeMaster = () => {
                             </Col>
                             <Col className='d-flex'>
                                 <div>
-                                    <Label> Exit Date <small className='text-danger'>*</small> </Label>
+                                    <Label> Exit Date </Label>
                                     <Input 
                                         onChange={change} 
                                         name={'exit_date'} 
@@ -466,13 +466,13 @@ const EmployeeMaster = () => {
                                     return <tr key={i}>
                                         <td>{++i}</td>
                                         <td>{row.id}</td>
-                                        <td>{row.name}</td>
+                                        <td>{row.first_name+' '+row.last_name}</td>
                                         <td>{row.branch??''}</td>
                                         <td>{row.type??''}</td>
                                         <td>{row.designation??''}</td>
                                         <td>{row.phone??''}</td>
                                         <td>{row.login_id??''}</td>
-                                        <td>{row.display??''}</td>
+                                        <td>{row.dashboard??''}</td>
                                         <td>{row.app_login??''}</td>
                                     </tr>
                                 })}
