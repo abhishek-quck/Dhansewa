@@ -53,6 +53,7 @@ const EmployeeMaster = () => {
         let {shouldGo,result} = validate(fields,['motorization','married','email','pan','bank','exit_date','bank_branch'])
         if(shouldGo===false)
         {
+            toast.error('Fill the required fields!')
             console.log(result)
             return
         }
@@ -124,6 +125,7 @@ const EmployeeMaster = () => {
                                     style={inputStyle} 
                                     type='select' 
                                 >
+                                    <option></option>
                                     <option value={'field'}> FIELD </option>
                                     <option value={'office'}> OFFICE </option>
                                 </Input>
@@ -309,6 +311,7 @@ const EmployeeMaster = () => {
                                         type='select'
                                         value={fields.dashboard??''} 
                                     > 
+                                        <option></option>
                                         <option value={'branch'}> BRANCH </option>
                                         <option value={'company'}> COMPANY </option>
                                         <option value={'self'}> SELF </option>
