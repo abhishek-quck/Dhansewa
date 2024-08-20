@@ -21,6 +21,7 @@ const AddEnrollment = () => {
 	const [submitted, hit]=useState(false)
 	const [branches, setBranches] = useState([])
 	const [KYCdoc, setKYCdoc] = useState(null)
+	const [passbook, setPassbook] = useState(null)
 	const [states, fillStates] = useState([])
 	const [districts, fillDistricts] = useState([])
 	const submitStyle = {position:'fixed',maxWidth:'360px',left:'40%',top:'90%',zIndex:'121'}
@@ -69,7 +70,6 @@ const AddEnrollment = () => {
         bank_branch:'',
         account_num:'',
         is_debit_card:'',
-        is_account_active:'',  
 	}) 
 
 	const [Nominee, setNominee] = useState({
@@ -85,6 +85,10 @@ const AddEnrollment = () => {
 		e.target.style.border=''
 		const {name, value} = e.target;
 		setFields({...fields, [name]:value})
+	}
+	const handlePassbook = e => {
+		let file  = e.target.files[0]
+		setPassbook(file)
 	}
 	const [errors, setErrors] = useState(fields)
 	const [KYCtypes, setKYCtypes] = useState([])
@@ -113,6 +117,7 @@ const AddEnrollment = () => {
 			fd.append(key, fields[key])
 		}
 		fd.append('kyc', KYCdoc )
+		fd.append('passbook', passbook )
 		axios.post('/add-enrollment', fd , {
 			headers:{
 				"Accept":"application/json",
@@ -136,7 +141,6 @@ const AddEnrollment = () => {
 	}
 
 	const handleFile = e => {
-		console.log(e.target.files[0])
 		setKYCdoc(e.target.files[0])
 	}
 	useEffect(()=>{
@@ -195,12 +199,16 @@ const AddEnrollment = () => {
 						<Input
 							id="group" 
 							name="group"
-							type="text"
+							type="select"
 							onChange={onChange}
 							defaultValue={fields.group}
 							style={{border:errors.group?'1px solid red':''}}
 							placeholder="Enter group no"
-						/>
+						>
+							{branches.map((option,i)=>{
+		 						return <option key={i} value={option.id}>{option.id}</option>
+							})}
+						</Input>
 					</div>
 					</Col > 
 				</Row>
@@ -850,11 +858,14 @@ const AddEnrollment = () => {
 								<Input
 									id="is_debit_card" 
 									name="is_debit_card"
-									type="text"
+									type="select"
 									onChange={e=>setBank({...bank, is_debit_card:e.target.value })}
 									defaultValue={bank.is_debit_card}
 									style={{border:errors.is_debit_card?'1px solid red':''}}
-								/>
+								>
+									<option value={'yes'}> YES </option>
+									<option value={'no'}> NO </option>
+								</Input>
 							</div>
 							</Col > 
 						</Row> 
@@ -863,20 +874,15 @@ const AddEnrollment = () => {
 							<Col md="12">
 							<div className="d-flex">
 								<Label className="col-4" size={'sm'} for="is_account_active"> 
-									Is Account Active 
+									Upload Passbook
 								</Label>
 								<Input
-									id="is_account_active" 
-									name="is_account_active"
-									type="select"
-									onChange={e=>setBank({...bank, is_account_active:e.target.value })}
-									value={bank.is_account_active}
+									id="is_account_active"  
+									name="is_account_active"  
+									type="file"
+									onChange={handlePassbook} 
 									style={{border:errors.is_account_active?'1px solid red':''}}
-								>
-									<option>   </option>
-									<option value={'yes'}> Yes </option>
-									<option value={'no'}> No </option>
-								</Input>
+								/>
 							</div>
 							</Col > 
 						</Row> 

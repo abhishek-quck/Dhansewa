@@ -3,12 +3,16 @@ import axios from 'axios'
 import { validate } from '../../../helpers/utils'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux';
-import { Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
 function UserAccess() {
     const dispatch = useDispatch()
     const [users, setUsers] = useState([])
     const [fields, setFields] = useState({})
     const boxStyled = { border:'1px solid lightgray',padding: '8px 0 0 19px'}
+
+    const populateForm = id => {
+        console.log(id)
+    }
     const change = e=>{
         if(e?.target)
         {
@@ -62,8 +66,15 @@ function UserAccess() {
                             </thead>
                             <tbody>
                                 {users.map( (row,i)=>{
-                                    return <tr>
-                                        <td>{++i}</td>
+                                    return <tr key={i}>
+                                        <td> 
+                                            <Button 
+                                                className='bg-white btn-sm text-dark' 
+                                                type='button' 
+                                                style={{fontSize:''}}
+                                                onClick={()=>populateForm(row.id)}><i className='fa fa-upload'/>
+                                            </Button> 
+                                        </td>
                                         <td>{row.id}</td>
                                         <td>{row.name}</td>
                                         <td>{row.name}</td>
@@ -192,7 +203,25 @@ function UserAccess() {
                         </Row>
                     </CardBody>
                     <CardFooter>
+                        <Form>
+                            <Table className='table-bordered table-hover '>
+                                <thead style={{backgroundColor:'lightblue'}}>
+                                    <tr style={{background:'blue'}}>
+                                        <th><Input type='checkbox' /></th>
+                                        <th> PRNT </th>
+                                        <th> TITLE </th>
+                                        <th> DETAILS </th>
+                                        <th> VIEW </th>
+                                        <th> ADD </th>
+                                        <th> EDIT </th>
+                                        <th> DEL </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
+                                </tbody>
+                            </Table>
+                        </Form>          
                     </CardFooter>
                 </Card>
             </Col>
