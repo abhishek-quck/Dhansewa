@@ -208,7 +208,6 @@ function ManageProduct() {
                                         type="text"
                                         onChange={change}
                                         defaultValue={fields.reducing_rate}
-                                        placeholder="Enter member name"
                                         style={{border:errors.reducing_rate ?'1px solid red':''}}
                                     /> 
                                         
@@ -225,7 +224,6 @@ function ManageProduct() {
                                         type="text"
                                         onChange={change}
                                         defaultValue={fields.up_front_fee}
-                                        placeholder="Enter member name"
                                         style={{border:errors.up_front_fee ?'1px solid red':''}}
                                     /> 
                                         
@@ -334,7 +332,6 @@ function ManageProduct() {
                                         type="text"
                                         onChange={change}
                                         defaultValue={fields.cb_check}
-                                        placeholder="Enter member name"
                                         style={{border:errors.cb_check ?'1px solid red':''}}
                                     /> 
                                         
@@ -368,7 +365,6 @@ function ManageProduct() {
                                         type="text"
                                         onChange={change}
                                         defaultValue={fields.year_tenure}
-                                        placeholder="Enter member name"
                                         style={{border:errors.year_tenure ?'1px solid red':''}}
                                     /> 
                                         
@@ -385,7 +381,6 @@ function ManageProduct() {
                                         type="date"
                                         onChange={change}
                                         defaultValue={fields.removal_date}
-                                        placeholder="Enter member name"
                                         style={{border:errors.removal_date ?'1px solid red':''}}
                                     /> 
                                         
@@ -402,7 +397,6 @@ function ManageProduct() {
                                         type="text"
                                         onChange={change}
                                         defaultValue={fields.comments}
-                                        placeholder="Enter member name"
                                         style={{border:errors.comments ?'1px solid red':''}}
                                     /> 
                                         
