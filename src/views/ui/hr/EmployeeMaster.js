@@ -3,36 +3,37 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, Form, Input, Label, Row, Table } from 'reactstrap'
 import { validate } from '../../../helpers/utils';
-
+import toast from 'react-hot-toast';
+let initial = {
+    emp_type:'',
+    designation:'',
+    first_name:'',
+    last_name:'',
+    phone:'',
+    branch:'',
+    access_branch:'',
+    address:'',
+    login_id:'',
+    password:'',
+    married:'',
+    gender:'',
+    motorization:'',
+    dashboard:'',
+    approval_limit:'',
+    dob:'',
+    app_login:'',
+    exit_date:'',
+    join_date:'',
+    email:'',
+    pan:'',
+    aadhaar:'',
+    bank:'',
+    bank_branch:'',
+}
 const EmployeeMaster = () => {
     const dispatch = useDispatch();
-    const [fields, setFields] = useState({
-        emp_type:'',
-        designation:'',
-        first_name:'',
-        last_name:'',
-        phone:'',
-        branch:'',
-        access_branch:'',
-        address:'',
-        login_id:'',
-        password:'',
-        married:'',
-        gender:'',
-        motorization:'',
-        dashboard:'',
-        approval_limit:'',
-        dob:'',
-        app_login:'',
-        exit_date:'',
-        join_date:'',
-        email:'',
-        pan:'',
-        aadhaar:'',
-        bank:'',
-        bank_branch:'',
-    })
-    const [users, setUsers] = useState([])
+    const [fields, setFields] = useState(initial)
+    const [employees, setEmployees] = useState([])
     const inputStyle = {fontSize:14}
     const [designations, setDesignations] = useState([])
     const [branches, setBranches] = useState([])
@@ -52,17 +53,23 @@ const EmployeeMaster = () => {
             return
         }
         dispatch({type:'LOADING'})
-        axios.post('',fields).then(({data})=>{
+        axios.post('add-employee',fields).then(({data})=>{
             console.log(data)
+            if(data.status)
+            {
+                toast.success(data.message);
+                setFields(()=>initial)
+            }
         })
         .catch(err=>{
             console.log(err.message)
+            toast.error(err.message)
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
     useEffect(()=>{
-        axios.get('users').then(({data})=> setUsers(data)).catch(err=>console.log(err.message))
+        axios.get('employees').then(({data})=> setEmployees(data)).catch(err=>console.log(err.message))
         axios.get('designations').then(({data})=>setDesignations(data)).catch()
         axios.get('get-branches').then(({data})=>setBranches(data)).catch()
     },[])
@@ -102,7 +109,7 @@ const EmployeeMaster = () => {
                                     >
                                         <option> Choose </option>
                                         {designations.map(item=>{
-                                            return <option value={item.abbr}>{item.name}</option>
+                                            return <option key={item.abbr} value={item.abbr}>{item.name}</option>
                                         })}
                                     </Input> 
                                 </div>
@@ -311,7 +318,6 @@ const EmployeeMaster = () => {
                                     name={'app_login'} 
                                     value={fields.app_login}
                                     style={inputStyle} 
-                                    defaultValue ='yes'
                                     type='select' 
                                 >
                                     <option value={'yes'}> Yes </option>
@@ -429,7 +435,7 @@ const EmployeeMaster = () => {
                         <Row  >
                             <div className='d-flex'>
                                 <Button type='button' className='bg-white text-dark'>
-                                    <i class="fa-solid fa-bars"></i>
+                                    <i className="fa-solid fa-bars"></i>
                                 </Button>
                                 <Input type='select' style={{width:170}}>
                                     <option value={'active'}> Active </option>
@@ -456,18 +462,18 @@ const EmployeeMaster = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map( (row,i)=>{
-                                    return <tr>
+                                {employees.map( (row,i)=>{
+                                    return <tr key={i}>
                                         <td>{++i}</td>
                                         <td>{row.id}</td>
                                         <td>{row.name}</td>
                                         <td>{row.branch??''}</td>
                                         <td>{row.type??''}</td>
-                                        <td>{row.post??''}</td>
+                                        <td>{row.designation??''}</td>
                                         <td>{row.phone??''}</td>
                                         <td>{row.login_id??''}</td>
                                         <td>{row.display??''}</td>
-                                        <td>{row.allow??''}</td>
+                                        <td>{row.app_login??''}</td>
                                     </tr>
                                 })}
                             </tbody>
