@@ -69,9 +69,9 @@ function UserAccess() {
         .then(({data})=>{
             console.log(data)
             toast.success(data.message)
+            setTimeout(()=>setSubmit(!formSubmit),500)        
         }).catch(err=>console.log(err.message))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
-        setTimeout(()=>setSubmit(!formSubmit),500)        
     }
 
     useEffect(()=>{
