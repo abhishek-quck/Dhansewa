@@ -47,18 +47,18 @@ function UserAccess() {
     }
 
     useEffect(()=>{
-        console.log(navigation)
-        let menus = [];
+        let menus = {};
         navigation.forEach(item=>{
-            menus.push(item.title)
             if(item.sub)
             {
-                menus = [...menus, ...item.sub.map(row=>row.title)]
+                menus[item.title] = [item.title]
+                menus[item.title] = [...menus[item.title], ...item.sub.map(row=>row.title) ]
+            } else {
+                menus[item.title] = item.title
             }
         })
         setMenus(menus)
         axios.get('employees').then(({data})=>{
-            console.log(data)
             setUsers(data)
         }).catch(err=>console.log(err.message))
     },[])
@@ -244,17 +244,34 @@ function UserAccess() {
                                 </thead>
                                 <tbody>
                                     {user.id ? 
-                                     menuItems.map( (row,i)=>{
+                                     Object.keys(menuItems).map( (row,i)=>{
                                         return (
-                                            <tr key={i}>
-                                                <td>{++i}</td>
-                                                <td>0</td>
-                                                <td>{row}</td>
-                                                <td>{row}</td>
-                                                <td><Input type='checkbox'/></td>
-                                                <td><Input type='checkbox'/></td>
-                                                <td><Input type='checkbox'/></td>
-                                                <td><Input type='checkbox'/></td>
+                                            typeof menuItems[row] === 'object' ?
+                                            (
+                                                menuItems[row].map( (itr,j) =>{
+                                                    return (
+                                                        <tr key={j}>
+                                                            <td>{ j+1 }</td>
+                                                            <td>{ j===0 && Object.keys(menuItems).indexOf(row) }</td>
+                                                            <td>{ j===0 && itr }</td>
+                                                            <td>{ itr }</td>
+                                                            <td>{ j!==0 && <Input type='checkbox' name='view'/> }</td>
+                                                            <td>{ j!==0 && <Input type='checkbox' name='add'/> }</td>
+                                                            <td>{ j!==0 && <Input type='checkbox' name='edit'/> }</td>
+                                                            <td>{ j!==0 && <Input type='checkbox' name='del'/> }</td>
+                                                        </tr>    
+                                                    )
+                                                })
+                                            )
+                                            : <tr key={i}>
+                                                <td className='bg-secondary'>{++i}</td>
+                                                <td className='bg-secondary'>{Object.keys(menuItems).indexOf(row)}</td>
+                                                <td className='bg-secondary'>{menuItems[row]}</td>
+                                                <td className='bg-secondary'>{menuItems[row]}</td>
+                                                <td className='bg-secondary'><Input type='checkbox' name='view' /></td>
+                                                <td className='bg-secondary'><Input type='checkbox' name='add' /></td>
+                                                <td className='bg-secondary'><Input type='checkbox' name='edit' /></td>
+                                                <td className='bg-secondary'><Input type='checkbox' name='del' /></td>
                                             </tr>
                                         )
                                     }) 
