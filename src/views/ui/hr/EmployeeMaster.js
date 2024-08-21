@@ -486,6 +486,7 @@ const EmployeeMaster = () => {
                             </div>
                         </Row>
                         <p> Employee List </p>
+                        <div className='table-responsive'>
                         <Table bordered hover>
                             <thead>
                                 <tr>
@@ -519,6 +520,7 @@ const EmployeeMaster = () => {
                                 })}
                             </tbody>
                         </Table>
+                        </div>
                     </CardBody>
                 </Card>
             </Col>
