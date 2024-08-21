@@ -12,6 +12,7 @@ function UserAccess() {
     const [menuItems, setMenus] = useState([])
     const [accessCodes, setAccessCodes] = useState('');
     const boxStyled = { border:'1px solid lightgray',padding: '8px 0 0 19px'}
+    const [formSubmit, setSubmit] = useState(false)
     const [reportAccess, setReportAccess] = useState({
         general : false,
         hr : false,
@@ -70,6 +71,7 @@ function UserAccess() {
             toast.success(data.message)
         }).catch(err=>console.log(err.message))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
+        setSubmit(!formSubmit)
     }
 
     useEffect(()=>{
@@ -85,9 +87,16 @@ function UserAccess() {
         })
         setMenus(menus)
         axios.get('employees').then( ({data})=> setUsers(data) ).catch( err=>console.log(err.message) )
+        if(user.id)
+        {
+            axios.get('report-access/'+ user.id).then(({data})=>{
+                setReportAccess(data.inputs)
+                setAccessCodes(data.codes)
+            }).catch( err=>console.log(err.message) )
+        }
         // axios.get('reports').then( ({data})=> setUsers(data) ).catch( err=>console.log(err.message) )
          
-    },[])
+    },[formSubmit])
 
     return (
         <>
