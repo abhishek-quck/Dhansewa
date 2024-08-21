@@ -132,8 +132,8 @@ const EmployeeMaster = () => {
                                     type='select' 
                                 >
                                     <option></option>
-                                    <option value={'field'}> FIELD </option>
-                                    <option value={'office'}> OFFICE </option>
+                                    <option value={'FIELD'}> FIELD </option>
+                                    <option value={'OFFICE'}> OFFICE </option>
                                 </Input>
                             </Col>
                             <Col className='d-flex'>
