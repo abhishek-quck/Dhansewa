@@ -10,6 +10,7 @@ function UserAccess() {
     const [users, setUsers] = useState([])
     const [user, setUser] = useState({})
     const [menuItems, setMenus] = useState([])
+    const [accessCodes, setAccessCodes] = useState('');
     const boxStyled = { border:'1px solid lightgray',padding: '8px 0 0 19px'}
     const [reportAccess, setReportAccess] = useState({
         general : false,
@@ -34,7 +35,10 @@ function UserAccess() {
         .then(({data})=>{
             console.log(data)
             setUser(data)
-            axios.get('report-access/'+ id).then(({data})=> setReportAccess(data)).catch( err=>console.log(err.message) )
+            axios.get('report-access/'+ id).then(({data})=>{
+                setReportAccess(data.inputs)
+                setAccessCodes(data.codes)
+            }).catch( err=>console.log(err.message) )
         }).catch(err=>err.message)
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
@@ -158,7 +162,7 @@ function UserAccess() {
                                 </FormGroup>
                                 <FormGroup>
                                     <Label> Report Access Code </Label>
-                                    <Input type='text' disabled />
+                                    <Input type='text' disabled value={accessCodes}/>
                                 </FormGroup>
                             </Col>    
                             <Col md={8}>
