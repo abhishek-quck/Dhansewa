@@ -47,8 +47,8 @@ function CenterCollection() {
                             <thead>
                                 <tr>
                                     <th style={headStyle} colSpan={4} className='text-center'> CENTER INFO  </th>
-                                    <th style={headStyle} colSpan={8} className='text-center'> TODAY COLLECTION </th>
-                                    <th style={headStyle} className='text-center'> ALERT </th>
+                                    <th style={headStyle} colSpan={7} className='text-center'> TODAY COLLECTION </th>
+                                    <th style={headStyle} colSpan={2} className='text-center'> ALERT </th>
                                 </tr>
                                 <tr>
                                     <th>:</th>
