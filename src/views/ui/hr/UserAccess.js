@@ -1,7 +1,6 @@
 import $ from 'jquery'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { validate } from '../../../helpers/utils'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
@@ -10,44 +9,61 @@ function UserAccess() {
     const dispatch = useDispatch()
     const [users, setUsers] = useState([])
     const [user, setUser] = useState({})
-    const [fields, setFields] = useState({})
     const [menuItems, setMenus] = useState([])
     const boxStyled = { border:'1px solid lightgray',padding: '8px 0 0 19px'}
-
+    const [reportAccess, setReportAccess] = useState({
+        general : false,
+        hr : false,
+        members : false,
+        accounts : false,
+        loan : false,
+        banking : false,
+        collections : false,
+        npa : false,
+        advance : false,
+    })
     const selectAll = e => {
         $(e.target).parents('table').find('input[type=checkbox]').each(function(k,input){ 
             $(input).prop('checked', $(e.target).is(':checked'));             
         })
     }
+    // when an employee is selected from table
     const populateForm = id => {
         dispatch({type:'LOADING'})
         axios.get('get-employee/'+id)
         .then(({data})=>{
             console.log(data)
             setUser(data)
+            axios.get('report-access/'+ id).then(({data})=> setReportAccess(data)).catch( err=>console.log(err.message) )
         }).catch(err=>err.message)
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
-    const change = e=>{
-        if(e?.target)
-        {
-            setFields({...fields, [e.target.name]:e.target.value })
-            e.target.style.border = ''
-        }
+    // only checkbox inputs are there
+    const changeReportInput = e=>{
+        const {checked} = e.target 
+        setReportAccess({...reportAccess, [e.target.name]:checked })
     }
-    const handleSubmit = e => {
+    // handle report access form
+    const updateReportAccess = e => {
         e.preventDefault()
-        const {shouldGo, result} = validate(fields)
-        if(shouldGo===false)
+        if(user.id===undefined)
         {
-            console.log(result)
-            toast.error('Fill the required fields!')
-            return 
+            return toast('Select an employee first!',
+                {
+                  icon: '⚠️',
+                  style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+                }
+            );
         }
         dispatch({type:'LOADING'})
-        axios.post('update-access',fields).
-        then(({data})=>{
+        axios.post('update-report-access',{...reportAccess, employee_id : user.id})
+        .then(({data})=>{
             console.log(data)
+            toast.success(data.message)
         }).catch(err=>console.log(err.message))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
@@ -64,9 +80,9 @@ function UserAccess() {
             }
         })
         setMenus(menus)
-        axios.get('employees').then(({data})=>{
-            setUsers(data)
-        }).catch(err=>console.log(err.message))
+        axios.get('employees').then( ({data})=> setUsers(data) ).catch( err=>console.log(err.message) )
+        // axios.get('reports').then( ({data})=> setUsers(data) ).catch( err=>console.log(err.message) )
+         
     },[])
 
     return (
@@ -74,7 +90,6 @@ function UserAccess() {
            <Col className='d-flex'>
             <Col md={5}>
                 <Card>
-                <Form onSubmit={handleSubmit} >
                     <CardHeader>
                         <b> Users List </b>
                     </CardHeader>
@@ -100,15 +115,15 @@ function UserAccess() {
                                                 onClick={()=>populateForm(row.id)}><i className='fa fa-upload'/>
                                             </Button> 
                                         </td>
-                                        <td className={`${row.id===user.id?'selected':''}`}>{row.id}</td>
+                                        <td className={`${row.id===user.id?'selected':''}`}><span>{row.id}</span></td>
                                         <td className={`${row.id===user.id?'selected':''}`}>
-                                            {row.first_name+' '+row.last_name}
+                                            <span>{row.first_name+' '+row.last_name}</span>
                                         </td>
                                         <td className={`${row.id===user.id?'selected':''}`}>
-                                            {row.designation}
+                                            <span>{row.designation}</span>
                                         </td>
                                         <td className={`${row.id===user.id?'selected':''}`}>
-                                            {row.branch}
+                                            <span>{row.branch}</span>
                                         </td>
                                     </tr>
                                 })}
@@ -118,7 +133,6 @@ function UserAccess() {
                     <CardFooter>
                         
                     </CardFooter>
-                    </Form>
                 </Card>
             </Col>
             <Col md={7} style={{fontSize:''}}  className='ms-4'>
@@ -151,16 +165,19 @@ function UserAccess() {
                                 <p> Report Access </p>
                                 <hr/>
                                 <Container>
+                                    <Form onSubmit={updateReportAccess}>
                                     <Row>
                                         <Col md={6} style={boxStyled}>
                                             <div className='d-flex'>
-                                                <Input type='checkbox'/>
+                                                <Input type='checkbox' name="general" onChange={changeReportInput} 
+                                                checked={reportAccess.general}/>
                                                 <Label className='ms-2'> 1. General </Label>
                                             </div>
                                         </Col>
                                         <Col md={6} style={boxStyled}>
                                             <div className='d-flex'>
-                                                <Input type='checkbox'/>
+                                                <Input type='checkbox' name="hr" onChange={changeReportInput} 
+                                                checked={reportAccess.hr}/>
                                                 <Label className='ms-2'> 2. HR & Payroll </Label>
                                             </div> 
                                         </Col>
@@ -168,13 +185,15 @@ function UserAccess() {
                                     <Row>
                                         <Col md={6} style={boxStyled}>
                                             <div className='d-flex'>
-                                                <Input type='checkbox'/>
+                                                <Input type='checkbox' name="members" onChange={changeReportInput} 
+                                                checked={reportAccess.members}/>
                                                 <Label className='ms-2'> 3. Members </Label>
                                             </div>  
                                         </Col>
                                         <Col md={6} style={boxStyled}>
                                             <div className='d-flex'>
-                                                <Input type='checkbox'/>
+                                                <Input type='checkbox' name="accounts" onChange={changeReportInput} 
+                                                checked={reportAccess.accounts}/>
                                                 <Label className='ms-2'> 4. Accounts </Label>
                                             </div>   
                                         </Col>
@@ -182,13 +201,15 @@ function UserAccess() {
                                     <Row>
                                         <Col md={6} style={boxStyled}>
                                             <div className='d-flex'>
-                                                <Input type='checkbox'/>
+                                                <Input type='checkbox' name="loan" onChange={changeReportInput} 
+                                                checked={reportAccess.loan}/>
                                                 <Label className='ms-2'> 5. Loan </Label>
                                             </div>    
                                         </Col>
                                         <Col md={6} style={boxStyled}>
                                             <div className='d-flex'>
-                                                <Input type='checkbox'/>
+                                                <Input type='checkbox' name="banking" onChange={changeReportInput} 
+                                                checked={reportAccess.banking}/>
                                                 <Label className='ms-2'> 6. Banking </Label>
                                             </div>     
                                         </Col>
@@ -196,13 +217,15 @@ function UserAccess() {
                                     <Row>
                                         <Col md={6} style={boxStyled}>
                                             <div className='d-flex'>
-                                                <Input type='checkbox'/>
+                                                <Input type='checkbox' name="collections" onChange={changeReportInput} 
+                                                checked={reportAccess.collections}/>
                                                 <Label className='ms-2'> 7. Collections </Label>
                                             </div>      
                                         </Col>
                                         <Col md={6} style={boxStyled}>
                                             <div className='d-flex'>
-                                                <Input type='checkbox'/>
+                                                <Input type='checkbox' name="npa" onChange={changeReportInput} 
+                                                checked={reportAccess.npa}/>
                                                 <Label className='ms-2'> 8. NPA </Label>
                                             </div>       
                                         </Col>
@@ -210,11 +233,16 @@ function UserAccess() {
                                     <Row>
                                         <Col md={6} style={boxStyled}>
                                             <div className='d-flex'>
-                                                <Input type='checkbox'/>
+                                                <Input type='checkbox' name="advance" onChange={changeReportInput} 
+                                                checked={reportAccess.advance}/>
                                                 <Label className='ms-2'> 9. Advance </Label>
                                             </div>        
                                         </Col>
                                     </Row>
+                                    <Row className='mt-5'>
+                                        <Button color='success'> Update </Button>
+                                    </Row>
+                                    </Form>
                                 </Container>
                                
                             </Col>                            
@@ -257,23 +285,39 @@ function UserAccess() {
                                                 menuItems[row].map( (itr,j) =>{
                                                     return (
                                                         <tr key={j}>
-                                                            <td className={ j===0 && 'bg-gray-300' }>{ j+1 }</td>
-                                                            <td className={ j===0 && 'bg-gray-300' }>{ j===0 && Object.keys(menuItems).indexOf(row) }</td>
-                                                            <td className={ j===0 && 'bg-gray-300' }>{ j===0 && itr }</td>
-                                                            <td className={ j===0 && 'bg-gray-300' }>{ itr }</td>
-                                                            <td className={ j===0 && 'bg-gray-300' }>{ j!==0 && <Input type='checkbox' name='view'/> }</td>
-                                                            <td className={ j===0 && 'bg-gray-300' }>{ j!==0 && <Input type='checkbox' name='add'/> }</td>
-                                                            <td className={ j===0 && 'bg-gray-300' }>{ j!==0 && <Input type='checkbox' name='edit'/> }</td>
-                                                            <td className={ j===0 && 'bg-gray-300' }>{ j!==0 && <Input type='checkbox' name='del'/> }</td>
+                                                            <td className={ j===0 ? 'bg-gray-300':'' }>
+                                                                <span>{ j+1 }</span>
+                                                            </td>
+                                                            <td className={ j===0 ? 'bg-gray-300' : '' }>
+                                                                <span>{ j===0 && Object.keys(menuItems).indexOf(row) }</span>
+                                                            </td>
+                                                            <td className={ j===0 ? 'bg-gray-300' : '' }>
+                                                                <span>{ j===0 && itr }</span>
+                                                            </td>
+                                                            <td className={ j===0 ? 'bg-gray-300' : '' }>
+                                                                <span>{ itr }</span>
+                                                            </td>
+                                                            <td className={ j===0 ? 'bg-gray-300' : '' }>
+                                                                { j!==0 ? <Input type='checkbox' name='view'/> : null }
+                                                            </td>
+                                                            <td className={ j===0 ? 'bg-gray-300' : '' }>
+                                                                { j!==0 ? <Input type='checkbox' name='add'/> : null }
+                                                            </td>
+                                                            <td className={ j===0 ? 'bg-gray-300' : '' }>
+                                                                { j!==0 ? <Input type='checkbox' name='edit'/> : null }
+                                                            </td>
+                                                            <td className={ j===0 ? 'bg-gray-300' : '' }>
+                                                                { j!==0 ? <Input type='checkbox' name='del'/> : null }
+                                                            </td>
                                                         </tr>    
                                                     )
                                                 })
                                             )
                                             : <tr key={i}>
-                                                <td className='bg-gray-300'>{++i}</td>
-                                                <td className='bg-gray-300'>{Object.keys(menuItems).indexOf(row)}</td>
-                                                <td className='bg-gray-300'>{menuItems[row]}</td>
-                                                <td className='bg-gray-300'>{menuItems[row]}</td>
+                                                <td className='bg-gray-300'><span>{++i}</span></td>
+                                                <td className='bg-gray-300'><span>{Object.keys(menuItems).indexOf(row)}</span></td>
+                                                <td className='bg-gray-300'><span>{menuItems[row]}</span></td>
+                                                <td className='bg-gray-300'><span>{menuItems[row]}</span></td>
                                                 <td className='bg-gray-300'><Input type='checkbox' name='view' /></td>
                                                 <td className='bg-gray-300'><Input type='checkbox' name='add' /></td>
                                                 <td className='bg-gray-300'><Input type='checkbox' name='edit' /></td>
@@ -281,7 +325,7 @@ function UserAccess() {
                                             </tr>
                                         )
                                     }) 
-                                    :''}
+                                    :null}
                                 </tbody>
                             </Table>
                         </Form>          
