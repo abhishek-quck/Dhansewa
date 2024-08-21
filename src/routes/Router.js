@@ -6,6 +6,7 @@ const SpeedLoanDisburse = lazy(()=>import("../views/ui/group-loan/SpeedLoanDisbu
 const LedgerRevise = lazy(()=>import("../views/ui/advance-settings/LedgerRevise.js"))
 const CreditReport = lazy(()=>import("../views/ui/CreditReport.js"))
 const Collections = lazy(()=>import("../views/ui/activity/Collections.js"))
+const CenterCollection = lazy(()=>import("../views/ui/activity/CenterCollection.js"))
 const DayClose = lazy(()=>import("../views/ui/activity/DayClose.js"))
 const CenterMaster = lazy(()=>import("../views/ui/centers/CenterMaster.js"))
 const MeetingHandover = lazy(()=>import("../views/ui/centers/MeetingHandover.js"))
@@ -102,6 +103,7 @@ const ThemeRoutes = [
       { path: "/loan-chart-master", exact: true, element: <LoanChartMaster /> },
       { path: "/forms", exact: true, element: <Forms /> },
       { path: "/collections", exact: true, element: <Collections /> },
+      { path: "/view-center-collections/:branch_id?", exact: true, element: <CenterCollection /> },
       { path: "/arrear-collection", exact: true, element: <ArrearCollection /> },
       { path: "/arrear-clients", exact: true, element: <ArrearClients /> },
       { path: "/day-close", exact: true, element: <DayClose /> },

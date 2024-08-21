@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 import {  Button, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
 
 function Collections() {
@@ -64,7 +65,7 @@ function Collections() {
                                 <td>{row.client}</td>
                                 <td>{row.DBC}</td>
                                 <td>{row.disb}</td>
-                                <td><Button type='button' color='primary'> View Center </Button></td>
+                                <td><Link to={'/view-center-collections/'+1} className='btn btn-primary'> View Center </Link></td>
                             </tr>
                         )
                     })} 
