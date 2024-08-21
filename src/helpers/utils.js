@@ -115,6 +115,11 @@ export const formatDate = (date,format='Ymd') => {
         return `${day}-${month}-${year}`;
     }
 }
+
+export const getCurrentDay = () => {
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return daysOfWeek[(new Date()).getDay()];
+}
 export const toBase64 = blob => {
 
 }

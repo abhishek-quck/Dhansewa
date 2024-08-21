@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Button, Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from 'reactstrap'
-import { formatDate, getCurrentDate } from '../../../helpers/utils'
+import { formatDate, getCurrentDate, getCurrentDay } from '../../../helpers/utils'
 
 function CenterCollection() {
     let {branch_id} = useParams()
@@ -22,7 +22,7 @@ function CenterCollection() {
             <div className='container'>
                 <Card>
                     <CardHeader>
-                        {branch.name}   <b> {formatDate(getCurrentDate(),'dmY') } </b>
+                        {branch.name}   <b> {formatDate(getCurrentDate(),'dmY') +' - '+ getCurrentDay()} </b>
                     </CardHeader>
                     <CardBody>
                         <Row style={{borderBottom:'1px dashed black'}}>
