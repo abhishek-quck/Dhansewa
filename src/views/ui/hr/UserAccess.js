@@ -1,3 +1,4 @@
+import $ from 'jquery'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { validate } from '../../../helpers/utils'
@@ -13,6 +14,11 @@ function UserAccess() {
     const [menuItems, setMenus] = useState([])
     const boxStyled = { border:'1px solid lightgray',padding: '8px 0 0 19px'}
 
+    const selectAll = e => {
+        $(e.target).parents('table').find('input[type=checkbox]').each(function(k,input){ 
+            $(input).prop('checked', $(e.target).is(':checked'));             
+        })
+    }
     const populateForm = id => {
         dispatch({type:'LOADING'})
         axios.get('get-employee/'+id)
@@ -232,7 +238,7 @@ function UserAccess() {
                             <Table className='table-bordered table-hover '>
                                 <thead style={{backgroundColor:'lightblue'}}>
                                     <tr style={{background:'blue'}}>
-                                        <th><Input type='checkbox' /></th>
+                                        <th><Input type='checkbox' onClick={selectAll} /></th>
                                         <th> PRNT </th>
                                         <th> TITLE </th>
                                         <th> DETAILS </th>
@@ -251,27 +257,27 @@ function UserAccess() {
                                                 menuItems[row].map( (itr,j) =>{
                                                     return (
                                                         <tr key={j}>
-                                                            <td>{ j+1 }</td>
-                                                            <td>{ j===0 && Object.keys(menuItems).indexOf(row) }</td>
-                                                            <td>{ j===0 && itr }</td>
-                                                            <td>{ itr }</td>
-                                                            <td>{ j!==0 && <Input type='checkbox' name='view'/> }</td>
-                                                            <td>{ j!==0 && <Input type='checkbox' name='add'/> }</td>
-                                                            <td>{ j!==0 && <Input type='checkbox' name='edit'/> }</td>
-                                                            <td>{ j!==0 && <Input type='checkbox' name='del'/> }</td>
+                                                            <td className={ j===0 && 'bg-gray-300' }>{ j+1 }</td>
+                                                            <td className={ j===0 && 'bg-gray-300' }>{ j===0 && Object.keys(menuItems).indexOf(row) }</td>
+                                                            <td className={ j===0 && 'bg-gray-300' }>{ j===0 && itr }</td>
+                                                            <td className={ j===0 && 'bg-gray-300' }>{ itr }</td>
+                                                            <td className={ j===0 && 'bg-gray-300' }>{ j!==0 && <Input type='checkbox' name='view'/> }</td>
+                                                            <td className={ j===0 && 'bg-gray-300' }>{ j!==0 && <Input type='checkbox' name='add'/> }</td>
+                                                            <td className={ j===0 && 'bg-gray-300' }>{ j!==0 && <Input type='checkbox' name='edit'/> }</td>
+                                                            <td className={ j===0 && 'bg-gray-300' }>{ j!==0 && <Input type='checkbox' name='del'/> }</td>
                                                         </tr>    
                                                     )
                                                 })
                                             )
                                             : <tr key={i}>
-                                                <td className='bg-secondary'>{++i}</td>
-                                                <td className='bg-secondary'>{Object.keys(menuItems).indexOf(row)}</td>
-                                                <td className='bg-secondary'>{menuItems[row]}</td>
-                                                <td className='bg-secondary'>{menuItems[row]}</td>
-                                                <td className='bg-secondary'><Input type='checkbox' name='view' /></td>
-                                                <td className='bg-secondary'><Input type='checkbox' name='add' /></td>
-                                                <td className='bg-secondary'><Input type='checkbox' name='edit' /></td>
-                                                <td className='bg-secondary'><Input type='checkbox' name='del' /></td>
+                                                <td className='bg-gray-300'>{++i}</td>
+                                                <td className='bg-gray-300'>{Object.keys(menuItems).indexOf(row)}</td>
+                                                <td className='bg-gray-300'>{menuItems[row]}</td>
+                                                <td className='bg-gray-300'>{menuItems[row]}</td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name='view' /></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name='add' /></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name='edit' /></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name='del' /></td>
                                             </tr>
                                         )
                                     }) 
