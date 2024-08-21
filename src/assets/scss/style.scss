@@ -6,7 +6,10 @@
 @import "./layout/container";
 
 .bg-gray-300{
-    background-color: #dee2e6;
+    background-color: #dee2e6!important;
+}
+td.bg-gray-300{
+    border-bottom: 1px solid black!important;
 }
 .sl-spinner3{
     position: absolute;
