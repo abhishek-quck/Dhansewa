@@ -127,7 +127,7 @@ const EmployeeMaster = () => {
                                 <Input 
                                     onChange={change}
                                     name={'emp_type'} 
-                                    defaultValue={fields.emp_type}
+                                    value={fields.emp_type}
                                     style={inputStyle} 
                                     type='select' 
                                 >
