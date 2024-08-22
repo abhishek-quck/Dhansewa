@@ -78,7 +78,7 @@ export const validate = (fields,exceptions=[]) => {
                 {
                     $(input).parents('.col-md-12, .col').find('small.text-danger').text(shout)
                 } else {
-                    $(input).parents('.col-md-12, .col').append('<small class="text-danger offset-4">'+shout+'</small>')
+                    $(input).parents('.col-md-12, .col').append('<small class="text-danger">'+shout+'</small>')
                 }
             } else {
                 $(input).parents('.col-md-12, .col').find('small.text-danger').remove()
