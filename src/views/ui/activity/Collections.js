@@ -1,6 +1,8 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
-import {  Button, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import { getCurrentDate } from '../../../helpers/utils';
 
 function Collections() {
     const [collections, setCollections] = useState([
@@ -25,8 +27,9 @@ function Collections() {
             disb: 'fat' 
         }
     ]);
+    const currentDate = getCurrentDate()
     useEffect(()=>{
-
+        axios.get('collections').then(({data})=>{setCollections(data)}).catch(err=>alert(err.message))
     },[])
 
     return (
@@ -57,15 +60,15 @@ function Collections() {
                         return (
                             <tr key={i}>
                                 <td>{i+1}</td>                    
-                                <td>{row.branch}</td>
-                                <td>{row.date}</td>
-                                <td>{row.dues}</td>
-                                <td>{row.collected}</td>
-                                <td>{row.center}</td>
-                                <td>{row.client}</td>
-                                <td>{row.DBC}</td>
-                                <td>{row.disb}</td>
-                                <td><Link to={'/view-center-collections/'+1} className='btn btn-primary'> View Center </Link></td>
+                                <td>{row.name}</td>
+                                <td>{row.date??currentDate}</td>
+                                <td>{row.dues??0}</td>
+                                <td>{row.collected??0}</td>
+                                <td>{row.centers_count}</td>
+                                <td>{row.clients_count}</td>
+                                <td>{row.DBC??0}</td>
+                                <td>{row.disb??0}</td>
+                                <td><Link to={'/view-center-collections/'+row.id} className='btn btn-primary'> View Center </Link></td>
                             </tr>
                         )
                     })} 
