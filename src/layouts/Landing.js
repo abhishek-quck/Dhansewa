@@ -36,14 +36,12 @@ function Landing() {
         }
         axios.get('permitted-menus').then(({data})=>{
             let ids;
+            dispatch({type:'SET_ADMIN_STATUS',payload:data.admin })
+            localStorage.setItem('isAdmin', data.admin)
             if(data.admin)
             {
-                dispatch({type:'SET_ADMIN_STATUS',payload:true })
-                localStorage.setItem('isAdmin', true)
                 ids = Object.keys(navigation)
             }else {
-                dispatch({type:'SET_ADMIN_STATUS',payload:false })
-                localStorage.setItem('isAdmin', false)
                 let menus = data.menu
                 ids = menus.map( r => r['menu_id'])
             }

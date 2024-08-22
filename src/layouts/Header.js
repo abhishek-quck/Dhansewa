@@ -184,7 +184,7 @@ const Header = () => {
             </DropdownMenu>
           </UncontrolledDropdown>
           <UncontrolledDropdown inNavbar nav>
-            <span aria-haspopup="true" className="dropdown-toggle nav-link">
+            <span aria-haspopup="true" className=" nav-link">
               <Link 
                 to={'/download-documents'} 
                 className="text-decoration-none text-dark"
