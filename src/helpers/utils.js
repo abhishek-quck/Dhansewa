@@ -50,6 +50,15 @@ export const validate = (fields,exceptions=[]) => {
                         result[f]= shout; 
                     }
                 }
+                if( $(input).val() && type=== 'str' )
+                {
+                    if( /^([^0-9]*)$/.test($(input).val())===false )
+                    {
+                        shout= `Should not contain numbers!`;
+                        invalid = true;
+                        result[f]= shout; 
+                    }
+                }
             }
             if(isDate)
             {
@@ -61,25 +70,18 @@ export const validate = (fields,exceptions=[]) => {
                 } else {
                     shout = '';
                 }
-                if($(input).parents('.col-md-12').find('small.text-danger').length)
-                {
-                    $(input).parents('.col-md-12').find('small.text-danger').text(shout)
-                } else {
-                    $(input).parents('.col-md-12').append('<small class="text-danger offset-4">'+shout+'</small>')
-                }
                 // return
             }
             if(shout)   
             {
-                if($(input).parents('.col-md-12').find('small.text-danger').length)
+                if($(input).parents('.col-md-12, .col').find('small.text-danger').length)
                 {
-                    $(input).parents('.col-md-12').find('small.text-danger').text(shout)
+                    $(input).parents('.col-md-12, .col').find('small.text-danger').text(shout)
                 } else {
-                    $(input).parents('.col-md-12')
-                    .append('<small class="text-danger offset-4">'+shout+'</small>')
+                    $(input).parents('.col-md-12, .col').append('<small class="text-danger offset-4">'+shout+'</small>')
                 }
             } else {
-                $(input).parents('.col-md-12').find('small.text-danger').remove()
+                $(input).parents('.col-md-12, .col').find('small.text-danger').remove()
             }
             if(invalid){
                 shouldGo = false;

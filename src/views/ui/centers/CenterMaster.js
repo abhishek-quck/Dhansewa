@@ -196,6 +196,8 @@ function CenterMaster() {
 												name="center"
 												type="text"
 												onChange={onChange}
+												cast={'str'}
+												min={4}
 												placeholder="Enter center name"
 											/>
 										</div>
@@ -265,6 +267,7 @@ function CenterMaster() {
 											<Input 
 												id='staffName'
 												name="staff"
+												cast={'str'}
 												type="text"
 												min={5}
 												onChange={onChange}
@@ -337,6 +340,7 @@ function CenterMaster() {
 												id="city"
 												name="cityName"
 												onChange={onChange}
+												min={5}
 												type="text"
 												placeholder="Enter village/city name"
 											/>

@@ -163,6 +163,7 @@ const EmployeeMaster = () => {
                                     value={fields.first_name}
                                     style={inputStyle} 
                                     type='text' 
+                                    cast={'str'}
                                 />
                             </Col>
                             <Col className='d-flex'>
@@ -173,6 +174,7 @@ const EmployeeMaster = () => {
                                         name={'last_name'} 
                                         style={inputStyle} 
                                         type='text'
+                                        cast={'str'}
                                         value={fields.last_name}
                                         placeholder='Enter Address'
                                     /> 

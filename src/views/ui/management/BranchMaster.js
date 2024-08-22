@@ -106,6 +106,7 @@ const BranchMaster = () => {
                             value={fields.name}
                             style={inputStyle} 
                             type='text' 
+                            cast={'str'}
                         />
                     </Col>
                     <Col className='d-flex'>

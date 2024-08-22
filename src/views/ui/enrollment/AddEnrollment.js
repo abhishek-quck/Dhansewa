@@ -269,6 +269,8 @@ const AddEnrollment = () => {
 							id="name" 
 							name="applicant_name"
 							type="text"
+							cast={'str'}
+							min={5}
 							onChange={onChange}
 							defaultValue={fields.applicant_name}
 							placeholder="Enter applicant name"
@@ -294,6 +296,8 @@ const AddEnrollment = () => {
 							id="relation" 
 							name="relative_name"
 							type="text"
+							cast={'str'}
+							min={5}
 							onChange={onChange}
 							defaultValue={fields.relative_name}
 							placeholder="Enter name"
@@ -388,6 +392,8 @@ const AddEnrollment = () => {
 							id="exampleSelectMulti" 
 							name="village"
 							type="text"
+							cast={'str'}
+							min={5}
 							onChange={onChange}
 							defaultValue={fields.village}
 							placeholder="Enter village/city name" 
@@ -474,6 +480,8 @@ const AddEnrollment = () => {
 							id="father_name" 
 							name="father_name"
 							type="text"
+							cast={'str'}
+							min={5}
 							onChange={onChange}
 							defaultValue={fields.father_name}
 							placeholder="Enter father name"
@@ -512,6 +520,8 @@ const AddEnrollment = () => {
 						<Input
 							id="education" 
 							name="education"
+							cast={'str'}
+							min={2}
 							type="text"
 							onChange={onChange}
 							defaultValue={fields.education}
