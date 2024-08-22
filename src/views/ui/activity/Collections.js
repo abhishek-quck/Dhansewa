@@ -29,7 +29,7 @@ function Collections() {
     ]);
     const currentDate = getCurrentDate()
     useEffect(()=>{
-        axios.get('collections').then(({data})=>{setCollections(data)}).catch(err=>alert(err.message))
+        axios.get('get-collections').then(({data})=>{setCollections(data)}).catch(err=>alert(err.message))
     },[])
 
     return (
@@ -43,16 +43,16 @@ function Collections() {
                 <Table bordered dashed={''} hover>
                 <thead>
                     <tr>
-                    <th> S.No </th>
-                    <th> Branch Name</th>
-                    <th> Date </th>
-                    <th> Dues </th>
-                    <th> Collected </th>
-                    <th> Center </th>
-                    <th> Clients </th>
-                    <th> DBC </th>
-                    <th> DISB </th>
-                    <th> Actions </th>
+                        <th> S.No </th>
+                        <th> Branch Name</th>
+                        <th> Date </th>
+                        <th> Dues </th>
+                        <th> Collected </th>
+                        <th> Center </th>
+                        <th> Clients </th>
+                        <th> DBC </th>
+                        <th> DISB </th>
+                        <th> Actions </th>
                     </tr>
                 </thead>
                 <tbody>
