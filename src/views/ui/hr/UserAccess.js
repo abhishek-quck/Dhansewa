@@ -8,6 +8,7 @@ import { navigation } from '../../../layouts/SidebarData';
 function UserAccess() {
     const dispatch = useDispatch()
     const {permMap} = useSelector(state=>state.auth)
+    const [ownPerms, setPerms] = useState([])
     const [users, setUsers] = useState([])
     const [user, setUser] = useState({})
     const [menuItems, setMenus] = useState([])
@@ -41,7 +42,7 @@ function UserAccess() {
                 setReportAccess(data.inputs)
                 setAccessCodes(data.codes)
             }).catch( err=>console.log(err.message) )
-            axios.get('permissions/'+ id).then( ({data})=> console.log(data) ).catch( err=>console.log(err.message) )
+            fillPerms()
         }).catch(err=>err.message)
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
@@ -88,6 +89,23 @@ function UserAccess() {
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
+    const fillPerms = () => {
+        axios.get('permissions/'+user.id).then( ({data})=> {
+            let checks = [];
+            for(let item of data)
+            {
+                for(let key in item)
+                {
+                    if(item[key] && !['permission_id','user_id'].includes(key))
+                    {
+                        checks.push(item['permission_id']+'_'+key)
+                    }
+                }
+            }
+            setPerms(checks)
+            console.log(checks)
+        } ).catch( err=>console.log(err.message) )
+    }
     useEffect(()=>{
         let menus = {};
         navigation.forEach(item=>{
@@ -103,7 +121,7 @@ function UserAccess() {
         axios.get('employees').then( ({data})=> setUsers(data) ).catch( err=>console.log(err.message) )
         if(user.id)
         {
-            axios.get('permissions/'+user.id).then( ({data})=> console.log(data) ).catch( err=>console.log(err.message) )
+            fillPerms()
             axios.get('report-access/'+ user.id).then(({data})=>{
                 setReportAccess(data.inputs)
                 setAccessCodes(data.codes)
@@ -326,16 +344,16 @@ function UserAccess() {
                                                                 <span>{ itr }</span>
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_view'}/> : null }
+                                                                { j!==0 ? <Input type='checkbox' checked={ownPerms.includes(permMap[itr]+'_view')} name={permMap[itr]+'_view'}/> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_add'}/> : null }
+                                                                { j!==0 ? <Input type='checkbox' checked={ownPerms.includes(permMap[itr]+'_add')} name={permMap[itr]+'_add'}/> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_edit'}/> : null }
+                                                                { j!==0 ? <Input type='checkbox' checked={ownPerms.includes(permMap[itr]+'_edit')} name={permMap[itr]+'_edit'}/> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_delete'}/> : null }
+                                                                { j!==0 ? <Input type='checkbox' checked={ownPerms.includes(permMap[itr]+'_delete')} name={permMap[itr]+'_delete'}/> : null }
                                                             </td>
                                                         </tr>    
                                                     )
@@ -346,10 +364,10 @@ function UserAccess() {
                                                 <td className='bg-gray-300'><span>{Object.keys(menuItems).indexOf(row)}</span></td>
                                                 <td className='bg-gray-300'><span>{menuItems[row]}</span></td>
                                                 <td className='bg-gray-300'><span>{menuItems[row]}</span></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_view'} /></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_add'} /></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_edit'} /></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_delete'} /></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_view'} checked={ownPerms.includes(permMap[menuItems[row]]+'_view')}/></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_add'} checked={ownPerms.includes(permMap[menuItems[row]]+'_add')}/></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_edit'} checked={ownPerms.includes(permMap[menuItems[row]]+'_delete')}/></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_delete'} checked={ownPerms.includes(permMap[menuItems[row]]+'_delete')}/></td>
                                             </tr>
                                         )
                                     }) 
