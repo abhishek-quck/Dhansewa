@@ -335,7 +335,7 @@ function UserAccess() {
                                                                 { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_edit'}/> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_del'}/> : null }
+                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_delete'}/> : null }
                                                             </td>
                                                         </tr>    
                                                     )
@@ -349,7 +349,7 @@ function UserAccess() {
                                                 <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_view'} /></td>
                                                 <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_add'} /></td>
                                                 <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_edit'} /></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_del'} /></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_delete'} /></td>
                                             </tr>
                                         )
                                     }) 
