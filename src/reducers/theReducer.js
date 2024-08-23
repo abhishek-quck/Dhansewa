@@ -2,6 +2,7 @@ import axios from "axios"
 let userToken = localStorage.getItem('auth-token') ?? null
 const menus = JSON.parse(localStorage.getItem('menus'))??[];
 const isAdmin = JSON.parse(localStorage.getItem('isAdmin'))??false;
+const permMap = JSON.parse(localStorage.getItem('permMap'))??{}
 async function getUserDetails ()
 {
   try
@@ -28,7 +29,8 @@ const initialState = {
     enrollBranch:'',
     GRTs:{},
     menus,
-    isAdmin
+    isAdmin,
+    permMap
 }
 
 const authReducer = (state=initialState,action) => {
@@ -134,6 +136,11 @@ const authReducer = (state=initialState,action) => {
             return {
                 ...state,
                 isAdmin:action.payload
+            }
+        case 'PERM_MAP':
+            return {
+                ...state,
+                permMap:action.payload
             }
         default : return state
     }

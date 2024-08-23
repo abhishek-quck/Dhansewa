@@ -2,11 +2,12 @@ import $ from 'jquery'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
 import { navigation } from '../../../layouts/SidebarData';
 function UserAccess() {
     const dispatch = useDispatch()
+    const {permMap} = useSelector(state=>state.auth)
     const [users, setUsers] = useState([])
     const [user, setUser] = useState({})
     const [menuItems, setMenus] = useState([])
@@ -40,6 +41,7 @@ function UserAccess() {
                 setReportAccess(data.inputs)
                 setAccessCodes(data.codes)
             }).catch( err=>console.log(err.message) )
+            axios.get('permissions/'+ id).then( ({data})=> console.log(data) ).catch( err=>console.log(err.message) )
         }).catch(err=>err.message)
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
@@ -47,6 +49,18 @@ function UserAccess() {
     const changeReportInput = e=>{
         const {checked} = e.target 
         setReportAccess({...reportAccess, [e.target.name]:checked })
+    }
+    const updatePermission = e => {
+        e.preventDefault()
+        let fd = new FormData($('#permission')[0])
+        fd.append('user_id', user.id )
+        axios.post('update-permissions',fd, {
+            headers:{
+                "Accept":"application/json",
+                "Content-Type": "multipart/form-data",
+                "Authorization":"Bearer "+localStorage.getItem('auth-token')
+            }
+        }).then(({data})=>console.log(data)).catch(err=>console.log(err.message))
     }
     // handle report access form
     const updateReportAccess = e => {
@@ -89,6 +103,7 @@ function UserAccess() {
         axios.get('employees').then( ({data})=> setUsers(data) ).catch( err=>console.log(err.message) )
         if(user.id)
         {
+            axios.get('permissions/'+user.id).then( ({data})=> console.log(data) ).catch( err=>console.log(err.message) )
             axios.get('report-access/'+ user.id).then(({data})=>{
                 setReportAccess(data.inputs)
                 setAccessCodes(data.codes)
@@ -275,7 +290,7 @@ function UserAccess() {
                         </Row>
                     </CardBody>
                     <CardFooter>
-                        <Form>
+                        <Form id='permission' onSubmit={updatePermission}>
                             <Table className='table-bordered table-hover '>
                                 <thead style={{backgroundColor:'lightblue'}}>
                                     <tr style={{background:'blue'}}>
@@ -311,16 +326,16 @@ function UserAccess() {
                                                                 <span>{ itr }</span>
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' name='view'/> : null }
+                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_view'}/> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' name='add'/> : null }
+                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_add'}/> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' name='edit'/> : null }
+                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_edit'}/> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' name='del'/> : null }
+                                                                { j!==0 ? <Input type='checkbox' name={permMap[itr]+'_del'}/> : null }
                                                             </td>
                                                         </tr>    
                                                     )
@@ -331,16 +346,17 @@ function UserAccess() {
                                                 <td className='bg-gray-300'><span>{Object.keys(menuItems).indexOf(row)}</span></td>
                                                 <td className='bg-gray-300'><span>{menuItems[row]}</span></td>
                                                 <td className='bg-gray-300'><span>{menuItems[row]}</span></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name='view' /></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name='add' /></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name='edit' /></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name='del' /></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_view'} /></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_add'} /></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_edit'} /></td>
+                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_del'} /></td>
                                             </tr>
                                         )
                                     }) 
                                     :null}
                                 </tbody>
                             </Table>
+                            <Button type='submit' color='success'> Save </Button>
                         </Form>          
                     </CardFooter>
                 </Card>

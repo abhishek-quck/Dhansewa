@@ -74,6 +74,15 @@ function Login() {
           localStorage.setItem('auth-token', data.access_token )
           dispatch({type:'SET_TOKEN', payload:data.access_token })
           axios.defaults.headers.common['Authorization'] = `Bearer `+data.access_token;
+          axios.get('list-permissions').then(({data})=>{
+            let mappedPerms = {}
+            for(let item of data){
+              let key = item.name
+              mappedPerms[key] = item.id
+            }
+            localStorage.setItem('permMap', JSON.stringify(mappedPerms) )
+            dispatch({ type:'PERM_MAP', payload:mappedPerms })
+          })
           navigate('/landing')
         }
       }).catch(()=>{
