@@ -15,20 +15,18 @@ import {
   Button
 } from "reactstrap";
 import { validate } from "../../../helpers/utils";
-
+let initial ={}, bankInitial ={}, NomineeInitial ={}
 const AddEnrollment = () => { 
 	const dispatch = useDispatch()
-	const [submitted, hit]=useState(false)
 	const [branches, setBranches] = useState([])
 	const [KYCdoc, setKYCdoc] = useState(null)
 	const [passbook, setPassbook] = useState(null)
 	const [states, fillStates] = useState([])
 	const [districts, fillDistricts] = useState([])
 	const submitStyle = {position:'fixed',maxWidth:'360px',left:'40%',top:'90%',zIndex:'121'}
-	const [advance, addAdvanceDetail] = useState(false)
 	const [nominee, addNomineeDetails] = useState(false)
 	const [bankDetails, addBankDetails] = useState(false)
-	const [fields, setFields] = useState({
+	const [fields, setFields] = useState(initial={
 		applicant_name:'',
 		branch_id:'',
 		aadhaar:'',
@@ -64,7 +62,7 @@ const AddEnrollment = () => {
         co_applicant_income_freq:'', 
 	})
 
-	const [bank, setBank]= useState({
+	const [bank, setBank]= useState(bankInitial={
         ifsc:'',
         bank:'',
         bank_branch:'',
@@ -72,7 +70,7 @@ const AddEnrollment = () => {
         is_debit_card:'',
 	}) 
 
-	const [Nominee, setNominee] = useState({
+	const [Nominee, setNominee] = useState(NomineeInitial={
 		nominee:'',
         nominee_dob:'',
         nominee_relation:'',
@@ -91,7 +89,6 @@ const AddEnrollment = () => {
 		setPassbook(file)
 	}
 	const [errors, setErrors] = useState(fields)
-	const [KYCtypes, setKYCtypes] = useState([])
 	const handleSubmit = ev => {
 		ev.preventDefault()
 		let finalObj = fields;
@@ -103,7 +100,6 @@ const AddEnrollment = () => {
 		{
 			finalObj = {...finalObj, ...Nominee} 
 		}
-		console.log(Object.keys(finalObj).length,finalObj); 
 		let {result, shouldGo} = validate(finalObj,['advDetails','nominee_details','credit_report'])
 		if(shouldGo===false)
 		{
@@ -127,7 +123,7 @@ const AddEnrollment = () => {
 		})
 		.then(({data})=>{ 
 			toast.success(data.message)
-			// reset()
+			reset()
 			// hit(!submitted)
 		}).catch(({response})=> {
 			console.log(response.data);	
@@ -135,9 +131,9 @@ const AddEnrollment = () => {
 		}).finally(()=> dispatch({type:'STOP_LOADING'}) )
 	}
 	const reset = () => {
-		let state = fields
-		Object.keys(state).forEach(key=>state[key]='')
-		setFields(state)
+		setFields(initial);
+		setBank(bankInitial);
+		setNominee(NomineeInitial);
 	}
 
 	const handleFile = e => {
@@ -149,7 +145,6 @@ const AddEnrollment = () => {
 		.then(({data})=>{
 			if(data.state) fillStates(data.state)
 			if(data.district) fillDistricts(data.district)
-			if(data.documents) setKYCtypes(data.documents)
 		})
 
 		axios.get('get-branches')
