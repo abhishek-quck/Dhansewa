@@ -508,7 +508,7 @@ const EmployeeMaster = () => {
                                 {employees.map( (row,i)=>{
                                     return <tr key={i}>
                                         <td className={row.id===parseInt(selectedEmp)?'selected':''}>
-                                            {set || selectedEmp ? <Input type='checkbox' checked={selectedEmp===row.id} onClick={selectRow}/> :++i}</td>
+                                            {set || selectedEmp ? <input type='checkbox' defaultChecked={selectedEmp===row.id} onClick={selectRow}/> :++i}</td>
                                         <td className={row.id===parseInt(selectedEmp)?'selected emp_id':'emp_id'}>{row.id}</td>
                                         <td className={row.id===parseInt(selectedEmp)?'selected':''}>{row.first_name+' '+row.last_name}</td>
                                         <td className={row.id===parseInt(selectedEmp)?'selected':''}>{row.branch??''}</td>
