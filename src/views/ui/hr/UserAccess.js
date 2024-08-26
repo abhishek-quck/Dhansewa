@@ -8,9 +8,10 @@ import { navigation } from '../../../layouts/SidebarData';
 function UserAccess() {
     const dispatch = useDispatch()
     const {permMap} = useSelector(state=>state.auth)
-    const [ownPerms, setPerms] = useState([])
     const [users, setUsers] = useState([])
     const [user, setUser] = useState({})
+    const [chkbox, setChecked] = useState({})
+    const saveBtnStyle = { position:'fixed',top:'91%',left:'91%'}
     const [menuItems, setMenus] = useState([])
     const [accessCodes, setAccessCodes] = useState('');
     const boxStyled = { border:'1px solid lightgray',padding: '8px 0 0 19px'}
@@ -36,13 +37,12 @@ function UserAccess() {
         dispatch({type:'LOADING'})
         axios.get('get-employee/'+id)
         .then(({data})=>{
-            console.log(data)
             setUser(data)
             axios.get('report-access/'+ id).then(({data})=>{
                 setReportAccess(data.inputs)
                 setAccessCodes(data.codes)
             }).catch( err=>console.log(err.message) )
-            fillPerms()
+            fillPerms(id)
         }).catch(err=>err.message)
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
@@ -61,13 +61,17 @@ function UserAccess() {
                 "Content-Type": "multipart/form-data",
                 "Authorization":"Bearer "+localStorage.getItem('auth-token')
             }
-        }).then(({data})=>console.log(data)).catch(err=>console.log(err.message))
+        }).then(({data})=>
+            toast.success(data.message)
+        ).catch(err=>{
+            toast.error('Something went wrong!')
+            console.log(err.message)
+        })
     }
     // handle report access form
     const updateReportAccess = e => {
         e.preventDefault()
-        if(user.id===undefined)
-        {
+        if(user.id===undefined) {
             return toast('Select an employee first!',
                 {
                   icon: '⚠️',
@@ -82,35 +86,36 @@ function UserAccess() {
         dispatch({type:'LOADING'})
         axios.post('update-report-access',{...reportAccess, employee_id : user.id})
         .then(({data})=>{
-            console.log(data)
             toast.success(data.message)
             setTimeout(()=>setSubmit(!formSubmit),500)        
-        }).catch(err=>console.log(err.message))
+        }).catch(err=>{
+            toast.error(err.message)
+            console.log(err.message)
+        })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 
-    const fillPerms = () => {
-        axios.get('permissions/'+user.id).then( ({data})=> {
-            let checks = [];
-            for(let item of data)
-            {
-                for(let key in item)
-                {
-                    if(item[key] && !['permission_id','user_id'].includes(key))
-                    {
-                        checks.push(item['permission_id']+'_'+key)
-                    }
+    const handleCheck = e => {
+        const {checked} = e.target 
+        setChecked({...chkbox, [e.target.name]:checked})
+    }
+    
+    const fillPerms = (id) => {
+        setChecked({})
+        axios.get('permissions/'+id).then( ({data})=> {
+            let obj={};
+            for(let item of data) {
+                for(let key in item) {
+                    if(item[key] && !['permission_id','user_id'].includes(key)) obj[item['permission_id']+'_'+key] = true
                 }
             }
-            setPerms(checks)
-            console.log(checks)
+            setChecked(obj)
         } ).catch( err=>console.log(err.message) )
     }
     useEffect(()=>{
         let menus = {};
         navigation.forEach(item=>{
-            if(item.sub)
-            {
+            if(item.sub) {
                 menus[item.title] = [item.title]
                 menus[item.title] = [...menus[item.title], ...item.sub.map(row=>row.title) ]
             } else {
@@ -121,7 +126,7 @@ function UserAccess() {
         axios.get('employees').then( ({data})=> setUsers(data) ).catch( err=>console.log(err.message) )
         if(user.id)
         {
-            fillPerms()
+            fillPerms(user.id)
             axios.get('report-access/'+ user.id).then(({data})=>{
                 setReportAccess(data.inputs)
                 setAccessCodes(data.codes)
@@ -344,16 +349,40 @@ function UserAccess() {
                                                                 <span>{ itr }</span>
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' checked={ownPerms.includes(permMap[itr]+'_view')} name={permMap[itr]+'_view'}/> : null }
+                                                                { j!==0 ? 
+                                                                <Input 
+                                                                    type='checkbox' 
+                                                                    checked={chkbox[permMap[itr]+'_view']} 
+                                                                    name={permMap[itr]+'_view'} 
+                                                                    onChange={handleCheck}
+                                                                /> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' checked={ownPerms.includes(permMap[itr]+'_add')} name={permMap[itr]+'_add'}/> : null }
+                                                                { j!==0 ? 
+                                                                <Input 
+                                                                    type='checkbox' 
+                                                                    checked={chkbox[permMap[itr]+'_add']} 
+                                                                    name={permMap[itr]+'_add'} 
+                                                                    onChange={handleCheck}
+                                                                /> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' checked={ownPerms.includes(permMap[itr]+'_edit')} name={permMap[itr]+'_edit'}/> : null }
+                                                                { j!==0 ? 
+                                                                <Input 
+                                                                    type='checkbox' 
+                                                                    checked={chkbox[permMap[itr]+'_edit']} 
+                                                                    name={permMap[itr]+'_edit'} 
+                                                                    onChange={handleCheck} 
+                                                                /> : null }
                                                             </td>
                                                             <td className={ j===0 ? 'bg-gray-300' : '' }>
-                                                                { j!==0 ? <Input type='checkbox' checked={ownPerms.includes(permMap[itr]+'_delete')} name={permMap[itr]+'_delete'}/> : null }
+                                                                { j!==0 ? 
+                                                                <Input 
+                                                                    type='checkbox' 
+                                                                    checked={chkbox[permMap[itr]+'_delete']} 
+                                                                    name={permMap[itr]+'_delete'} 
+                                                                    onChange={handleCheck}
+                                                                /> : null }
                                                             </td>
                                                         </tr>    
                                                     )
@@ -364,17 +393,41 @@ function UserAccess() {
                                                 <td className='bg-gray-300'><span>{Object.keys(menuItems).indexOf(row)}</span></td>
                                                 <td className='bg-gray-300'><span>{menuItems[row]}</span></td>
                                                 <td className='bg-gray-300'><span>{menuItems[row]}</span></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_view'} checked={ownPerms.includes(permMap[menuItems[row]]+'_view')}/></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_add'} checked={ownPerms.includes(permMap[menuItems[row]]+'_add')}/></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_edit'} checked={ownPerms.includes(permMap[menuItems[row]]+'_delete')}/></td>
-                                                <td className='bg-gray-300'><Input type='checkbox' name={permMap[menuItems[row]]+'_delete'} checked={ownPerms.includes(permMap[menuItems[row]]+'_delete')}/></td>
+                                                <td className='bg-gray-300'>
+                                                    <Input 
+                                                        type='checkbox' 
+                                                        name={permMap[menuItems[row]]+'_view'} 
+                                                        checked={chkbox[permMap[menuItems[row]]+'_view']} 
+                                                        onChange={handleCheck}
+                                                    /></td>
+                                                <td className='bg-gray-300'>
+                                                    <Input 
+                                                        type='checkbox' 
+                                                        name={permMap[menuItems[row]]+'_add'} 
+                                                        checked={chkbox[permMap[menuItems[row]]+'_add']} 
+                                                        onChange={handleCheck}
+                                                    /></td>
+                                                <td className='bg-gray-300'>
+                                                    <Input 
+                                                        type='checkbox' 
+                                                        name={permMap[menuItems[row]]+'_edit'} 
+                                                        checked={chkbox[permMap[menuItems[row]]+'_edit']} 
+                                                        onChange={handleCheck}
+                                                    /></td>
+                                                <td className='bg-gray-300'>
+                                                    <Input 
+                                                        type='checkbox' 
+                                                        name={permMap[menuItems[row]]+'_delete'} 
+                                                        checked={chkbox[permMap[menuItems[row]]+'_delete']} 
+                                                        onChange={handleCheck}
+                                                    /></td>
                                             </tr>
                                         )
                                     }) 
                                     :null}
                                 </tbody>
                             </Table>
-                            <Button type='submit' color='success'> Save </Button>
+                            <Button type='submit' color='success' style={saveBtnStyle}> Save </Button>
                         </Form>          
                     </CardFooter>
                 </Card>
