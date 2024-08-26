@@ -123,7 +123,11 @@ function UserAccess() {
             }
         })
         setMenus(menus)
-        axios.get('employees').then( ({data})=> setUsers(data) ).catch( err=>console.log(err.message) )
+        axios.get('employees').then( ({data})=> {
+            dispatch({type:'LOADING'})
+            setUsers(data)
+        }).catch( err=>console.log(err.message) )
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
         if(user.id)
         {
             fillPerms(user.id)
