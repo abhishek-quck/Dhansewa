@@ -247,7 +247,7 @@ export const navigation= [
         }, 
         {
           title: "Data Truncate",
-          href: "#",
+          href: "/data-truncate",
         }, 
         {
           title: "System Setup",

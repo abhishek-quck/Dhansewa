@@ -4,6 +4,7 @@ const AddEnrollment = lazy(()=>import("../views/ui/enrollment/AddEnrollment.js")
 const ClientGRT = lazy(()=>import("../views/ui/centers/ClientGRT.js"))
 const SpeedLoanDisburse = lazy(()=>import("../views/ui/group-loan/SpeedLoanDisburse.js"))
 const LedgerRevise = lazy(()=>import("../views/ui/advance-settings/LedgerRevise.js"))
+const DataTruncate = lazy(()=>import("../views/ui/advance-settings/DataTruncate.js"))
 const CreditReport = lazy(()=>import("../views/ui/CreditReport.js"))
 const Collections = lazy(()=>import("../views/ui/activity/Collections.js"))
 const CenterCollection = lazy(()=>import("../views/ui/activity/CenterCollection.js"))
@@ -85,6 +86,7 @@ const ThemeRoutes = [
       { path: "/client-disbursement", exact: true, element: <ClientDisbursement /> },
       { path: "/speed-loan-disburse", exact: true, element: <SpeedLoanDisburse /> },
       { path: "/ledger-revise", exact: true, element: <LedgerRevise /> },
+      { path: "/data-truncate", exact: true, element: <DataTruncate /> },
       { path: "/branches-master", exact: true, element: <BranchMaster /> },
       { path: "/account-head", exact: true, element: <AccountHead /> },
       { path: "/accounts-master", exact: true, element: <AccountMaster /> },
