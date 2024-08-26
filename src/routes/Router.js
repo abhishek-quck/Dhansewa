@@ -15,7 +15,7 @@ const ADVUpdate = lazy(()=>import("../views/ui/centers/ADVUpdate.js"))
 const ClientADV = lazy(()=>import("../views/ui/centers/ClientADV.js"))
 const AccountHead = lazy(()=>import("../views/ui/accounts/AccountHead.js"))
 const AccountMaster = lazy(()=>import("../views/ui/accounts/AccountMaster.js"))
-const VoucherEntry = lazy(()=>import("../views/ui/accounts/VoucherEntry.js"))
+const MultiVoucherEntry = lazy(()=>import("../views/ui/accounts/MultiVoucherEntry.js"))
 const SaleProducts = lazy(()=>import("../views/ui/management/SaleProducts.js"))
 const Login = lazy(()=>import("../views/Login.js"))
 const Signup = lazy(()=>import("../views/Signup.js"))
@@ -89,7 +89,7 @@ const ThemeRoutes = [
       { path: "/accounts-master", exact: true, element: <AccountMaster /> },
       { path: "/accounts-ledger-view", exact: true, element: <AccountLedger /> },
       { path: "/trial-balance", exact: true, element: <TrialBalance /> },
-      { path: "/voucher-entry", exact: true, element: <VoucherEntry /> },
+      { path: "/voucher-entry", exact: true, element: <MultiVoucherEntry /> },
       { path: "/sale-products", exact: true, element: <SaleProducts /> },
       { path: "/badges", exact: true, element: <Badges /> },
       { path: "/buttons", exact: true, element: <Buttons /> },

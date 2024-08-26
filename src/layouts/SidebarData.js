@@ -74,18 +74,18 @@ export const navigation= [
         },
         {
           title: 'Voucher Entry',
-          href:'#'
+          href:'/voucher-entry'
         },
         {
           title: 'Multi Voucher Entry',
-          href:'/voucher-entry'
+          href:'/multi-voucher-entry'
         },
         {
           title: 'Voucher Editor',
           href:'#'
         }
       ],
-      links:['/account-head','/accounts-master','/voucher-entry']
+      links:['/account-head','/accounts-master','/voucher-entry','/multi-voucher-entry']
     },
     {
       title: "Group Loan",

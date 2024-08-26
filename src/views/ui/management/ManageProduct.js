@@ -39,16 +39,16 @@ function ManageProduct() {
     const {id} = useParams();
     const handleSubmit = e => {
         e.preventDefault()
-        const {shouldGo, result} = validate(fields)
+        const {shouldGo, result} = validate(fields,['reducing'])
         if(shouldGo===false)
         {
-            console.log(fields)
+            console.log(result)
             toast.error('Fill the required fields')
             setErrors(result)
             return 
         }
         dispatch({type:'LOADING'})
-        axios.post('manage-product', fields)
+        axios.post('manage-product/'+id, fields)
         .then(({data})=>{
             toast.success(data.message)
         })

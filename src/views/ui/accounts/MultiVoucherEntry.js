@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { Card, CardBody,  CardHeader , Col, Form, Input, Label, Row } from 'reactstrap'
-import { validate } from '../../../helpers/utils'
-import { useDispatch } from 'react-redux'
+import React, { useEffect, useState } from 'react';
+import { Card, CardBody,  CardHeader , Col, Form, Input, Label, Row } from 'reactstrap';
+import { validate } from '../../../helpers/utils';
+import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import $ from 'jquery';
 
-function VoucherEntry() {
+function MultiVoucherEntry() {
     const dispatch = useDispatch()
     const [branches, setBranches] = useState([])
     const [fields, setFields] = useState({
@@ -186,7 +186,7 @@ function VoucherEntry() {
                         </Row> 
                         <Row className='mt-3' >
                             <Col md="12">
-                                <button className='btn btn-success w-100'> 
+                                <button type="button" className='btn btn-success w-100'> 
                                 + Add Transaction </button>
                             </Col > 
                         </Row> 
@@ -204,4 +204,4 @@ function VoucherEntry() {
     )
 }
 
-export default VoucherEntry
+export default MultiVoucherEntry
