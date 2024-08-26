@@ -65,7 +65,7 @@ function VoucherEntry() {
                 <Card>
                     <CardHeader>
                         <div className='d-flex' style={{justifyContent:'space-between'}}>
-                        <b> Multi Voucher Entry Gateway </b>
+                        <b> Voucher Entry Gateway </b>
                         <button type='button' className='btn btn-primary'>
                             <i className='fa-regular fa-eye' />&nbsp;
                             Ledger 
