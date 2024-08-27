@@ -28,20 +28,28 @@ var Attachments =
             if(hasData[0].includes('application/pdf'))
             {
                 let file = dataURLtoFile(hasData[0],'abc.pdf') 
-                let payload = new FormData();
-                payload.append('doc', file);
-                axios.post('convert-file', payload, {
-                    headers:{
-                        "Accept":"application/json",
-                        "Content-Type": "multipart/form-data",
-                        "Authorization":"Bearer "+localStorage.getItem('auth-token')
-                    }
-                })
-                .then(({data})=>{
-                    console.log(data)
-                })
-                .catch(err=>console.log(err.message))
-                return 
+                const href = URL.createObjectURL(file)
+                const link = document.createElement('a')
+                link.href  = href 
+                link.download='_blank.pdf' // Don't ignore <3
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                URL.revokeObjectURL(href)
+                //     let payload = new FormData();
+                //     payload.append('doc', file);
+                //     axios.post('convert-file', payload, {
+                //         headers:{
+                //             "Accept":"application/json",
+                //             "Content-Type": "multipart/form-data",
+                //             "Authorization":"Bearer "+localStorage.getItem('auth-token')
+                //         }
+                //     })
+                //     .then(({data})=>{
+                //         console.log(data)
+                //     })
+                //     .catch(err=>console.log(err.message))
+                //     return 
             }
             Attachments.events.previewCallback(hasData)
         } else {

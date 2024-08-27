@@ -25,6 +25,7 @@ function UpdateCIS() {
         district:'',
         state:'',
         branch_id:'',
+        kyc_type:'',
         ifsc:'',
         bank:'',
         bank_branch:'',
@@ -715,7 +716,7 @@ function UpdateCIS() {
                                         style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
                                         name="kyc_type"
                                         onChange={onChange}
-                                        value={fields.document_id}
+                                        defaultValue={fields.document_id}
                                     >
                                     <option></option>
                                     {KYCtypes.map( opt => {
