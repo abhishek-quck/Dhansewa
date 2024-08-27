@@ -139,7 +139,8 @@ return (
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    { targetInfo.map((row,i)=>{
+                            {targetInfo.length? 
+                                     targetInfo.map((row,i)=>{
                                         return (<tr key={i}>
                                             <td>{row.id}</td>
                                             <td>{row.client.name}</td>
@@ -158,7 +159,11 @@ return (
                                                 </span>
                                             </td>
                                         </tr>)
-                                    })}
+                                    })
+                                    :(<tr>
+                                        <td colSpan={4} className='text-danger text-center'> <h5> No documents uploaded or needs re-upload! </h5> </td>
+                                    </tr>)
+                                }
                                 </tbody>
                             </Table>    
                     </Row>
