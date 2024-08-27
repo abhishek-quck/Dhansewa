@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import ReactSelect from 'react-select'
 import { Card, CardBody, CardFooter, CardHeader, CardText, Col, Container, Label, Row, Table }
 from 'reactstrap'
+import { preview } from '../attachments'
 
 var allData = {branch:{}, center:{}, clients:{}}
 function PreviewDocs() {
@@ -22,12 +23,14 @@ const [branches, setBranches] = useState([]);
 const [centers, setCenters] = useState([]);
 const [clients, setClients] = useState([]);
 
-const preview = async(e) => {
-    // dispatch({type:'LOADING'})
-    // return axios.get('preview-document/'+e.target.dataset.id ).then(({data}) => {
+const previewDoc = dataArr => {
+    preview(dataArr)
+}
 
-    // })
-    // .finally( ()=> dispatch({type:'STOP_LOADING'}))
+const getDocumentName = str => {
+    if(str.toLowerCase().includes('vote')) return 'VOTER CARD';
+    if(str.toLowerCase().includes('adhaa')) return 'AADHAAR CARD';
+    if(str.toLowerCase().includes('assbook')) return 'BANK PASSBOOK';
 }
 const init = () => {
     dispatch({ type:'LOADING' })
@@ -72,9 +75,11 @@ const updateClient = (e) => {
 const fetch = (clientID) => {
     setFields({...fields, client:clientID})
     dispatch({type:'LOADING'})
-    axios.post('/get-client-information', {...fields,client:clientID})
+    axios.get('/get-client-documents/'+clientID )
     .then( ({data}) => {
-        if(data.targetInfo) setTargetInfo(data.targetInfo)
+        console.log(data);
+        // if(data.targetInfo) 
+        setTargetInfo(data)
     })
     .catch( (err) => {
         console.log(err)
@@ -123,7 +128,7 @@ return (
                         <CardText >
                             Target Information
                         </CardText>
-                        {targetInfo.length? 
+                         
                             <Table dashed={''} bordered hover style={{fontSize:'small'}}>
                                 <thead>
                                     <tr>
@@ -137,23 +142,25 @@ return (
                                     { targetInfo.map((row,i)=>{
                                         return (<tr key={i}>
                                             <td>{row.id}</td>
-                                            <td>{row.name}</td>
-                                            <td>{'KYC'}</td>
+                                            <td>{row.client.name}</td>
+                                            <td>{getDocumentName(row.file_name)}</td>
                                             <td>
                                                 <span 
                                                     className='text-decoration-none text-dark' data-id={row.id} 
-                                                    onClick={preview} 
+                                                    onClick={()=>previewDoc([row.data])} 
                                                     style={{cursor:'pointer'}}
                                                 > 
-                                                    <i className='fa fa-paperclip' /> 
+                                                    {
+                                                      (row.data).includes('application/pdf') ? 
+                                                        <i className='fs-3 fa-regular fa-file-pdf'/> : 
+                                                       <i className='fa fa-paperclip'/> 
+                                                    }
                                                 </span>
                                             </td>
                                         </tr>)
                                     })}
                                 </tbody>
                             </Table>    
-                        :null
-                        }
                     </Row>
                 </Container>
             </CardBody>
