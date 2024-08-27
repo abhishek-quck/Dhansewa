@@ -108,7 +108,6 @@ const AddGRT = () => {
 		}else{
 			axios.post(`get-enrollment-details/${id}`)
 			.then(({data})=>{
-				console.log(data)
 				if(typeof data==='object' && Object.keys(data).length)
 				{
 					let object = {}

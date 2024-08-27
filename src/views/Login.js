@@ -72,7 +72,9 @@ function Login() {
         {
           let { data } = response  
           localStorage.setItem('auth-token', data.access_token )
+          localStorage.setItem('auth-user', JSON.stringify(data.user) )
           dispatch({type:'SET_TOKEN', payload:data.access_token })
+          dispatch({type:'SET_AUTH', payload:data.user })
           axios.defaults.headers.common['Authorization'] = `Bearer `+data.access_token;
           axios.get('list-permissions').then(({data})=>{
             let mappedPerms = {}

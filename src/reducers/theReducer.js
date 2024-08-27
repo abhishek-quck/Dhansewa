@@ -3,6 +3,7 @@ let userToken = localStorage.getItem('auth-token') ?? null
 const menus = JSON.parse(localStorage.getItem('menus'))??[];
 const isAdmin = JSON.parse(localStorage.getItem('isAdmin'))??false;
 const permMap = JSON.parse(localStorage.getItem('permMap'))??{}
+const myInfo = JSON.parse(localStorage.getItem('auth-user'))??{}
 async function getUserDetails ()
 {
   try
@@ -17,7 +18,7 @@ async function getUserDetails ()
 
 const initialState = {
     loading:false,
-    myInfo:null,
+    myInfo,
 	theme:localStorage.getItem('theme')??'Light',
     userToken,
     error: null,

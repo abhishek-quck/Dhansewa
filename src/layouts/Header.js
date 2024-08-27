@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"; 
+import React, { useEffect, useState } from "react"; 
 import {
   Navbar,
   Collapse,
@@ -10,22 +10,52 @@ import {
   DropdownItem,
   Dropdown,
   Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Input,
+  ModalFooter,
+  Form,
+  FormGroup,
+  Label,
 } from "reactstrap";
 import { ReactComponent as LogoWhite } from "../assets/images/logos/xtremelogowhite.svg";
 import user1 from "../assets/images/logos/profile.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Header = () => {
   let navigate = useNavigate()
   let dispatch = useDispatch()
-  let {userToken, theme} = useSelector(state=>state.auth) 
-  const [isOpen, setIsOpen] = React.useState(false);
+  let {userToken, theme, myInfo} = useSelector(state=>state.auth) 
+  let {username, name, email} = myInfo
+  const [profileInfo, setProfile] = useState({username, name, email })
+  const [isOpen, setIsOpen] = useState(false);
+  const [modal, setModal] = useState(false);
+  const toggleModal = () => setModal(!modal);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
 
-  const changeTheme = () => {
-	dispatch({type:'THEME', payload: theme==='Dark'?'Light':'Dark'})
+  const updateProfile = e => {
+    e.preventDefault()
+    dispatch({type:"LOADING"})
+    axios.post('update-profile', {...profileInfo, user_id:myInfo.id})
+    .then(({data})=>{
+        toast.success('Profile updated!')
+        if(data.user)
+        {
+            dispatch({type:'SET_AUTH', payload:data.user })
+            localStorage.setItem('auth-user', JSON.stringify(data.user))
+        }
+    }).catch(err=>console.log(err.message))
+    .finally(()=>dispatch({type:"STOP_LOADING"}))
   }
+
+  const change = e => {
+    setProfile({...profileInfo, [e.target.name]:e.target.value})
+  }
+
   const logout = () => { 
 	dispatch({type:'LOADING'})
     setTimeout(()=> dispatch({type:'LOGOUT'}), 1500 )  
@@ -53,6 +83,7 @@ const Header = () => {
     document.getElementById("sidebarArea").classList.toggle("showSidebar");
   };
   return (
+    <>
     <Navbar 
 		color={theme.toLowerCase()} 
 		className={`navbar-${theme==='Dark'?theme.toLowerCase():''} text-${theme==='Light'?'white':''}`} expand="md" 
@@ -206,9 +237,9 @@ const Header = () => {
           {/* Profile dropdown */}
           <DropdownMenu> 
             <DropdownItem>
-				      <i className="fa-solid fa-file-invoice-dollar" /> &nbsp; My Account 
-			      </DropdownItem>
-            <DropdownItem>
+                <i className="fa-solid fa-file-invoice-dollar" /> &nbsp; My Account 
+            </DropdownItem>
+            <DropdownItem onClick={toggleModal}>
               <i className="fa-regular fa-pen-to-square"/> &nbsp;Edit Profile 
             </DropdownItem>
             <DropdownItem>
@@ -226,6 +257,55 @@ const Header = () => {
       </Dropdown>
       </Collapse>
     </Navbar>
+    <Modal isOpen={modal} toggle={toggleModal} >
+      <Form onSubmit={updateProfile}>
+        <ModalHeader toggle={toggleModal}> Update Profile </ModalHeader>
+            <ModalBody>
+                <FormGroup>
+                    <Label for="name"> Name </Label>
+                    <Input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter name"
+                        defaultValue={profileInfo.name}
+                        onChange={change}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="email"> Email </Label>
+                    <Input
+                        type="text"
+                        id="email"
+                        name="email"
+                        placeholder="Enter last name"
+                        defaultValue={profileInfo.email}
+                        onChange={change}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="username"> Username </Label>
+                    <Input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter @ username"
+                        defaultValue={profileInfo.username}
+                        onChange={change}
+                    />
+                </FormGroup>
+            </ModalBody>
+        <ModalFooter>
+          <button className="btn btn-success" onClick={toggleModal}>
+            Update 
+          </button>{' '}
+          <button className="btn btn-outline-primary" type="button" onClick={toggleModal}>
+            Close
+          </button>
+        </ModalFooter>
+        </Form>
+    </Modal>
+    </>
   );
 };
 

@@ -24,34 +24,9 @@ function DataTruncate() {
     // options
     const [branches, setBranches] = useState([]);
     const [centers, setCenters] = useState([]);
-    const [groups, setGroups] = useState([]);
     const [clients, setClients] = useState([]);
 
-    const printPassbook = async() => {
-        dispatch({type:'LOADING'})
-        console.log(fields)
-        return axios.get('print-passbook/'+fields.client,
-            {
-            responseType:'blob',
-            headers:{
-            "Content-Type": "multipart/form-data",
-            "Authorization":"Bearer "+localStorage.getItem('auth-token')
-        }}
-        ).then(({data}) => {
-            const href = URL.createObjectURL(data)
-            const link = document.createElement('a')
-            link.href  = href 
-            link.download='_blank.pdf' // Don't ignore <3
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
-            URL.revokeObjectURL(href)
-        })
-        .finally( ()=> {
-            dispatch({type:'STOP_LOADING'})
-        })
-
-    }
+    const printPassbook = async() => {}
     const init = () => {
         dispatch({ type:'LOADING' })
         axios.get('get-options')
@@ -61,10 +36,9 @@ function DataTruncate() {
             { 
                 let key = item.branch_id
                 delete item.branch
-                if( allData['clients'][key] === undefined )
-                { 
+                if( allData['clients'][key] === undefined ) { 
                     allData['clients'][key] = [item]
-                }else{
+                } else {
                     allData['clients'][key].push(item)
                 }
             } 
@@ -144,12 +118,6 @@ function DataTruncate() {
                                 <ReactSelect
                                     onChange={updateCenter}
                                     options={centers}
-                                />
-                            </Col>                               
-                            <Col>
-                                <Label> Groups </Label>
-                                <ReactSelect
-                                    options={groups}
                                 />
                             </Col>                               
                             <Col>
@@ -265,8 +233,7 @@ function DataTruncate() {
                                             <th> Last M.Date </th>
                                             <th> P-Out </th>
                                             <th> Int-Out </th>
-                                            <th> : </th>
-                                            <th> : </th>
+                                            <th> : </th> 
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -283,13 +250,8 @@ function DataTruncate() {
                                                 <td> {row.p_out} </td>
                                                 <td> {row.int_out} </td>
                                                 <td> 
-                                                    <Link to='#' className='text-decoration-none'>
-                                                        Sanction Letter
-                                                    </Link> 
-                                                </td>
-                                                <td> 
-                                                    <Link to='#' onClick={printPassbook} className='text-decoration-none'>
-                                                        Print Passbook
+                                                    <Link to='#' className='text-decoration-none text-danger'>
+                                                       <i className='fa fa-trash' /> Delete Loan & Ledger
                                                     </Link> 
                                                 </td>
                                             </tr>)
