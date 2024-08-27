@@ -23,8 +23,8 @@ const [branches, setBranches] = useState([]);
 const [centers, setCenters] = useState([]);
 const [clients, setClients] = useState([]);
 
-const previewDoc = dataArr => {
-    preview(dataArr)
+const previewDoc = (dataArr,filename) => {
+    preview(dataArr,null, filename)
 }
 
 const getDocumentName = str => {
@@ -148,7 +148,7 @@ return (
                                             <td>
                                                 <span 
                                                     className='text-decoration-none text-dark' data-id={row.id} 
-                                                    onClick={()=>previewDoc([row.data])} 
+                                                    onClick={()=>previewDoc([row.data], row.file_name)} 
                                                     style={{cursor:'pointer'}}
                                                 > 
                                                     {

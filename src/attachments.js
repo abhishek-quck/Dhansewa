@@ -5,7 +5,7 @@ import { dataURLtoFile } from './helpers/utils';
 var Attachments =
 {
     messageOrigin: null,
-    preview: function(hasData, clientID, docID, module)
+    preview: function(hasData, clientID, filename)
     {
         // Remove existing elements, we already faced enough errors
         let cModalBody=document.body.querySelectorAll('.attachment-viewer.d-none');
@@ -31,7 +31,7 @@ var Attachments =
                 const href = URL.createObjectURL(file)
                 const link = document.createElement('a')
                 link.href  = href 
-                link.download='_blank.pdf' // Don't ignore <3
+                link.download=filename // Don't ignore <3
                 document.body.appendChild(link)
                 link.click()
                 document.body.removeChild(link)
@@ -52,12 +52,14 @@ var Attachments =
                 //     return 
             }
             Attachments.events.previewCallback(hasData)
-        } else {
+        } 
+        else {
                 
-            let ids=[docID]; /* came as array when pdf was converted to jpg(s); returned multiple ids to fetch single image.
+            /*
+            let ids=[docID]; came as array when pdf was converted to jpg(s); returned multiple ids to fetch single image.
                 Here is a bit different case, you'll need the Imagick extension to come into play in the backend to get the pdf-image 
                 id(s). As of now , we are taking only single id of the document(png,jpg).
-            */
+           
             for (let i = 0; i < ids.length; i++)
             {
                 let id= ids[i]; 
@@ -68,6 +70,7 @@ var Attachments =
                     toast.error('An error occurred!')
                 })
             }
+            */
         }
     },
     events:
@@ -158,9 +161,9 @@ var Attachments =
     }
 }
 
-function preview(hasData=null, clientID, docID, sFunction)
+function preview(hasData=null, clientID=null, filename=null)
 {   
-    Attachments.preview( hasData, clientID, docID, sFunction );
+    Attachments.preview( hasData, clientID, filename);
 }
  
 export { preview }
