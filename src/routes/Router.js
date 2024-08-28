@@ -1,5 +1,9 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom"; 
+/****Layouts*****/
+const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
+
+/***** Pages ****/
 const AddEnrollment = lazy(()=>import("../views/ui/enrollment/AddEnrollment.js"))
 const ClientGRT = lazy(()=>import("../views/ui/centers/ClientGRT.js"))
 const SpeedLoanDisburse = lazy(()=>import("../views/ui/group-loan/SpeedLoanDisburse.js"))
@@ -36,25 +40,13 @@ const EmployeeMaster = lazy(()=>import("../views/ui/hr/EmployeeMaster.js"))
 const UserAccess = lazy(()=>import("../views/ui/hr/UserAccess.js"))
 const EditProfile = lazy(()=>import("../views/EditProfile.js"))
 const BankMaster = lazy(()=>import("../views/ui/management/BankMaster.js"))
-const EditEnrollment = lazy(()=>import("../views/ui/enrollment/EditEnrollment.js"))
 const UpdateCIS = lazy(()=>import("../views/ui/enrollment/UpdateCIS.js"))
 const ManageProduct = lazy(()=>import("../views/ui/management/ManageProduct.js"))
-
-/****Layouts*****/
-const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
-
-/***** Pages ****/
 const AccountLedger = lazy(()=> import("../views/ui/accounts/AccountLedger.js"))
 const Dashboard = lazy(() => import("../views/Dashboard.js"));
-const About = lazy(() => import("../views/About.js"));
 const Enrollment = lazy(() => import("../views/ui/enrollment/Enrollment"));
-const Badges = lazy(() => import("../views/ui/Badges"));
-const Buttons = lazy(() => import("../views/ui/Buttons"));
-const Cards = lazy(() => import("../views/ui/Cards"));
-const Grid = lazy(() => import("../views/ui/Grid"));
-const Tables = lazy(() => import("../views/ui/Tables"));
-const Forms = lazy(() => import("../views/ui/Forms"));
-const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
+const EditEnrollment = lazy(()=>import("../views/ui/enrollment/EditEnrollment.js"))
+const CGTEntry = lazy(() => import("../views/ui/enrollment/CGTEntry"));
 
 /*****Routes******/
 
@@ -69,9 +61,9 @@ const ThemeRoutes = [
       { path: "/edit-profile", exact: true, element: <EditProfile /> },
       { path: "/landing", exact: true, element: <Landing /> },
       { path: "/dashboard", exact: true, element: <Dashboard /> },
-      { path: "/about", exact: true, element: <About /> },
       { path: "/new-enrollment", exact: true, element: <Enrollment /> },
       { path: "/search-enrolled", exact: true, element: <Enrollment /> },
+      { path: "/cgt-entry", exact: true, element: <CGTEntry /> },
       { path: "/add-enrollment", exact: true, element: <AddEnrollment /> },
       { path: "/update-cis", exact: true, element: <EditEnrollment /> },
       { path: "/edit-enrolled/:id", exact: true, element: <UpdateCIS /> },
@@ -95,24 +87,17 @@ const ThemeRoutes = [
       { path: "/voucher-entry", exact: true, element: <VoucherEntry /> },
       { path: "/multi-voucher-entry", exact: true, element: <MultiVoucherEntry /> },
       { path: "/sale-products", exact: true, element: <SaleProducts /> },
-      { path: "/badges", exact: true, element: <Badges /> },
-      { path: "/buttons", exact: true, element: <Buttons /> },
-      { path: "/cards", exact: true, element: <Cards /> },
-      { path: "/grid", exact: true, element: <Grid /> },
       { path: "/employee-master", exact: true, element: <EmployeeMaster /> },
       { path: "/user-access", exact: true, element: <UserAccess /> },
-      { path: "/management", exact: true, element: <Tables /> },
       { path: "/loan-products", exact: true, element: <LoanProducts /> },
       { path: "/bank-master", exact: true, element: <BankMaster /> },
       { path: "/loan-chart-master", exact: true, element: <LoanChartMaster /> },
-      { path: "/forms", exact: true, element: <Forms /> },
       { path: "/collections", exact: true, element: <Collections /> },
       { path: "/view-center-collections/:branch_id?", exact: true, element: <CenterCollection /> },
       { path: "/arrear-collection", exact: true, element: <ArrearCollection /> },
       { path: "/arrear-clients", exact: true, element: <ArrearClients /> },
       { path: "/day-close", exact: true, element: <DayClose /> },
       { path: "/credit-report", exact: true, element: <CreditReport /> },
-      { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
       { path: "/print-documents", exact: true, element: <PrintDocs /> },
       { path: "/download-documents", exact: true, element: <PreviewDocs /> },
     ],

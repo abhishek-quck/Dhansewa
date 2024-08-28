@@ -31,7 +31,7 @@ const SpeedLoanDisburse = () => {
     const [loanProducts, setLoanProducts]= useState([])
     const clientRef = useRef(null)
     const [loanAmount, setLoanAmount] = useState(null)
-    const [date, setDate] = useState(getCurrentDate());
+    const date = getCurrentDate();
 	const [branches, setBranches] = useState([])
     const [fields, setFields] = useState({
         loan_date:'',
@@ -78,13 +78,9 @@ const SpeedLoanDisburse = () => {
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
-
     const UtilizationRef = useRef(null)
     const policyRef = useRef(null)
     const funderRef = useRef(null)
-    const loanProductsRef = useRef(null) 
-   
-    const update = e => e.target.style.border= ''
     const init = () => { // GEt Branches, Centers , loan-products & client info
 
         dispatch({ type:'LOADING' })
@@ -92,50 +88,67 @@ const SpeedLoanDisburse = () => {
         .then(({data}) => 
         { 
             // allData = data
-            for (let item of data.clients) 
-            { 
-                let key = item.branch_id
-                delete item.branch
-                if( allData['clients'][key] === undefined )
-                { 
-                    allData['clients'][key] = [item]
-                }else{
-                    let checkAt = allData['clients'][key].length-1
-                    console.log(  allData['clients'][key] )
-                    if(allData['clients'][key][checkAt].value!==item.value)
-                    { 
-                        allData['clients'][key].push(item)
-                    }
-                }
-            } 
+            // for (let item of data.clients) 
+            // { 
+            //     let key = item.branch_id
+            //     delete item.branch
+            //     if( allData['clients'][key] === undefined )
+            //     { 
+            //         allData['clients'][key] = [item]
+            //     }else{
+            //         let checkAt = allData['clients'][key].length-1
+            //         if(allData['clients'][key][checkAt].value!==item.value)
+            //         { 
+            //             allData['clients'][key].push(item)
+            //         }
+            //     }
+            // } 
             allData['branch'] = data.branches.map(ite => ite.value)
             allData['center'] = data.centers.map(ite => ite.value)
-            
             if(data.branches) setBranches(data.branches) 
-            if(data.centers) setCenters(data.centers) 
-            if(data.clients) setClients(data.clients) 
+            // if(data.centers) setCenters(data.centers) 
+            // if(data.clients) setClients(data.clients) 
         })
         .catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
-        .finally(() => {
-            dispatch({ type:'STOP_LOADING' })
-        })
-
+        .finally(() => dispatch({ type:'STOP_LOADING' }))
         axios.get('/loan-products-options')
         .then(({data})=>{
             console.log(data)
             setLoanProducts(data)
         }).catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
-
     }
 
     const updateBranch = (e) => {
         clientRef.current.clearValue()
         setSearchField({...sFields, branch:e.value})
-        setClients(allData['clients'][e.value]) // reset clients according to branch
+        dispatch({type:'LOADING'})
+        axios.get('get-branch-centers/'+ e.value).then(({data})=> {
+            let options=[]
+            if(data.length) {
+                for (const item of data) {
+                    options.push({ value: item.id, label: item.name})
+                }
+            }
+            setCenters(options)
+            setClients([])
+        }).catch(err=>{
+            console.log(err.message)
+            setCenters([])
+            setClients([])
+        }).finally(()=>dispatch({type:'STOP_LOADING'}))
+        //setClients(allData['clients'][e.value]) // reset clients according to branch
     }
 
     const updateCenter = (e) => {
         setSearchField({...sFields, center:e.value })
+        dispatch({type:'LOADING'})
+        axios.get('get-center-clients/'+e.value )
+        .then(({data})=> setClients(data))
+        .catch(err=>{
+            console.log(err.message)
+            toast.error('Something went wrong!');
+            setClients([])
+        }).finally(()=>dispatch({type:'STOP_LOADING'}))
         // setClients(allData['clients'][e.value])
     }
 
@@ -143,6 +156,7 @@ const SpeedLoanDisburse = () => {
         if(e)
         {
             setSearchField({...sFields, client:e.value })
+            getCenterWorkingDay(sFields.center)
             fetchData()
         }
     }
@@ -166,9 +180,16 @@ const SpeedLoanDisburse = () => {
         e.preventDefault()
         if(!sFields.client)
         {
-            $(`.client`).css('border','1px solid red')
-            toast.error('Select a client to get started')
-            return
+            return toast('Select a client to get started!',
+                {
+                  icon: '⚠️',
+                  style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+                }
+            );
         }
         let {shouldGo, result} = validate(fields)
         if(shouldGo===false)
@@ -192,10 +213,15 @@ const SpeedLoanDisburse = () => {
         .finally(()=> dispatch({type:'STOP_LOADING'}))
     }
 
+    const getCenterWorkingDay = centerID => {
+        dispatch({type:'LOADING'})
+        axios.get('get-center-working-days/'+centerID)
+        .then(({data})=> console.log(data)).catch(err=>console.log(err.message))
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
+    }
 	useEffect(()=>{
         init()
         $(document).on('change','select', function(){
-            console.log('caught this one also')
             this.style.border = ''
         })
         return ()=>{

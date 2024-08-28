@@ -11,6 +11,10 @@ export const navigation= [
       name:'enroll',
       sub:[
         {
+          title: "CGT Entry",
+          href: "/cgt-entry",
+        },
+        {
           title: "New Enrollment",
           href: "/new-enrollment",
         },

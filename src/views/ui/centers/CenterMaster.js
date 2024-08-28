@@ -5,7 +5,7 @@ import $ from 'jquery';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Card, CardBody, CardHeader, CardText, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
 import { useSearchCentersQuery } from '../../../features/centerSlice';
 import { validate } from '../../../helpers/utils';
 
@@ -83,7 +83,7 @@ function CenterMaster() {
 		})
 		.finally(()=> dispatch({type:'STOP_LOADING'}))
 	}
-	const [e,s] = useState(false)
+	const [e,s] = useState(false) // for trying request +1more time in case failed
 	useEffect(()=>{
 		axios.get('get-options/all')
 		.then(({data})=>{

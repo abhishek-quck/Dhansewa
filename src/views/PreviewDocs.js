@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import ReactSelect from 'react-select'
@@ -9,7 +9,9 @@ import { preview } from '../attachments'
 
 var allData = {branch:{}, center:{}, clients:{}}
 function PreviewDocs() {
+
 const dispatch = useDispatch()
+const clientRef = useRef(null)
 const [fields, setFields]= useState({
     branch:'',
     center:'',
@@ -37,22 +39,9 @@ const init = () => {
     axios.get('get-options')
     .then(({data}) => 
     { 
-        for (let item of data.clients) 
-        { 
-            let key = item.branch_id
-            delete item.branch
-            if( allData['clients'][key] === undefined )
-            { 
-                allData['clients'][key] = [item]
-            }else{
-                allData['clients'][key].push(item)
-            }
-        } 
         allData['branch'] = data.branches.map( i => i.value)
         allData['center'] = data.centers.map( i => i.value)
         if(data.branches) setBranches(data.branches) 
-        if(data.centers) setCenters(data.centers) 
-        if(data.clients) setClients(data.clients) 
     })
     .finally(() => dispatch({ type:'STOP_LOADING' }))
 
@@ -60,27 +49,50 @@ const init = () => {
 
 const updateBranch = (e) => {
     setFields({...fields, branch:e.value})
-    setClients(allData['clients'][e.value])
+    clientRef.current?.clearValue()
+    dispatch({type:'LOADING'})
+    axios.get('get-branch-centers/'+ e.value).then(({data})=> {
+        let options=[]
+        if(data.length) {
+            for (const item of data) {
+                options.push({ value: item.id, label: item.name})
+            }
+        }
+        setCenters(options)
+        setClients([])
+    }).catch(err=>{
+        console.log(err.message)
+        setCenters([])
+        setClients([])
+    }).finally(()=>dispatch({type:'STOP_LOADING'}))
 }
 
 const updateCenter = (e) => {
     setFields({...fields, center:e.value})
+    clientRef.current?.clearValue()
+    dispatch({type:'LOADING'})
+    axios.get('get-center-clients/'+e.value )
+    .then(({data})=> setClients(data))
+    .catch(err=>{
+        console.log(err.message)
+        toast.error('Something went wrong!');
+        setClients([])
+    }).finally(()=>dispatch({type:'STOP_LOADING'}))
     // setClients(allData['clients'][e.value])
 }
 const updateClient = (e) => {
-    setFields({...fields, client:e.value})
-    fetch(e.value)
+    if(e)
+    {
+        setFields({...fields, client:e.value})
+        fetch(e.value)
+    }
 }
 
-const fetch = (clientID) => {
+const fetch = clientID => {
     setFields({...fields, client:clientID})
     dispatch({type:'LOADING'})
     axios.get('/get-client-documents/'+clientID )
-    .then( ({data}) => {
-        console.log(data);
-        // if(data.targetInfo) 
-        setTargetInfo(data)
-    })
+    .then( ({data}) => setTargetInfo(data) )
     .catch( (err) => {
         console.log(err)
         toast.error('Something went wrong!')
@@ -121,6 +133,7 @@ return (
                             <ReactSelect
                                 onChange={updateClient}
                                 options={clients}
+                                ref={clientRef}
                             />
                         </Col>                               
                     </Row>
@@ -161,7 +174,9 @@ return (
                                         </tr>)
                                     })
                                     :(<tr>
-                                        <td colSpan={4} className='text-danger text-center'> <h5> No documents uploaded or needs re-upload! </h5> </td>
+                                        <td colSpan={4} className='text-danger text-center'> 
+                                            <h5>{fields.client ? ' No documents uploaded or needs re-upload! ': ''}</h5> 
+                                        </td>
                                     </tr>)
                                 }
                                 </tbody>
