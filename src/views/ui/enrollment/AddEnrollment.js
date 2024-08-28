@@ -922,7 +922,6 @@ const AddEnrollment = () => {
 								<Input
 									id="nominee_aadhaar" 
 									name="nominee_aadhaar"
-									type="number"
 									onChange={e=>setNominee({...Nominee, nominee_aadhaar: e.target.value})}
 									defaultValue={Nominee.nominee_aadhaar}
 									placeholder={"Enter nominee nominee_aadhaar"}
