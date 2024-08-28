@@ -100,7 +100,11 @@ function UpdateCIS() {
     const handleSubmit = e => {
         e.preventDefault()
         delete fields.kyc_document_id
-        let {result,shouldGo} = validate(fields)
+        let unrequired = []
+        for (const sfield in fields) {
+            if(fields[sfield]==='' || fields[sfield]===null || fields[sfield]==='null') unrequired.push(sfield)
+        }
+        let {result,shouldGo} = validate(fields,[...unrequired, 'other_info','center_id']) // other_info is relationship; center_id is null because GRT of client isn't completed yet
         if(shouldGo===false)
         {
             console.log(result)
@@ -158,11 +162,11 @@ function UpdateCIS() {
                 {
                     setDoc({...doc, b64:data.latest_document?.data})
                     docID = data.latest_document.document_id
-                    delete data.latest_document
                     delete data.kyc_document_id
                 }else {
                     docID = ''
                 }
+                delete data.latest_document
                 updateFields({...fields, ...data, document_id:docID}) 
                 console.log({...fields,...data});
             })
