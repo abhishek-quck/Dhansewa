@@ -238,6 +238,7 @@ const AddEnrollment = () => {
 								onChange={onChange}
 								defaultValue={fields.verification_type}
 							>
+							<option></option>
 							<option value={'voterID'}> Voter ID </option>
 							<option value={'pan'}> PAN </option>
 							</select>
