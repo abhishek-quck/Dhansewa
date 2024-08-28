@@ -13,26 +13,29 @@ import {
   CardHeader,
   Button, 
 } from "reactstrap";
+import DatePicker from "react-datepicker";
 import ReactSelect from "react-select";
 import CreatableSelect from "react-select/creatable";
 import axios from "axios";
 import toast from "react-hot-toast";
 import $ from 'jquery'
 import { useDispatch } from "react-redux";
-import { getCurrentDate, validate } from "../../../helpers/utils";
+import { validate } from "../../../helpers/utils";
 import { Link } from "react-router-dom";
 var allData = {branch:{}, center:{}, clients:{}}
 
  
 const SpeedLoanDisburse = () => { 
     const dispatch = useDispatch()
+    const clientRef = useRef(null)
+    const [meetingDay, setMeetingDay] = useState('');
     const [centers, setCenters] = useState([]);
     const [clients, setClients] = useState([]);
     const [loanProducts, setLoanProducts]= useState([])
-    const clientRef = useRef(null)
     const [loanAmount, setLoanAmount] = useState(null)
-    const date = getCurrentDate();
+    const [date, setDate] = useState('');
 	const [branches, setBranches] = useState([])
+    const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     const [fields, setFields] = useState({
         loan_date:'',
         loan_product:'',
@@ -86,28 +89,10 @@ const SpeedLoanDisburse = () => {
         dispatch({ type:'LOADING' })
         axios.get('get-options') 
         .then(({data}) => 
-        { 
-            // allData = data
-            // for (let item of data.clients) 
-            // { 
-            //     let key = item.branch_id
-            //     delete item.branch
-            //     if( allData['clients'][key] === undefined )
-            //     { 
-            //         allData['clients'][key] = [item]
-            //     }else{
-            //         let checkAt = allData['clients'][key].length-1
-            //         if(allData['clients'][key][checkAt].value!==item.value)
-            //         { 
-            //             allData['clients'][key].push(item)
-            //         }
-            //     }
-            // } 
+        {  
             allData['branch'] = data.branches.map(ite => ite.value)
             allData['center'] = data.centers.map(ite => ite.value)
-            if(data.branches) setBranches(data.branches) 
-            // if(data.centers) setCenters(data.centers) 
-            // if(data.clients) setClients(data.clients) 
+            if(data.branches) setBranches(data.branches)  
         })
         .catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
         .finally(() => dispatch({ type:'STOP_LOADING' }))
@@ -176,6 +161,10 @@ const SpeedLoanDisburse = () => {
         }
     }
 
+    const isOpenDay = date => {
+        const day = date.getDay();
+        return day===days.indexOf(meetingDay)
+    }
     const handleSubmit = e => {
         e.preventDefault()
         if(!sFields.client)
@@ -216,7 +205,9 @@ const SpeedLoanDisburse = () => {
     const getCenterWorkingDay = centerID => {
         dispatch({type:'LOADING'})
         axios.get('get-center-working-days/'+centerID)
-        .then(({data})=> console.log(data)).catch(err=>console.log(err.message))
+        .then(({data})=> { 
+            setMeetingDay(data.meeting_days);
+        }).catch(err=>console.log(err.message))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
 	useEffect(()=>{
@@ -428,7 +419,7 @@ const SpeedLoanDisburse = () => {
                                     <Label  size={'sm'} for="first_installment">
                                     First Installment Date
                                     </Label>
-                                    <Input
+                                    {/* <Input
                                         disabled={sFields.client?.length<1}
                                         id="first_installment" 
                                         name="first_installment"
@@ -437,7 +428,15 @@ const SpeedLoanDisburse = () => {
                                         onChange={inputChange}
                                         defaultValue={date}
                                         placeholder="Enter disburse date"
-                                    /> 
+                                    />  */}
+                                    <DatePicker
+                                        selected={date}
+                                        onChange={date => setDate(date)}
+                                        minDate={date}
+                                        disabled={!meetingDay}
+                                        filterDate={isOpenDay}
+                                        placeholderText="Select a date"
+                                    />
                                 </Col>
                                 <Col sm="4" md="4">
                                     <Label  size={'sm'} for="number_of_emis">
