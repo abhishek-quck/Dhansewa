@@ -16,7 +16,7 @@ import { Form } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-function Login() {
+function Auth() {
   const navigate = useNavigate()
   const dispatch = useDispatch(); 
   const [justifyActive, setJustifyActive] = useState('login');;
@@ -157,4 +157,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Auth;

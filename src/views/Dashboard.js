@@ -4,10 +4,6 @@ import Summary from "../components/dashboard/Summary";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"; 
-import user from "../assets/images/logos/profile.jpg";
-import fileSetting from "../assets/images/file_settings.webp";
-import activeUser from "../assets/images/activeUser.png";
-import locate from "../assets/images/locate.jpg";
 import IncomeChart from "../components/dashboard/IncomeChart";
 import loan from '../assets/images/loan.jpg'
 import report from '../assets/images/report.jpg'

@@ -23,8 +23,7 @@ const AccountMaster = lazy(()=>import("../views/ui/accounts/AccountMaster.js"))
 const VoucherEntry = lazy(()=>import("../views/ui/accounts/VoucherEntry.js"))
 const MultiVoucherEntry = lazy(()=>import("../views/ui/accounts/MultiVoucherEntry.js"))
 const SaleProducts = lazy(()=>import("../views/ui/management/SaleProducts.js"))
-const Login = lazy(()=>import("../views/Login.js"))
-const Signup = lazy(()=>import("../views/Signup.js"))
+const Auth = lazy(()=>import("../views/Auth.js"))
 const Landing = lazy(()=>import("../layouts/Landing.js"))
 const TrialBalance = lazy(()=>import("../views/ui/accounts/TrialBalance.js"))
 const LoanProducts = lazy(()=>import("../views/ui/management/LoanProducts.js"))
@@ -56,8 +55,7 @@ const ThemeRoutes = [
     element: <FullLayout />,
     children: [
       { path: "/", element: <Navigate to="/dashboard" /> },
-      { path: "/login", exact: true, element: <Login /> },
-      { path: "/signup", exact: true, element: <Signup /> },
+      { path: "/login", exact: true, element: <Auth /> },
       { path: "/edit-profile", exact: true, element: <EditProfile /> },
       { path: "/landing", exact: true, element: <Landing /> },
       { path: "/dashboard", exact: true, element: <Dashboard /> },
