@@ -40,7 +40,7 @@ function DayClose() {
                                 return <option key={opt.id} value={opt.id}>{opt.name}</option>
                             })}
                         </Input>
-                        <Button type='submit' color="primary">Find</Button>
+                        <Button color="primary"> <i className='fa fa-search'/> </Button>
                     </div>
                 </Row>
                 <Row className={`d-flex`}>
