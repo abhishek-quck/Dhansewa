@@ -19,6 +19,7 @@ let initial ={}, bankInitial ={}, NomineeInitial ={}
 const AddEnrollment = () => { 
 	const dispatch = useDispatch()
 	const [branches, setBranches] = useState([])
+	const [docs, setDocuments] = useState([])
 	const [KYCdoc, setKYCdoc] = useState(null)
 	const [passbook, setPassbook] = useState(null)
 	const [states, fillStates] = useState([])
@@ -153,6 +154,9 @@ const AddEnrollment = () => {
 			toast.error('Something went wrong!')
 		})
 
+		axios.get('documents')
+		.then(({data})=>setDocuments(data))
+
 	},[])
 
 	return (
@@ -238,9 +242,10 @@ const AddEnrollment = () => {
 								onChange={onChange}
 								defaultValue={fields.verification_type}
 							>
-							<option></option>
-							<option value={'voterID'}> Voter ID </option>
-							<option value={'pan'}> PAN </option>
+							<option> Select </option>
+							{docs.map( option =>{
+								return <option key={option.id} value={option.id}>{option.name}</option>
+							})} 
 							</select>
 						</div>
 						<Input
@@ -886,6 +891,7 @@ const AddEnrollment = () => {
 									id="is_account_active"  
 									name="is_account_active"  
 									type="file"
+									accept=".jpg, .jpeg, .png"
 									onChange={handlePassbook} 
 									style={{border:errors.is_account_active?'1px solid red':''}}
 								/>

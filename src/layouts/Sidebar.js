@@ -28,6 +28,8 @@ const Sidebar = () => {
     } else {
         navigationMenus = navigationMenus.filter( item => visibleMenus.includes(navigationMenus.indexOf(item)))
     }
+    console.log(navigationMenus,location.pathname);
+    
     setNavigation(navigationMenus)
     return ()=>null
   },[location])
@@ -75,7 +77,7 @@ const Sidebar = () => {
                 data-href={navi.href}
                 onClick={()=> setToggle(navi.name) }
               >
-                <i className={navi.icon}></i>
+                <i className={navi.icon} />
                 <span className="ms-3 d-inline-block">{navi.title}</span>
               </Link>
               <Collapse isOpen={toggler[navi.name] || navi.links?.includes(location.pathname)} 

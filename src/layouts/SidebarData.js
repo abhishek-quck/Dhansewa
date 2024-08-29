@@ -27,7 +27,7 @@ export const navigation= [
           href: "#",
         },
       ],
-      links:["new-enrollment",'update-cis']
+      links:["new-enrollment",'update-cis','cgt-entry','/add-enrollment']
     },
     {
       title: "Centers Info",
@@ -204,7 +204,7 @@ export const navigation= [
           href:'#'
         }
       ],
-      links:['/loan-products', '/sale-products']      
+      links:['branches-master','/loan-products', '/sale-products','/bank-master','loan-chart-master','loan-products']      
     },
     {
       title: "HR & Payroll",

@@ -154,7 +154,7 @@ function UpdateCIS() {
                 }
                 if(data.grt)
                 {
-                    data={...data, client_id:data.grt['client_id']}
+                    data={...data, client_id:data.grt['enroll_id']}
                 }
                 delete data.grt
                 let docID 

@@ -34,6 +34,7 @@ const AddGRT = () => {
     
     const handleSubmit = e => {
         e.preventDefault()
+		console.log(fields)
 		let {shouldGo,result} = validate(fields)
 		if(shouldGo===false)
 		{
@@ -74,22 +75,25 @@ const AddGRT = () => {
 		axios.get('get-options/all')
 		.then(({data})=>{ 
 			if(data.district) fillDistricts(data.district)
-			if(data.centers) fillCenters(data.centers)
-		})
-		axios.get('documents')
+		}).catch(err=>console.log(err.message))
+		let branch_id = fields.branch || fields.branch_id;
+		axios.get('get-branch-centers/'+ branch_id )
 		.then(({data})=>{
-			setDocuments(data)
+			let bCenters = [];
+			data.forEach( item => bCenters.push({value:item.id, label:item.name}) );
+		    fillCenters(bCenters)
+			axios.get('documents').then(({data})=> setDocuments(data) ).catch(err=>console.log(err.message))
 		})
 	}
 
 	const previewDoc = () => {
 		let data = thisUser?.latest_document?.data
-		let clientID = thisUser?.grt?.client_id
+		let clientID = thisUser?.grt?.enroll_id
 		preview(data!==undefined?[data]:false, clientID,thisUser.verification_type, 'preview-document')
 	}
 	
 	const previewImage = () => {
-		preview([visitPhoto.b64], thisUser?.grt?.client_id )
+		preview([visitPhoto.b64], thisUser?.grt?.enroll_id )
 	}
 
 	const uploadVisitPhoto = e => {

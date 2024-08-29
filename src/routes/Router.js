@@ -46,6 +46,7 @@ const Dashboard = lazy(() => import("../views/Dashboard.js"));
 const Enrollment = lazy(() => import("../views/ui/enrollment/Enrollment"));
 const EditEnrollment = lazy(()=>import("../views/ui/enrollment/EditEnrollment.js"))
 const CGTEntry = lazy(() => import("../views/ui/enrollment/CGTEntry"));
+const AddEnrolledGRT = lazy(() => import("../views/ui/enrollment/AddEnrolledGRT"));
 
 /*****Routes******/
 
@@ -62,6 +63,7 @@ const ThemeRoutes = [
       { path: "/new-enrollment", exact: true, element: <Enrollment /> },
       { path: "/search-enrolled", exact: true, element: <Enrollment /> },
       { path: "/cgt-entry", exact: true, element: <CGTEntry /> },
+      { path: "/add-enrolled-cgt", exact: true, element: <AddEnrolledGRT /> },
       { path: "/add-enrollment", exact: true, element: <AddEnrollment /> },
       { path: "/update-cis", exact: true, element: <EditEnrollment /> },
       { path: "/edit-enrolled/:id", exact: true, element: <UpdateCIS /> },

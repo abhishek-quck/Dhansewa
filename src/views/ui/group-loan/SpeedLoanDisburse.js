@@ -20,10 +20,10 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import $ from 'jquery'
 import { useDispatch } from "react-redux";
-import { validate } from "../../../helpers/utils";
+import { formatDate, validate } from "../../../helpers/utils";
 import { Link } from "react-router-dom";
 var allData = {branch:{}, center:{}, clients:{}}
-
+let initial;
  
 const SpeedLoanDisburse = () => { 
     const dispatch = useDispatch()
@@ -32,11 +32,11 @@ const SpeedLoanDisburse = () => {
     const [centers, setCenters] = useState([]);
     const [clients, setClients] = useState([]);
     const [loanProducts, setLoanProducts]= useState([])
-    const [loanAmount, setLoanAmount] = useState(null)
+    const [loanAmount, setLoanAmount] = useState('')
     const [date, setDate] = useState('');
 	const [branches, setBranches] = useState([])
     const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    const [fields, setFields] = useState({
+    const [fields, setFields] = useState(initial={
         loan_date:'',
         loan_product:'',
         loan_amount:'',
@@ -84,6 +84,8 @@ const SpeedLoanDisburse = () => {
     const UtilizationRef = useRef(null)
     const policyRef = useRef(null)
     const funderRef = useRef(null)
+    const loanRef = useRef(null)
+    const loanProductRef = useRef(null)
     const init = () => { // GEt Branches, Centers , loan-products & client info
 
         dispatch({ type:'LOADING' })
@@ -165,7 +167,24 @@ const SpeedLoanDisburse = () => {
         const day = date.getDay();
         return day===days.indexOf(meetingDay)
     }
-    const handleSubmit = e => {
+
+    const formReset = () => {
+        // clientRef?.current?.clearValue()
+        // UtilizationRef?.current?.clearValue()
+        setLoanAmount(0)
+        // loanProductRef?.current?.clearValue()
+        // policyRef?.current?.clearValue()
+        // funderRef?.current?.clearValue()
+        setClients([])
+        setSearchField({...sFields, client:''})
+        setFields(initial)
+    }
+
+    const handleDate = date => {
+        setDate(date)
+        setFields({...fields, first_installment: formatDate(date) })
+    }
+    const handleSubmit = async e => {
         e.preventDefault()
         if(!sFields.client)
         {
@@ -189,15 +208,12 @@ const SpeedLoanDisburse = () => {
         }
         dispatch({type:'LOADING'})
         const formData = Object.assign({}, fields, sFields);
-        console.log(formData)
         axios.post('/speed-loan-disburse',formData)
         .then(({data})=>{
-            console.log(data) 
-            toast.success('Records added successfully!')
-        })
-        .catch(err=>{
+            formReset()
+            toast.success('Loan disbursed successfully!')
+        }).catch(err=>{
             console.log(err)
-            // dispatch({type:'ERROR',payload:{error:err.message}})
         })
         .finally(()=> dispatch({type:'STOP_LOADING'}))
     }
@@ -280,6 +296,7 @@ const SpeedLoanDisburse = () => {
                                         id="loan_date" 
                                         name="loan_date"
                                         type="date" 
+                                        value={fields.loan_date}
                                         onChange={inputChange}
                                         placeholder="Enter disburse date"
                                     /> 
@@ -291,6 +308,7 @@ const SpeedLoanDisburse = () => {
                                     <ReactSelect
                                         placeholder="Search or select"
                                         isDisabled={sFields.client?.length<1}
+                                        ref={loanProductRef}
                                         id="loan_product" 
                                         className="loan_product"
                                         onChange={e=>getProductInfo(e.value)}
@@ -315,6 +333,7 @@ const SpeedLoanDisburse = () => {
                                         isDisabled={sFields.client?.length<1}
                                         id="loan_amount" 
                                         isClearable
+                                        ref={loanRef}
                                         name="loan_amount"
                                         className="loan_amount"
                                         value={loanAmount}
@@ -333,6 +352,7 @@ const SpeedLoanDisburse = () => {
                                         disabled={sFields.client?.length<1}
                                         id="loan_fee" 
                                         name="loan_fee"
+                                        value={fields.loan_fee}
                                         onChange={inputChange}
                                         type="text" 
                                     /> 
@@ -349,6 +369,7 @@ const SpeedLoanDisburse = () => {
                                         isClearable
                                         name="funding_by" 
                                         className="funding_by" 
+                                        value={fields.funding_by}
                                         onChange={e=>setFields({...fields,funding_by:e.value})}
                                         options={[{value:'',label:''}]}
                                     />
@@ -365,6 +386,7 @@ const SpeedLoanDisburse = () => {
                                         isClearable
                                         onChange={e=>setFields({...fields,policy:e.value})}
                                         name="policy" 
+                                        value={fields.policy}
                                         className="policy" 
                                         options={[{value:'double',label:'Double'}]}
                                     />
@@ -381,6 +403,7 @@ const SpeedLoanDisburse = () => {
                                         name="insurance_fee"
                                         className="insurance_fee"
                                         type="text" 
+                                        value={fields.insurance_fee}
                                         onChange={inputChange}
                                     /> 
                                 </Col>
@@ -398,7 +421,7 @@ const SpeedLoanDisburse = () => {
                                     />
                                 </Col>
                                 <Col sm="4" md="4">
-                                    <Label  size={'sm'} for="utilization">
+                                    <Label size={'sm'} for="utilization">
                                         Utilization
                                     </Label>
                                     <CreatableSelect
@@ -409,6 +432,7 @@ const SpeedLoanDisburse = () => {
                                         ref={UtilizationRef}
                                         name="utilization"
                                         className="utilization"
+                                        value={fields.utilization}
                                         onChange={e=>setFields({...fields,utilization:e.value})}
                                         options={[{value:'Business Loan',label:'Business Loan'}]}
                                     />
@@ -419,20 +443,11 @@ const SpeedLoanDisburse = () => {
                                     <Label  size={'sm'} for="first_installment">
                                     First Installment Date
                                     </Label>
-                                    {/* <Input
-                                        disabled={sFields.client?.length<1}
-                                        id="first_installment" 
-                                        name="first_installment"
-                                        className="first_installment"
-                                        type="date" 
-                                        onChange={inputChange}
-                                        defaultValue={date}
-                                        placeholder="Enter disburse date"
-                                    />  */}
+
                                     <DatePicker
                                         selected={date}
-                                        onChange={date => setDate(date)}
-                                        minDate={date}
+                                        onChange={handleDate}
+                                        minDate={(new Date)}
                                         disabled={!meetingDay}
                                         filterDate={isOpenDay}
                                         placeholderText="Select a date"
@@ -450,6 +465,7 @@ const SpeedLoanDisburse = () => {
                                         className="number_of_emis" 
                                         isClearable
                                         ref={emiRef}
+                                        value={fields.number_of_emis}
                                         onChange={e=>setFields({...fields,number_of_emis:e.value })}
                                         options={[{value:'',label:''}]}
                                     />
@@ -464,6 +480,7 @@ const SpeedLoanDisburse = () => {
                                         onChange={e=>setFields({...fields,payment_mode:e.value})}
                                         name="payment_mode"
                                         className="payment_mode"
+                                        value={fields.payment_mode}
                                         options={paymentOptions}
                                     />
                                 </Col>

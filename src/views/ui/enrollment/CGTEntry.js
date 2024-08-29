@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
 import ReactSelect from 'react-select'
 import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 
@@ -99,10 +100,19 @@ const CGTEntry = () => {
         : (
             <Card className="col-12">
                 <CardHeader tag="h6" className="d-flex gap-auto" >
-                    <span class="mt-2 mb-2 fa-solid fa-arrow-rotate-left" onClick={()=>setVerified(!aadhaarVerified)}/>
+                    <span 
+                        class="mt-2 mb-2 fa-solid fa-arrow-rotate-left" 
+                        onClick={()=>setVerified(!aadhaarVerified)}
+                    />
                     <b className="m-2"> CLIENT SOURCING </b>
+                    <Link to={`/add-enrolled-cgt`} 
+                        className="btn btn-sm btn-rounded btn-primary" 
+                        style={{position:'absolute',left:'93%'}}
+                    >
+                        <i className="fa fa-plus"/> New 
+                    </Link> 
                 </CardHeader>
-                <CardBody className="">
+                <CardBody>
                     <Form onSubmit={handleSubmit} name="speedLoan">
                     <FormGroup>
                         <Row className="">

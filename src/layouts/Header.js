@@ -226,6 +226,7 @@ const Header = () => {
           </UncontrolledDropdown>
         </Nav>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+          <b className="text-dark"> {name} </b>
           <DropdownToggle color={theme==='Dark'?"secondary":''}>
             < img
               src={user1}
