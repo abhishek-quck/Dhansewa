@@ -12,12 +12,6 @@ function DayInit() {
     const [checked, setChecked ]= useState(false)
     const containerStyle = {borderTop:'1px dashed',boxShadow:'-20px 0 10px -5px rgba(0, 0, 0, 0.1)'}
 
-    const dayInit = e => {
-        e.preventDefault()
-        // submit logic
-        
-    }
-
     const changeBranch = e => {
         let selected = e.target.value
         let selectedOption = branches.filter( item => item.id === parseInt(selected) )
@@ -29,7 +23,7 @@ function DayInit() {
         axios.get('get-branches').then(({data})=>setBranches(data)).catch()
     },[])
 
-    const handleSubmit = e => {
+    const dayInit = e => {
 
         e.preventDefault();
         dispatch({type:'LOADING'})
