@@ -226,7 +226,7 @@ const Header = () => {
           </UncontrolledDropdown>
         </Nav>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-          <b className="text-dark"> {name} </b>
+          <b className="text-dark" style={{textShadow:'2px 2px 8px white'}}> {name} </b>
           <DropdownToggle color={theme==='Dark'?"secondary":''}>
             < img
               src={user1}
@@ -280,7 +280,7 @@ const Header = () => {
                         type="text"
                         id="email"
                         name="email"
-                        placeholder="Enter last name"
+                        placeholder="Enter email"
                         defaultValue={profileInfo.email}
                         onChange={change}
                     />

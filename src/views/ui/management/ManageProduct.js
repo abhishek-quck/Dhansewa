@@ -88,6 +88,7 @@ function ManageProduct() {
                                         type="text"
                                         onChange={change}
                                         defaultValue={id}
+                                        readOnly
                                     /> 
                                         
                                 </div>

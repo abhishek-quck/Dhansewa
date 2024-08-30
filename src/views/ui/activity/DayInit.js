@@ -10,12 +10,13 @@ function DayInit() {
     const [branch, setBranch ]= useState({id:'',name:''})
     const [branches, setBranches ]= useState([])
     const [checked, setChecked ]= useState(false)
+    const [collection, setCollection] = useState([]);
     const containerStyle = {borderTop:'1px dashed',boxShadow:'-20px 0 10px -5px rgba(0, 0, 0, 0.1)'}
 
     const changeBranch = e => {
         let selected = e.target.value
         let selectedOption = branches.filter( item => item.id === parseInt(selected) )
-        let {name} = selectedOption[0]
+        let {name} = selectedOption[0] ?? '';
         setBranch({ id:e.target.value, name })
     }
 
@@ -43,30 +44,55 @@ function DayInit() {
             <b> DAY INITIALIZATION: </b>
         </CardHeader>
         <CardBody>
-            <Col>
-                <Row>
+            <Row>
+                <Col md={4}>
+                <FormGroup>
                     <Label> Branch Name </Label>
-                    <div className='col-12 d-flex'> 
+                    <div className='d-flex'> 
                         <Input 
                             type='select' 
-                            style={{width:'30%'}}
+                            style={{width:'80%'}}
                             onChange={changeBranch}
                             id='branch'
                         >
-                            <option> Select Branch </option>
+                            <option value={''}> Select Branch </option>
                             {branches.map(opt => {
                                 return <option key={opt.id} value={opt.id}>{opt.name}</option>
                             })}
                         </Input>
                         <Button color="primary"> <i className='fa fa-search'/> </Button>
                     </div>
-                </Row>
-                <Row className={`d-flex`}>
-                    <div className='form-group'>
-
-                    </div>
-                </Row>
-            </Col>
+                </FormGroup>
+                </Col>
+                <Col>
+                    <Table striped hover bordered className='mt-4'>
+                        <thead>
+                            <tr>
+                                <th> NUM CLIENTS </th>
+                                <th> PRN DUE </th>
+                                <th> INT DUE </th>
+                                <th> OTHER DUE </th>
+                                <th> TOTAL </th>
+                                <th> COLLECTED </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                collection.map(item=>{
+                                    return (<tr key={item.id}>
+                                        <td>{item.total_client}</td>
+                                        <td>{item.due_amount}</td>
+                                        <td>{0}</td>
+                                        <td>{0}</td>
+                                        <td>{item.due_amount}</td>
+                                        <td>{0}</td>
+                                    </tr>)
+                                })
+                            }
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
             <Col className='mt-4'>
                 <Table bordered>
                     <thead>
@@ -80,7 +106,7 @@ function DayInit() {
                             <th> : </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    {branch.id && <tbody>
                         <tr>
                             <td> {branch.id} </td>
                             <td> {branch.name} </td>
@@ -88,9 +114,13 @@ function DayInit() {
                             <td> {getCurrentDay()} </td>
                             <td> {getCurrentTime()} </td>
                             <td> {'Y'} </td>
-                            <td> <span className='text-primary'> Re-initialization </span> </td>
+                            <td>
+                                <span className='text-primary'>
+                                    <i className="fa-solid fa-lock-open"/> Re-initialization 
+                                </span> 
+                            </td>
                         </tr>
-                    </tbody>
+                    </tbody>}
                 </Table>
             </Col>
         </CardBody>

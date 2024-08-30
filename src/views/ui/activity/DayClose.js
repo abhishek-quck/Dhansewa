@@ -18,18 +18,6 @@ function DayClose() {
     // Submit Form `day-close`
     const closeDay = e => {
         e.preventDefault()
-        if( checked===false || branchID==='' ) {
-            return toast( !branchID ? 'Select a branch first':'Agree first!',
-                {
-                  icon: '⚠️',
-                  style: {
-                    borderRadius: '10px',
-                    background: '#333',
-                    color: '#fff',
-                  },
-                }
-            );
-        }
         dispatch({ type:'LOADING' });
         axios.get('day-close/'+branchID)
         .then(({data}) => {
@@ -115,7 +103,10 @@ function DayClose() {
                                     return (<tr key={item.id}>
                                         <td>{item.total_client}</td>
                                         <td>{item.due_amount}</td>
-                                        <td>{item.total_client}</td>
+                                        <td>{0}</td>
+                                        <td>{0}</td>
+                                        <td>{item.due_amount}</td>
+                                        <td>{0}</td>
                                     </tr>)
                                 })
                             }

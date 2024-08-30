@@ -1,14 +1,44 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Card, CardBody, CardHeader, Col, Input, Label, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, Col, DropdownItem, DropdownMenu, DropdownToggle, Input, Label, Row, Table, UncontrolledDropdown } from 'reactstrap'
 import { formatDate, getCurrentDate, getCurrentDay } from '../../../helpers/utils'
+import { useDispatch } from 'react-redux'
 
 function CenterCollection() {
+    
+    const dispatch = useDispatch();
     let {branch_id} = useParams()
     const [branch, setBranchDetail] = useState({})
     const [centers, setCenters] = useState([])
     const headStyle = {fontFamily:'math',fontSize:15}
+
+    const downloadCDS = async(centerID,name) => {
+
+        dispatch({type:'LOADING'})
+        return axios.get('download-cds/'+centerID, 
+        {
+            responseType: 'blob',
+            headers: {
+                "Content-Type" : "multipart/form-data",
+                "Authorization": "Bearer "+localStorage.getItem('auth-token')
+            }
+        }).then(({data}) => {
+            const href = URL.createObjectURL(data)
+            const link = document.createElement('a')
+            link.href  = href 
+            link.download= 'cds_'+name+'_'+ formatDate(null,'dmY')+ '.pdf' // Don't ignore <3
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(href)
+        })
+        .finally( ()=> {
+            dispatch({type:'STOP_LOADING'})
+        })
+
+    }
+
     useEffect(()=>{
         axios.get('get-branches/'+branch_id).then(({data})=>setBranchDetail(data)).catch(err=>console.log(err))
         axios.get('get-branch-centers/'+branch_id).then(({data})=>{
@@ -70,7 +100,32 @@ function CenterCollection() {
                                 {centers.map( item => {
                                     return (
                                         <tr key={item.id}>
-                                            <td><Button color='primary'>View</Button></td>
+                                            <td>
+                                                <UncontrolledDropdown
+                                                    className="me-2"
+                                                    direction="bottom"
+                                                >
+                                                    <DropdownToggle
+                                                        caret
+                                                        color="primary"
+                                                    >
+                                                        View
+                                                    </DropdownToggle>
+                                                    <DropdownMenu>
+                                                        <DropdownItem header>
+                                                            <strong> Options </strong>
+                                                        </DropdownItem>
+                                                        <DropdownItem>
+                                                            <i className='fa fa-user'/> 
+                                                            <span className='mx-2'> View Clients </span>
+                                                        </DropdownItem>
+                                                        <DropdownItem onClick={()=>downloadCDS(item.id,item.name)}>
+                                                            <i className='fa fa-download'/>
+                                                            <span className='mx-2'> Download CDS </span>
+                                                        </DropdownItem>
+                                                    </DropdownMenu>
+                                                </UncontrolledDropdown>
+                                            </td>
                                             <td><span> {item.id} </span></td>
                                             <td><span> {item.name} </span></td>
                                             <td><span> {item.staff} </span></td>
