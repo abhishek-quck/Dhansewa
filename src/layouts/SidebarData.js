@@ -148,14 +148,14 @@ export const navigation= [
         },
         {
           title:'Day Initialization',
-          href:'#',
+          href:'/day-init',
         },
         {
           title:'Day Close',
           href:'/day-close',
         }
       ],
-      links:['/collections','/arrear-collection','/day-close',]
+      links:['/collections','/arrear-collection','/day-init','/day-close',]
     },
     {
       title: "Management",

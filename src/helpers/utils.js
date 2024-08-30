@@ -1,4 +1,5 @@
 import $ from 'jquery'
+const days = []
 export const validate = (fields,exceptions=[]) => {
     let result={}
     var shouldGo=true;
@@ -103,8 +104,8 @@ export const getCurrentDate = (delimiter='-') => {
     return `${year+delimiter+month+delimiter+day}`;
 }
 
-export const formatDate = (date,format='Ymd') => {
-    const dateObj = new Date(date);
+export const formatDate = (date=null,format='Ymd') => {
+    const dateObj = date?new Date(date): new Date();
     const year = dateObj.getFullYear();
     const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-based
     const day = String(dateObj.getDate()).padStart(2, '0');
@@ -121,6 +122,14 @@ export const formatDate = (date,format='Ymd') => {
 export const getCurrentDay = () => {
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     return daysOfWeek[(new Date()).getDay()];
+}
+
+export const getCurrentTime = () => {
+    const currentDate = new Date();
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
 }
 export const toBase64 = blob => {
 

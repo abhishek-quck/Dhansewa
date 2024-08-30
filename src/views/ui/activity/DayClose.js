@@ -1,23 +1,60 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { Button, Card, CardBody, CardHeader, Col, Container, Input, Label, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
+import { formatDate, getCurrentDay, getCurrentTime } from '../../../helpers/utils';
 
 function DayClose() {
+
     const [branches, setBranches] = useState([]);
     const [collection, setCollection] = useState([]);
+    const [checked, setChecked ]= useState(false);
+    const [branchID, setBranch ]= useState('');
+    const [branchInfo, setBranchInfo ]=useState({})
     const dispatch = useDispatch();
+    const containerStyle = {borderTop:'1px dashed',boxShadow:'-20px 0 10px -5px rgba(0, 0, 0, 0.1)'}
+
+    // Submit Form `day-close`
+    const closeDay = e => {
+        e.preventDefault()
+        if( checked===false || branchID==='' ) {
+            return toast( !branchID ? 'Select a branch first':'Agree first!',
+                {
+                  icon: '⚠️',
+                  style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+                }
+            );
+        }
+        dispatch({ type:'LOADING' });
+        axios.get('day-close/'+branchID)
+        .then(({data}) => {
+            console.log(data)
+        }).catch( err => console.log(err.message))
+        .finally(() => dispatch({type:'STOP_LOADING'}));
+    }
 
     const getBranchCollection = e => {
         const branchId = e.target.value;
-        dispatch({type:'LOADING'});
+        setBranch( branchId );
+        dispatch({ type:'LOADING' }); //loading
         axios.get('get-branch-collection/'+branchId)
-        .then(({data})=>{ setCollection(data) }).catch(err=>console.log(err.message)).finally(()=>dispatch({type:'STOP_LOADING'}))
+        .then( ({data}) => { 
+            setCollection(data); 
+            axios.get('get-branches/'+branchId ).then(({ data }) => setBranchInfo(data))
+            .catch( err => console.log(err.message))
+        }).catch( err =>console.log(err.message))
+        .finally( () => dispatch({ type:'STOP_LOADING' }))
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         axios.get('get-branches').then(({data})=>setBranches(data)).catch()
     },[])
+
   return (
     <>
     <Card>
@@ -55,15 +92,21 @@ function DayClose() {
         <CardBody>
             <Row>
                 <Col md={6}>
-                    <div className='text-primary'>
-                        <b> TODAY COLLECTION </b>
+                    <div className='mb-3'>
+                        <div className='ribbon'> 
+                            <i className="fas fa-search" style={{padding:'inherit'}}/>
+                        </div>
+                        <b className='text-primary mx-3'> TODAY COLLECTION </b>
                     </div>
                     <Table striped hover bordered>
                         <thead>
                             <tr>
-                                <th> Num Clients </th>
-                                <th> Due </th>
-                                <th> Total </th>
+                                <th> NUM CLIENTS </th>
+                                <th> PRN DUE </th>
+                                <th> INT DUE </th>
+                                <th> OTHER DUE </th>
+                                <th> TOTAL </th>
+                                <th> COLLECTED </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,27 +122,72 @@ function DayClose() {
                         </tbody>
                     </Table>
                 </Col>
+                <Col md={6}>
+                    <div className='mb-3'>
+                        <div className='ribbon'> 
+                            <i className='fa fa-search' style={{padding:'inherit'}}/> 
+                        </div>
+                        <b className='text-primary mx-3'> SYSTEM DATE </b>
+                    </div>
+                    <Table striped bordered>
+                        <thead>
+                            <tr>
+                                <th> BRANCH-ID / NAME </th>
+                                <th> INI DATE </th>
+                                <th> DAY NAME </th>
+                                <th> TIME </th>
+                                <th> END DATE </th>
+                                <th> : </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { branchID && <tr>
+                                <td> {branchInfo.id+' - '+branchInfo.name} </td>
+                                <td> {formatDate(null,'dmY')} </td>
+                                <td> {getCurrentDay()} </td>
+                                <td> {getCurrentTime()} </td>
+                                <td> {branchInfo.sddsf??null} </td>
+                                <td>  </td>
+                            </tr> }
+                        </tbody>
+                    </Table>
+                </Col>
             </Row>
         </CardBody>
     </Card>
     <Card>
         <CardBody>
-            <Container>
-                <Row>
-                    <Col md={6}>
-                        <div className='text-primary'>
-                            <b> Process for Day closing </b>
-                        </div>
-                    </Col>
-                </Row>
+            <Row className='mb-3'>
+                <Col md={6}>
+                    <div className='text-primary'>
+                        <b> Process for Day closing </b>
+                    </div>
+                </Col>
+            </Row>
+            
+            <Container className='p-5' style={containerStyle}>
+                <Form onSubmit={closeDay}>
                 <Row>
                     <Col md={6}>
                         <p> Day closing is process of submit all collection report and disbursement report to the system records. </p>
                     </Col>
                     <Col md={6}>
-                        <button className='btn btn-primary' style={{float:'right'}}> Day close now </button>
+                        <button type='submit' className='btn btn-primary' disabled={!branchID || !checked} style={{float:'right'}}> Day close now </button>
                     </Col>
                 </Row>
+                <Row>
+                    <FormGroup>
+                        <input 
+                            type='checkbox' 
+                            id='dayInit' 
+                            defaultChecked={checked} 
+                            className='mx-3' 
+                            onChange={()=>setChecked(!checked)} 
+                        />
+                        <Label for="dayInit"> Yes I am agree for process of day closing </Label>
+                    </FormGroup>
+                </Row>
+                </Form>
             </Container>
         </CardBody>
     </Card>

@@ -12,6 +12,7 @@ const DataTruncate = lazy(()=>import("../views/ui/advance-settings/DataTruncate.
 const CreditReport = lazy(()=>import("../views/ui/CreditReport.js"))
 const Collections = lazy(()=>import("../views/ui/activity/Collections.js"))
 const CenterCollection = lazy(()=>import("../views/ui/activity/CenterCollection.js"))
+const DayInit = lazy(()=>import("../views/ui/activity/DayInit.js"))
 const DayClose = lazy(()=>import("../views/ui/activity/DayClose.js"))
 const CenterMaster = lazy(()=>import("../views/ui/centers/CenterMaster.js"))
 const MeetingHandover = lazy(()=>import("../views/ui/centers/MeetingHandover.js"))
@@ -96,6 +97,7 @@ const ThemeRoutes = [
       { path: "/view-center-collections/:branch_id?", exact: true, element: <CenterCollection /> },
       { path: "/arrear-collection", exact: true, element: <ArrearCollection /> },
       { path: "/arrear-clients", exact: true, element: <ArrearClients /> },
+      { path: "/day-init", exact: true, element: <DayInit /> },
       { path: "/day-close", exact: true, element: <DayClose /> },
       { path: "/credit-report", exact: true, element: <CreditReport /> },
       { path: "/print-documents", exact: true, element: <PrintDocs /> },

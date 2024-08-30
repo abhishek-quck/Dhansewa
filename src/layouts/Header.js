@@ -233,6 +233,7 @@ const Header = () => {
               alt="profile"
               className="rounded-circle"
               width="40"
+              style={{boxShadow:'0px 4px 8px 1px gray'}}
             />
           </DropdownToggle>
           {/* Profile dropdown */}

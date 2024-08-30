@@ -259,3 +259,31 @@ table {
 .loginID{
     background-color:#00b8ff!important;
 }
+.ribbon {
+    position: relative;
+    display: inline-block;
+    padding: 2px;
+    background-color: red;
+    color: white;
+    font-size: 20px;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ribbon:before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid red;
+    transform: translateX(-50%);
+}
+
+.ribbon i {
+    position: relative;
+    z-index: 1;
+}
