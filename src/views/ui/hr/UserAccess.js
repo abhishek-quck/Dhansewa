@@ -53,6 +53,7 @@ function UserAccess() {
     }
     const updatePermission = e => {
         e.preventDefault()
+        dispatch({type:'LOADING'})
         let fd = new FormData($('#permission')[0])
         fd.append('user_id', user.id )
         axios.post('update-permissions',fd, {
@@ -66,7 +67,7 @@ function UserAccess() {
         ).catch(err=>{
             toast.error('Something went wrong!')
             console.log(err.message)
-        })
+        }).finally(()=>dispatch({type:'STOP_LOADING'}))
     }
     // handle report access form
     const updateReportAccess = e => {

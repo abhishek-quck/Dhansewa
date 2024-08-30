@@ -28,7 +28,6 @@ const Sidebar = () => {
     } else {
         navigationMenus = navigationMenus.filter( item => visibleMenus.includes(navigationMenus.indexOf(item)))
     }
-    console.log(navigationMenus,location.pathname);
     
     setNavigation(navigationMenus)
     return ()=>null
