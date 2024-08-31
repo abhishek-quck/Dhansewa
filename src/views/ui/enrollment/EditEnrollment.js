@@ -17,9 +17,12 @@ import {
 import { useSearchEnrollmentsQuery } from "../../../features/centerSlice";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { usePermissions } from "../../../hooks/usePermissions";
+import { EDIT_ENROLL } from "../../../constansts/permission";
 
 const EditEnrollment = () => {
 	const dispatch = useDispatch()
+	const { hasPermission } = usePermissions()
 	const [branches , setBranches] = useState([])
 	const [searched, hitSearch]= useState(false)
 	const enrollTerm= useSelector(state=>state.auth.enrollTerm)
@@ -117,14 +120,14 @@ const EditEnrollment = () => {
 					data?.length ? data.map((row,index)=>{
 						return (<tr key={index}>
 							<td>
-                                <button className="btn-primary btn-sm btn">
+                               {hasPermission(EDIT_ENROLL,'edit') && <button className="btn-primary btn-sm btn">
                                     <Link 
 										to={'/edit-enrolled/'+row.id} 
 										className="text-decoration-none text-white"
 									> 
 										Manage 
 									</Link>
-                                </button> 
+                                </button> }
                             </td>
 							<td>{index+1}</td>
 							<td>{row.applicant_name}</td>

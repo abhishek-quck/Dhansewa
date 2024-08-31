@@ -4,6 +4,7 @@ const menus = JSON.parse(localStorage.getItem('menus'))??[];
 const isAdmin = JSON.parse(localStorage.getItem('isAdmin'))??false;
 const permMap = JSON.parse(localStorage.getItem('permMap'))??{}
 const myInfo = JSON.parse(localStorage.getItem('auth-user'))??{}
+const permissions = JSON.parse(localStorage.getItem('permissions'))??{}
 async function getUserDetails ()
 {
   try
@@ -31,6 +32,7 @@ const initialState = {
     GRTs:{},
     menus,
     isAdmin,
+    permissions,
     permMap
 }
 
@@ -142,6 +144,11 @@ const authReducer = (state=initialState,action) => {
             return {
                 ...state,
                 permMap:action.payload
+            }
+        case 'SET_PERMISSION':
+            return {
+                ...state,
+                permissions:action.payload
             }
         default : return state
     }

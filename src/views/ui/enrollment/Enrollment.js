@@ -17,9 +17,12 @@ import {
 import { useSearchEnrollmentsQuery } from "../../../features/centerSlice";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { usePermissions } from './../../../hooks/usePermissions'
+import { NEW_ENROLL } from "../../../constansts/permission";
 
 const Enrollment = () => {
 	const dispatch = useDispatch()
+	const { hasPermission } = usePermissions()
 	const [branches , setBranches] = useState([])
 	const [searched, hitSearch]= useState(false)
 	const enrollTerm= useSelector(state=>state.auth.enrollTerm)
@@ -56,9 +59,9 @@ const Enrollment = () => {
 		<Card>
 		<CardHeader className="d-flex" style={{justifyContent:'space-between'}}>
 			<b> TARGET ENTRY </b>  
-			<Link to={`/add-enrollment`} className="btn btn-sm btn-rounded btn-primary">
+			{hasPermission(NEW_ENROLL) && <Link to={`/add-enrollment`} className="btn btn-sm btn-rounded btn-primary">
 				<i className="fa fa-plus"/> New 
-			</Link> 
+			</Link> }
 		</CardHeader>
 		<CardBody>
 			<Form onSubmit={handleSearch}>

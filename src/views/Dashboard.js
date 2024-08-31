@@ -57,11 +57,7 @@ const Starter = () => {
       }
       navigate('/login')  
     }
-    axios.get('summary').then(({data})=>{
-      setSummary(data)
-    }).catch(err=>{
-      console.log(err.message)
-    })
+    axios.get('summary').then(({data})=> setSummary(data)).catch(err=> console.log(err.message))
     return ()=>null
 
   },[navigate,state.userToken,state.companyID])

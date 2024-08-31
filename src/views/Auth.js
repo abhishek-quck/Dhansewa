@@ -52,40 +52,78 @@ function Auth() {
 
   
   useEffect(()=>{ 
-    if(state.userToken)
+    if(state.userToken && state.isAdmin)
     {
-      navigate('/landing')
-    } 
-  },[ state.userToken, navigate ])
+        navigate('/landing')
+    } else {
+        navigate('/dashboard')
+    }
+  },[ state.userToken, navigate, state.isAdmin ])
 
-  const handleLogin = event => {
+  const handleLogin = async(event) => {
     event.preventDefault() 
     dispatch({ type:'LOADING' })
     try {
-      axios.post(`login`,fields).then(response=>
+      axios.post(`login`, fields ).then( async ({ data })=>
       {  
-        if( response.status!==200 )
+        if( data.access_token )
         {
-          console.log(response)
-        }
-        if( response.data.access_token )
-        {
-          let { data } = response  
-          localStorage.setItem('auth-token', data.access_token )
-          localStorage.setItem('auth-user', JSON.stringify(data.user) )
-          dispatch({type:'SET_TOKEN', payload:data.access_token })
-          dispatch({type:'SET_AUTH', payload:data.user })
-          axios.defaults.headers.common['Authorization'] = `Bearer `+data.access_token;
-          axios.get('list-permissions').then(({data})=>{
+            // set identification to session
+            localStorage.setItem('auth-token', data.access_token )
+            localStorage.setItem('auth-user', JSON.stringify(data.user) )
+
+            dispatch({type:'SET_TOKEN', payload:data.access_token }) // store token-generated post-login
+            dispatch({type:'SET_AUTH', payload:data.user })  // user-info
+
+            axios.defaults.headers.common['Authorization'] = `Bearer `+ data.access_token;
             let mappedPerms = {}
-            for(let item of data){
-              let key = item.name
-              mappedPerms[key] = item.id
-            }
+            let permissions = {};
+            let response = await axios.get('list-permissions');
+
+            response.data.forEach( item => {
+                mappedPerms[item.name] = item.id ;
+                permissions[item.id] = item.name ;
+            });
+
             localStorage.setItem('permMap', JSON.stringify(mappedPerms) )
-            dispatch({ type:'PERM_MAP', payload:mappedPerms })
-          })
-          navigate('/landing')
+            dispatch({ type:'PERM_MAP', payload:mappedPerms }) // permission name-for-id
+            // redirect according to user-type
+
+            if(data.login_type==='User') {
+
+                dispatch({type:'SET_ADMIN_STATUS', payload:true })
+                localStorage.setItem('isAdmin', true )
+                navigate('/landing')
+
+            } else {
+
+                dispatch({ type:'SET_ADMIN_STATUS',payload:false })
+                localStorage.setItem('isAdmin', false )
+                dispatch({
+                    type:'SET_COMPANY', 
+                    payload:{
+                        id:data.company.id,
+                        name:data.company.name 
+                    }
+                })
+                 
+                let havePermissions = {};
+                let resp = await axios.get('permissions/'+ data.user.id );
+
+                resp.data.forEach( row => {
+                    let { add, edit, view, permission_id } = row;
+                    let crud = { view: view===1, add:add===1, edit:edit===1, delete:row.delete===1 } // will convert int to bool
+                    let permName = permissions[permission_id];
+                    havePermissions[permName] = crud;
+                })
+                localStorage.setItem('permissions', JSON.stringify(havePermissions) );
+                dispatch({
+                    type:'SET_PERMISSION',
+                    payload:havePermissions??{}
+                });
+                return 
+                // navigate('/dashboard')
+            }
         }
       }).catch(()=>{
         toast.error('Invalid credentials!') 
@@ -118,8 +156,8 @@ function Auth() {
       <MDBTabsContent> 
         <MDBTabsPane open={justifyActive === 'login'}>
          <Form onSubmit={handleLogin}>          
-            <MDBInput wrapperClass='mb-4 mt-5' label='Email address' id='form1' type='email' name='email' onChange={onchange}/>
-            <MDBInput wrapperClass='mb-4' label='Password' id='form2' type='password' name='password' onChange={onchange}/> 
+            <MDBInput wrapperClass='mb-4 mt-5' label='Email address' id='form1' type='email' name='email' onChange={onchange} defaultValue={fields.email}/>
+            <MDBInput wrapperClass='mb-4' label='Password' id='form2' type='password' name='password' onChange={onchange} defaultValue={fields.password}/> 
 
             <div className="d-flex justify-content-center mx-4 mb-4"> 
                 <a href="!#" className='text-decoration-none' >Forgot password?</a>

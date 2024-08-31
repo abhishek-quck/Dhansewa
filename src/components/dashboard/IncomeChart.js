@@ -12,10 +12,6 @@ const IncomeChart = () => {
     dataLabels = data.labels
   } 
   if(isLoading) return <Spinner />
-  if(error)
-  {
-    console.log(error) 
-  }
   return (
     <Card className="mt-4">
         <CardHeader className="text-center " tag={'h6'}>

@@ -9,7 +9,7 @@ const Sidebar = () => {
   let navigationMenus = navigation
   const visibleMenus = useSelector(state=>state.auth.menus)
   const isAdmin = useSelector(state=>state.auth.isAdmin)
-  const [navs, setNavigation] = useState([]);
+  const [navs, setNavigation] = useState(navigation);
   const [toggler, toggle] = useState({
     setting:false,
     enroll:false,
@@ -22,14 +22,14 @@ const Sidebar = () => {
   })
   
   useEffect( () => {
-    if(isAdmin)
-    {
-        navigationMenus = navigation
-    } else {
-        navigationMenus = navigationMenus.filter( item => visibleMenus.includes(navigationMenus.indexOf(item)))
-    }
+    // if(isAdmin)
+    // {
+    //     navigationMenus = navigation
+    // } else {
+    //     navigationMenus = navigationMenus.filter( item => visibleMenus.includes(navigationMenus.indexOf(item)))
+    // }
     
-    setNavigation(navigationMenus)
+    // setNavigation(navigationMenus)
     return ()=>null
   },[location])
 

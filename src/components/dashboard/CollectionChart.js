@@ -17,10 +17,6 @@ const CollectionChart = () => {
     collections = fill 
   } 
   if(isLoading) return <Spinner />
-  if(error)
-  {
-    console.log(error) 
-  }
   return ( 
       (<>
       { collections && <Chart
