@@ -22,7 +22,7 @@ export const validate = (fields,exceptions=[]) => {
         }
         tInputs.forEach( input => {
 
-            let minLength = $(input).attr('min');
+            let minLength = $(input).attr('type')!== 'date' ? $(input).attr('min'): 0;
             let maxLength = $(input).attr('max');
             let type = $(input).attr('cast');
             let isDate = $(input).attr('type')==='date' && $(input).attr('req');

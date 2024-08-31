@@ -20,7 +20,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import $ from 'jquery'
 import { useDispatch } from "react-redux";
-import { formatDate, validate } from "../../../helpers/utils";
+import { formatDate, getCurrentDate, validate } from "../../../helpers/utils";
 import { Link } from "react-router-dom";
 var allData = {branch:{}, center:{}, clients:{}}
 let initial;
@@ -57,7 +57,6 @@ const SpeedLoanDisburse = () => {
     })
     const [errors, setErrors] = useState({...fields, ...sFields})
 
-    const emiRef = useRef(null)
     const paymentOptions = [
         {value:'Cash',label:'Cash'},
         {value:'Banking',label:'Banking'}
@@ -76,15 +75,11 @@ const SpeedLoanDisburse = () => {
             setFields({...fields, 
                 gst:data.gst_tax, 
                 loan_amount:data.amount,
-                loan_product:data.name
+                loan_product:id
             })
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
-    const UtilizationRef = useRef(null)
-    const policyRef = useRef(null)
-    const funderRef = useRef(null)
-    const loanRef = useRef(null)
     const loanProductRef = useRef(null)
     const init = () => { // GEt Branches, Centers , loan-products & client info
 
@@ -169,15 +164,13 @@ const SpeedLoanDisburse = () => {
     }
 
     const formReset = () => {
-        // clientRef?.current?.clearValue()
-        // UtilizationRef?.current?.clearValue()
+        
         setLoanAmount(0)
-        // loanProductRef?.current?.clearValue()
-        // policyRef?.current?.clearValue()
-        // funderRef?.current?.clearValue()
+        setDate('')
         setClients([])
         setSearchField({...sFields, client:''})
         setFields(initial)
+
     }
 
     const handleDate = date => {
@@ -297,6 +290,7 @@ const SpeedLoanDisburse = () => {
                                         name="loan_date"
                                         type="date" 
                                         value={fields.loan_date}
+                                        min={getCurrentDate()}
                                         onChange={inputChange}
                                         placeholder="Enter disburse date"
                                     /> 
@@ -325,7 +319,6 @@ const SpeedLoanDisburse = () => {
                                             >
                                                 View Chart
                                             </Link>
-                                             
                                         )
                                     </Label>
                                     <CreatableSelect
@@ -333,7 +326,6 @@ const SpeedLoanDisburse = () => {
                                         isDisabled={sFields.client?.length<1}
                                         id="loan_amount" 
                                         isClearable
-                                        ref={loanRef}
                                         name="loan_amount"
                                         className="loan_amount"
                                         value={loanAmount}
@@ -365,11 +357,9 @@ const SpeedLoanDisburse = () => {
                                         placeholder="Search or select"
                                         isDisabled={sFields.client?.length<1}
                                         id="funding_by" 
-                                        ref={funderRef}
-                                        isClearable
                                         name="funding_by" 
                                         className="funding_by" 
-                                        value={fields.funding_by}
+                                        defaultInputValue={fields.funding_by}
                                         onChange={e=>setFields({...fields,funding_by:e.value})}
                                         options={[{value:'',label:''}]}
                                     />
@@ -378,15 +368,13 @@ const SpeedLoanDisburse = () => {
                                     <Label  size={'sm'} for="policy">
                                         Policy
                                     </Label>
-                                    <CreatableSelect
+                                    <ReactSelect
                                         placeholder="Search or select"
                                         isDisabled={sFields.client?.length<1}
                                         id="policy" 
-                                        ref={policyRef}
-                                        isClearable
                                         onChange={e=>setFields({...fields,policy:e.value})}
                                         name="policy" 
-                                        value={fields.policy}
+                                        defaultInputValue={fields.policy}
                                         className="policy" 
                                         options={[{value:'double',label:'Double'}]}
                                     />
@@ -424,15 +412,13 @@ const SpeedLoanDisburse = () => {
                                     <Label size={'sm'} for="utilization">
                                         Utilization
                                     </Label>
-                                    <CreatableSelect
+                                    <ReactSelect
                                         placeholder="Search or select"
                                         isDisabled={sFields.client?.length<1}
                                         id="utilization" 
-                                        isClearable
-                                        ref={UtilizationRef}
                                         name="utilization"
                                         className="utilization"
-                                        value={fields.utilization}
+                                        defaultInputValue={fields.utilization}
                                         onChange={e=>setFields({...fields,utilization:e.value})}
                                         options={[{value:'Business Loan',label:'Business Loan'}]}
                                     />
@@ -457,17 +443,15 @@ const SpeedLoanDisburse = () => {
                                     <Label  size={'sm'} for="number_of_emis">
                                         No. of EMI collected till
                                     </Label>
-                                    <CreatableSelect
-                                        placeholder="Search or select"
+                                    <Input 
+                                        type="text"
+                                        placeholder="Enter no. of "
                                         isDisabled={sFields.client?.length<1}
                                         id="number_of_emis" 
                                         name="number_of_emis" 
                                         className="number_of_emis" 
-                                        isClearable
-                                        ref={emiRef}
-                                        value={fields.number_of_emis}
-                                        onChange={e=>setFields({...fields,number_of_emis:e.value })}
-                                        options={[{value:'',label:''}]}
+                                        defaultValue={fields.number_of_emis}
+                                        onChange={e=>setFields({...fields,number_of_emis:e.target.value })}
                                     />
                                 </Col>
                                 <Col sm="4" md="4">
