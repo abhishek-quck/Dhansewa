@@ -18,7 +18,6 @@ function VoucherEntry() {
         credit:'',
         debit:'',
         amount:'',
-        account:'',
     })
     const change = e => {
         if(e?.target)
