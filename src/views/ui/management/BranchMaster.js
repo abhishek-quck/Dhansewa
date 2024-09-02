@@ -9,6 +9,7 @@ import { validate } from '../../../helpers/utils';
 const BranchMaster = () => {
     const dispatch = useDispatch();
     const [stateCodes , setCodes]= useState([]);
+    const [branches, setBranches]= useState([]);
     var initial ={}
     const [fields,setFields] = useState( initial = {
         name:'',
@@ -37,9 +38,7 @@ const BranchMaster = () => {
         mobile_verify:'',
     })
 
-    const inputStyle = {
-        fontSize:'14px'
-    }
+    const inputStyle = { fontSize:'14px' }
 
     const handleChange = e => {
         e.target.style.border=''
@@ -72,19 +71,29 @@ const BranchMaster = () => {
             console.log(err)
             toast.error('Something went wrong')
         })
-        .finally(()=>{
-            dispatch({type:'STOP_LOADING'})
-        }) 
+        .finally(()=> dispatch({type:'STOP_LOADING'}) ) 
     }
 
-    useEffect(()=>{
-        axios.get('/get-state-codes')
-        .then(({data})=>{
-            if(data.length)
+    $('input[name=search]').on('keyup search',function () {
+        $('tbody tr').each((i,row) => {
+            if(!row.textContent.toLowerCase().includes(this.value?.toLowerCase()))
             {
-                setCodes(data)
+                $(row).addClass('d-none')   
+            } else {
+                $(row).removeClass('d-none')   
             }
-        })
+        });
+    });
+
+    useEffect(() => {
+
+        dispatch({ type:'LOADING' })
+        axios.get('/get-state-codes') // state
+        .then(({data}) => setCodes(data)).catch(err=>err.message)
+        axios.get('get-branch-info') // table-fill
+        .then(({data}) => setBranches(data)).catch(err=> console.log(err.message))
+        .finally(()=> dispatch({ type : 'STOP_LOADING' }));
+
     },[])
 
     return (
@@ -471,6 +480,17 @@ const BranchMaster = () => {
                   </tr>
                 </thead>
                 <tbody> 
+                    { branches.map( branch => {
+                        return (
+                            <tr key={branch.id}>
+                                <td> {branch.id} </td>
+                                <td> {branch.name} </td>
+                                <td> {branch.running_date} </td>
+                                <td> {branch.closing_enabled? 'Yes': 'No'} </td>
+                                <td> {branch.cash_balance??0} </td>
+                            </tr>
+                        )
+                    }) }
                 </tbody>
               </Table> 
             </CardBody>
