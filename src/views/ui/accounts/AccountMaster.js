@@ -85,7 +85,7 @@ function AccountMaster() {
     }).catch( err => {
         toast.error('An error occurred!')
         console.log(err.message|err)
-        setAccounts(rawAccounts)
+        setAccounts([])
     }).finally(()=>dispatch({type:'STOP_LOADING'}))
 
     return ()=>null

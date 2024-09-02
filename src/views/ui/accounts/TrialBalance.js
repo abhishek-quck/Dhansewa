@@ -1,8 +1,22 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux';
 import { Card, CardBody, CardHeader, Container, Table } from 'reactstrap'
 
 function TrialBalance() {
-  return (
+
+    const dispatch = useDispatch();
+    const [balances, setBalance] = useState([]);
+
+    useEffect(()=>{
+
+        dispatch({ type:"LOADING" })
+        axios.get('trial-balance').then(({data}) => setBalance(data))
+        .catch(err=>console.log(err.message)).finally(()=> dispatch({ type:"STOP_LOADING" }));
+
+    },[]);
+    
+    return (
     <Container>
         <Card>
             <CardHeader>
@@ -24,20 +38,22 @@ function TrialBalance() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td> Captial Accounts </td>
-                            <td> Equity fund </td>
-                            <td> Lalit </td>
-                            <td> 0 </td>
-                            <td> 8100000 </td>
-                        </tr>
+                        {balances.map( bal => {
+                            return (<tr key={bal.id}>
+                                <td>{bal.id}</td>
+                                <td> {bal.group_name} </td>
+                                <td> {bal.head_name} </td>
+                                <td> {bal.account_name} </td>
+                                <td> {0} </td>
+                                <td> {bal.cr_amount} </td>
+                            </tr>)})
+                        }
                     </tbody>
                 </Table> 
             </CardBody>
         </Card>  
     </Container> 
-  )
+    )
 }
 
 export default TrialBalance
