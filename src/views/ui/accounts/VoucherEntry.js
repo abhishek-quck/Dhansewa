@@ -3,7 +3,7 @@ import { Card, CardBody,  CardHeader , Col, Form, Input, Label, Row } from 'reac
 import { validate } from '../../../helpers/utils'
 import { useDispatch } from 'react-redux'
 import axios from 'axios';
-import $ from 'jquery';
+import toast from 'react-hot-toast';
 
 function VoucherEntry() {
     const dispatch = useDispatch()
@@ -34,7 +34,7 @@ function VoucherEntry() {
         if(shouldGo===false)
         {
             setErrors(result)
-            return 
+            return toast.error('Fill the required fields!') 
         }
         dispatch({ type:'LOADING' })
         axios.post('/add-voucher', fields)
@@ -111,6 +111,7 @@ function VoucherEntry() {
                                         name="type"
                                         type="select" 
                                         onChange={change}
+                                        defaultValue={fields.voucher_type}
                                     >
                                         <option > --SELECT-- </option>
                                         <option value={`Cash Payment`}> Cash Payment </option>

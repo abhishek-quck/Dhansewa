@@ -22,7 +22,16 @@ function AccountMaster() {
   const [fields, setFields] = useState(initial)
   const [formSubmitted, trigger] = useState(false)
   const [heads, setHeads] = useState([])
-  const app = useSelector(state=>state.auth)
+  const app = useSelector( state => state.auth )
+  const [accounts, setAccounts] = useState([]);
+  const rawAccounts = [
+    {name:'Cash in Hand - Benipur', ob_head:'Assets', key_type:'Other'},
+    {name:'Loan Disbursement - Benipur', ob_head:'Assets', key_type:'Other'},
+    {name:'Principal Collection - Benipur', ob_head:'Assets', key_type:'Other'},
+    {name:'Furniture', ob_head:'Assets', key_type:'Other'},
+    {name:'Equity Fund', ob_head:'Assets', key_type:'Other'},
+    {name:'Computer & Printer', ob_head:'Assets', key_type:'Other'},
+  ]
   const [placeholder, setPlaceHolder]=useState(fields)
   const change = e => {
     if(e?.target)
@@ -38,9 +47,10 @@ function AccountMaster() {
     let {result, shouldGo} = validate(fields)
     if(shouldGo===false)
     { 
-        setPlaceHolder(result)
-        return 
+        return setPlaceHolder(result)
     }
+    const selectedHead = heads.find(item => item.name === fields.ob_head)
+    fields.head_id = selectedHead.id
     dispatch({type:'LOADING'})
     axios.post('create-account',fields)
     .then(({data})=>{
@@ -48,13 +58,11 @@ function AccountMaster() {
         toast.success(data.message)
         setFields(()=>initial) // reset here
     })
-    .catch(err=>{
+    .catch(err => {
         console.log(err)
         toast.error('Something went wrong!')
     })
-    .finally(()=>{
-        dispatch({type:'STOP_LOADING'})
-    })
+    .finally(()=> dispatch({type:'STOP_LOADING'}) )
   }
 
   useEffect(()=>{
@@ -71,16 +79,17 @@ function AccountMaster() {
     });
     // fetching account - heads
     axios.get('get-account-heads')
-    .then(({data})=>{ 
-        if(typeof data==='object') setHeads(data) 
-    })
-    .catch(err=>{
+    .then(({data})=> {
+        setHeads(data); 
+        axios.get('get-accounts').then(({data}) => setAccounts(data)).catch(()=>setAccounts(rawAccounts)) // org-accounts
+    }).catch( err => {
         toast.error('An error occurred!')
         console.log(err.message|err)
-    })
-    .finally(()=>dispatch({type:'STOP_LOADING'}))
+        setAccounts(rawAccounts)
+    }).finally(()=>dispatch({type:'STOP_LOADING'}))
 
     return ()=>null
+
   },[formSubmitted])
 
   return (
@@ -235,42 +244,14 @@ function AccountMaster() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Cash in Hand - Benipur </p></td>
-                                    <td><p> Assets </p></td>
-                                    <td><p> Other </p></td> 
-                                </tr>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Loan Disbursement - Benipur  </p></td>
-                                    <td><p> Assets </p></td>
-                                    <td><p> Other </p></td> 
-                                </tr>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Principal Collection - Benipur </p></td>
-                                    <td><p> Assets </p></td>
-                                    <td><p> Other </p></td> 
-                                </tr>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Furniture </p></td>
-                                    <td><p> Assets </p></td>
-                                    <td><p> Other </p></td> 
-                                </tr>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Equity Fund </p></td>
-                                    <td><p> Assets </p></td>
-                                    <td><p> Other </p></td> 
-                                </tr>
-                                <tr>
-                                    <td><Input type='checkbox' /></td>
-                                    <td><p> Computer & Printer   </p></td>
-                                    <td><p> Assets </p></td>
-                                    <td><p> Other </p></td> 
-                                </tr>
+                                { accounts.map( acc => {
+                                    return (<tr key={acc.id}>
+                                        <td><Input type='checkbox' /></td>
+                                        <td><p> { acc.name } </p></td>
+                                        <td><p> { acc.ob_head } </p></td>
+                                        <td><p> { acc.key_type } </p></td> 
+                                    </tr>)
+                                })} 
                             </tbody>
                         </Table>
                     </CardBody>
