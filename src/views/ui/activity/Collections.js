@@ -27,9 +27,31 @@ function Collections() {
             disb: 'fat' 
         }
     ]);
-    const currentDate = getCurrentDate()
+    const currentDate = getCurrentDate();
+    const [totals, setTotals] = useState({ due:0, collected:0, center:0, client:0, DBC:0, disb:0 })
     useEffect(()=>{
-        axios.get('get-collections').then(({data})=>{setCollections(data)}).catch(err=>alert(err.message))
+        axios.get('get-collections').then(({data})=>{
+            setCollections(data)
+            if(data.length)
+            {
+                let totalDue = data.reduce( (acc,item) => acc + parseFloat(item.dues), 0 )
+                let totalCollected = data.reduce( (acc,item) => acc + item.collected?? 0 , 0 )
+                let totalCenter = data.reduce( (acc,item) => acc + item.centers_count, 0 )
+                let totalClient = data.reduce( (acc,item) => acc + item.clients_count, 0 )
+                let totalDBC = data.reduce( (acc,item) => acc + item.dbc, 0 )
+                let totalDisb = data.reduce( (acc,item) => acc + item.disb, 0 )
+
+                setTotals({...totals, 
+                    due:totalDue,
+                    collected: totalCollected, 
+                    center:totalCenter, 
+                    client:totalClient, 
+                    dbc:totalDBC, 
+                    disb:totalDisb 
+                })
+                
+            }
+        }).catch(err=>alert(err.message))
     },[])
 
     return (
@@ -75,14 +97,14 @@ function Collections() {
                 </tbody>
                 <tfoot>
                    <tr>
-                        <td colSpan={2} className='fw-bold'> Total </td>
-                        <td>''</td>
-                        <td>''</td>
-                        <td>''</td>
-                        <td>''</td>
-                        <td>''</td>
-                        <td>''</td>
-                        <td>''</td>
+                        <td colSpan={2} className='fw-bold'> </td>
+                        <td> <h6 className='float-end'> Total </h6> </td>
+                        <td> <h6>{ totals.due+' ₹' }</h6> </td>
+                        <td> <h6>{ isNaN(totals.collected) ? 0 : totals.collected }</h6> </td>
+                        <td> <h6>{ totals.center }</h6> </td>
+                        <td> <h6>{ totals.client }</h6> </td>
+                        <td> <h6>{ isNaN(totals.DBC)? 0 : totals.DBC }</h6> </td>
+                        <td> <h6>{ isNaN(totals.disb)? 0 : totals.disb }</h6> </td>
                         <td></td>
                     </tr>
                 </tfoot>

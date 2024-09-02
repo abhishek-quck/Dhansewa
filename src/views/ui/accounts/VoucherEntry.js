@@ -13,6 +13,8 @@ function VoucherEntry() {
         date:'',
         type:'',
         narration:'',
+        credit:'',
+        debit:'',
         amount:'',
         account:'',
     })
@@ -26,27 +28,21 @@ function VoucherEntry() {
     const [errors, setErrors]=useState(fields)
 
     const handleSubmit = e => {
+
         e.preventDefault()
         let {result, shouldGo } = validate(fields)
         if(shouldGo===false)
         {
-            for (const el in fields) {
-                if(result[el])
-                {
-                    $(`input[name=${el}], textarea[name=${el}], select[name=${el}]`).addClass('placeholder-error').css('border','1px solid red')
-                } else {
-                    $(`input[name=${el}], textarea[name=${el}], select[name=${el}]`).removeClass('placeholder-error').css('border','')
-                }
-            }
             setErrors(result)
             return 
         }
-        dispatch({type:'LOADING'})
-        axios.post('')
+        dispatch({ type:'LOADING' })
+        axios.post('/add-voucher', fields)
         .then(({data})=>{
             console.log(data)
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
+
     }
 
     useEffect(()=>{
@@ -77,22 +73,22 @@ function VoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Date </Label>
+                                    <Label className="col-4"  size={'sm'} for="date"> Date </Label>
                                     <Input 
                                         name="date"
+                                        id="date"
                                         type="date" 
                                         onChange={change}
                                     /> 
-                                    
                                 </div>
                             </Col > 
                         </Row> 
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Branch </Label>
+                                    <Label className="col-4"  size={'sm'} for="branch"> Branch </Label>
                                     <Input
-                                        id="exampleSelectMulti" 
+                                        id="branch" 
                                         name="branch"
                                         type="select" 
                                         onChange={change}
@@ -109,8 +105,9 @@ function VoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Voucher Type </Label>
+                                    <Label className="col-4"  size={'sm'} for="voucher_type"> Voucher Type </Label>
                                     <Input 
+                                        id='voucher_type'
                                         name="type"
                                         type="select" 
                                         onChange={change}
@@ -131,10 +128,12 @@ function VoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> From (Credit) </Label>
+                                    <Label className="col-4"  size={'sm'} for="credit"> From (Credit) </Label>
                                     <Input 
                                         name="account"
+                                        id="credit"
                                         type="select" 
+                                        defaultValue={fields.credit}
                                         onChange={change}
                                     >
                                         <option> --SELECT-- </option>
@@ -146,10 +145,12 @@ function VoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> To (Debit) </Label>
+                                    <Label className="col-4"  size={'sm'} for="debit"> To (Debit) </Label>
                                     <Input 
+                                        id="debit"
                                         name="account"
                                         type="select" 
+                                        defaultValue={fields.debit}
                                         onChange={change}
                                     >
                                         <option> --SELECT-- </option>
@@ -161,8 +162,9 @@ function VoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Narration </Label>
+                                    <Label className="col-4"  size={'sm'} for="narration"> Narration </Label>
                                     <Input 
+                                        id="narration"
                                         name="narration"
                                         type="textarea"
                                         placeholder={errors.narration??"Enter Narration"}
@@ -174,8 +176,9 @@ function VoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Amount </Label>
+                                    <Label className="col-4"  size={'sm'} for="amount"> Amount </Label>
                                     <Input 
+                                        id="amount"
                                         name="amount"
                                         type="text"
                                         onChange={change}
@@ -186,7 +189,7 @@ function VoucherEntry() {
                         </Row> 
                         <Row className='mt-3' >
                             <Col md="12">
-                                <button className='btn btn-success w-100'> 
+                                <button className='btn btn-success w-100' type='submit'> 
                                 + Add Transaction </button>
                             </Col > 
                         </Row> 

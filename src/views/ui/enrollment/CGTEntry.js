@@ -101,7 +101,7 @@ const CGTEntry = () => {
             <Card className="col-12">
                 <CardHeader tag="h6" className="d-flex gap-auto" >
                     <span 
-                        class="mt-2 mb-2 fa-solid fa-arrow-rotate-left" 
+                        className="mt-2 mb-2 fa-solid fa-arrow-rotate-left" 
                         onClick={()=>setVerified(!aadhaarVerified)}
                     />
                     <b className="m-2"> CLIENT SOURCING </b>

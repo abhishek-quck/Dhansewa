@@ -136,7 +136,7 @@ export const navigation= [
         },
         {
           title:'Partial Collection',
-          href:'#',
+          href:'/partial-collection',
         },
         {
           title:'Send DCR',
@@ -155,7 +155,7 @@ export const navigation= [
           href:'/day-close',
         }
       ],
-      links:['/collections','/arrear-collection','/day-init','/day-close',]
+      links:['/collections','/arrear-collection','/day-init','/day-close','/partial-collection']
     },
     {
       title: "Management",

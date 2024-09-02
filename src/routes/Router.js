@@ -13,6 +13,7 @@ const LedgerRevise = lazy(()=>import("../views/ui/advance-settings/LedgerRevise.
 const DataTruncate = lazy(()=>import("../views/ui/advance-settings/DataTruncate.js"))
 const CreditReport = lazy(()=>import("../views/ui/CreditReport.js"))
 const Collections = lazy(()=>import("../views/ui/activity/Collections.js"))
+const PartialCollection = lazy(()=>import("../views/ui/activity/PartialCollection.js"))
 const CenterCollection = lazy(()=>import("../views/ui/activity/CenterCollection.js"))
 const DayInit = lazy(()=>import("../views/ui/activity/DayInit.js"))
 const DayClose = lazy(()=>import("../views/ui/activity/DayClose.js"))
@@ -364,6 +365,15 @@ const ThemeRoutes = [
         element: (
         <ProtectedRoute permission={constant.COLLECT}>
           <Collections />
+        </ProtectedRoute>
+        )
+      },
+      { 
+        path: "/partial-collection", 
+        exact: true, 
+        element: (
+        <ProtectedRoute permission={constant.COLLECT}>
+          <PartialCollection />
         </ProtectedRoute>
         )
       },

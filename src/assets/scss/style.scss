@@ -287,3 +287,26 @@ table {
     position: relative;
     z-index: 1;
 }
+.formBtns {
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+.btn-success {
+    background-color: #738f5d!important;
+    border-color: #738f5d!important;
+}
+.btn-success:hover {
+    background-color: #485d37!important;
+}
+.btn-primary, .bg-primary {
+    background-color: #3580e8!important;
+    border-color:#3580e8!important;
+}
+.btn-primary:hover {
+    background-color: #0e42d3!important;
+}
+td button {
+    border-radius: 2px!important;
+}

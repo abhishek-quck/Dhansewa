@@ -64,9 +64,17 @@ const LedgerRevise = () => {
         hit(true)
         e.preventDefault()
         if(!searchfields.client) {
-            toast.error('Select a client first!')
             $('.client').css('border','1px solid red')
-            return 
+            return toast('Select a client first!',
+                {
+                  icon: '⚠️',
+                  style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+                }
+            );
         }
         dispatch({type:'LOADING'})
         axios.post('/search-client-ledger',searchfields)
