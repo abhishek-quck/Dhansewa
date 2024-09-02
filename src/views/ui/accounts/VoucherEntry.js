@@ -6,10 +6,12 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 function VoucherEntry() {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    let initial = {};
     const [branches, setBranches] = useState([])
-    const [fields, setFields] = useState({
-        branch:'',
+    const [accounts, setAccounts] = useState([])
+    const [fields, setFields] = useState(initial={
+        branch_id:'',
         date:'',
         type:'',
         narration:'',
@@ -33,23 +35,23 @@ function VoucherEntry() {
         let {result, shouldGo } = validate(fields)
         if(shouldGo===false)
         {
+            console.log(result)
             setErrors(result)
             return toast.error('Fill the required fields!') 
         }
         dispatch({ type:'LOADING' })
         axios.post('/add-voucher', fields)
-        .then(({data})=>{
-            console.log(data)
-        })
-        .finally(()=>dispatch({type:'STOP_LOADING'}))
+        .then(({data})=> {
+            toast.success(data.message)
+            setFields(()=>initial)
+        }).finally(()=>dispatch({type:'STOP_LOADING'}))
 
     }
 
     useEffect(()=>{
         axios.get('get-branches')
-		.then(({data})=>{
-			setBranches(data)
-		})
+		.then(({data})=> setBranches(data) )
+        axios.get('get-accounts').then( ({data})=> setAccounts(data)).catch(err=>console.log(err.message))
         return ()=> null
     },[])
 
@@ -89,7 +91,7 @@ function VoucherEntry() {
                                     <Label className="col-4"  size={'sm'} for="branch"> Branch </Label>
                                     <Input
                                         id="branch" 
-                                        name="branch"
+                                        name="branch_id"
                                         type="select" 
                                         onChange={change}
                                     >
@@ -131,7 +133,7 @@ function VoucherEntry() {
                                 <div className="d-flex">
                                     <Label className="col-4"  size={'sm'} for="credit"> From (Credit) </Label>
                                     <Input 
-                                        name="account"
+                                        name="credit"
                                         id="credit"
                                         type="select" 
                                         defaultValue={fields.credit}
@@ -139,6 +141,9 @@ function VoucherEntry() {
                                     >
                                         <option> --SELECT-- </option>
                                         <option value={`credit`}> Credit </option>
+                                        { accounts.map( acc => {
+                                            return <option value={acc.id} key={acc.id}>{ acc.name }</option>
+                                        })}
                                     </Input>   
                                 </div>
                             </Col > 
@@ -149,13 +154,15 @@ function VoucherEntry() {
                                     <Label className="col-4"  size={'sm'} for="debit"> To (Debit) </Label>
                                     <Input 
                                         id="debit"
-                                        name="account"
+                                        name="debit"
                                         type="select" 
                                         defaultValue={fields.debit}
                                         onChange={change}
                                     >
                                         <option> --SELECT-- </option>
-                                        <option value={`credit`}> Credit </option>
+                                        { accounts.map( acc => {
+                                            return <option value={acc.id} key={acc.id}>{ acc.name }</option>
+                                        })}
                                     </Input>   
                                 </div>
                             </Col > 
@@ -182,6 +189,7 @@ function VoucherEntry() {
                                         id="amount"
                                         name="amount"
                                         type="text"
+                                        cast={'num'}
                                         onChange={change}
                                         placeholder={errors.amount?? "Enter amount "}
                                     />  

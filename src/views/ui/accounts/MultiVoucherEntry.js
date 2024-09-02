@@ -4,11 +4,14 @@ import { validate } from '../../../helpers/utils';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import $ from 'jquery';
+import toast from 'react-hot-toast';
 
 function MultiVoucherEntry() {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    let initial={}
     const [branches, setBranches] = useState([])
-    const [fields, setFields] = useState({
+    const [accounts, setAccounts] = useState([])
+    const [fields, setFields] = useState(initial={
         branch:'',
         date:'',
         type:'',
@@ -26,27 +29,22 @@ function MultiVoucherEntry() {
     const [errors, setErrors]=useState(fields)
 
     const handleSubmit = e => {
+
         e.preventDefault()
         let {result, shouldGo } = validate(fields)
         if(shouldGo===false)
         {
-            for (const el in fields) {
-                if(result[el])
-                {
-                    $(`input[name=${el}], textarea[name=${el}], select[name=${el}]`).addClass('placeholder-error').css('border','1px solid red')
-                } else {
-                    $(`input[name=${el}], textarea[name=${el}], select[name=${el}]`).removeClass('placeholder-error').css('border','')
-                }
-            }
+            console.log(result)
             setErrors(result)
-            return 
+            return toast.error('Fill the required fields!');
         }
-        dispatch({type:'LOADING'})
-        axios.post('')
+        dispatch({ type:'LOADING' });
+        axios.post('/add-voucher')
         .then(({data})=>{
-            console.log(data)
-        })
-        .finally(()=>dispatch({type:'STOP_LOADING'}))
+            toast.success(data.message);
+            setFields(()=> initial );
+        }).finally(()=> dispatch({ type:'STOP_LOADING' }))
+
     }
 
     useEffect(()=>{
@@ -54,6 +52,9 @@ function MultiVoucherEntry() {
 		.then(({data})=>{
 			setBranches(data)
 		})
+        axios.get('get-accounts').then(({data}) => {
+            setAccounts(data)
+        })
         return ()=> null
     },[])
 
@@ -65,7 +66,7 @@ function MultiVoucherEntry() {
                 <Card>
                     <CardHeader>
                         <div className='d-flex' style={{justifyContent:'space-between'}}>
-                        <b> Multi Voucher Entry Gateway </b>
+                        <b> Voucher Entry Gateway </b>
                         <button type='button' className='btn btn-primary'>
                             <i className='fa-regular fa-eye' />&nbsp;
                             Ledger 
@@ -77,23 +78,23 @@ function MultiVoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Date </Label>
+                                    <Label className="col-4"  size={'sm'} for="date"> Date </Label>
                                     <Input 
                                         name="date"
+                                        id="date"
                                         type="date" 
                                         onChange={change}
                                     /> 
-                                    
                                 </div>
                             </Col > 
                         </Row> 
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Branch </Label>
+                                    <Label className="col-4"  size={'sm'} for="branch"> Branch </Label>
                                     <Input
-                                        id="exampleSelectMulti" 
-                                        name="branch"
+                                        id="branch" 
+                                        name="branch_id"
                                         type="select" 
                                         onChange={change}
                                     >
@@ -109,11 +110,13 @@ function MultiVoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Voucher Type </Label>
+                                    <Label className="col-4"  size={'sm'} for="voucher_type"> Voucher Type </Label>
                                     <Input 
+                                        id='voucher_type'
                                         name="type"
                                         type="select" 
                                         onChange={change}
+                                        defaultValue={fields.voucher_type}
                                     >
                                         <option > --SELECT-- </option>
                                         <option value={`Cash Payment`}> Cash Payment </option>
@@ -131,14 +134,19 @@ function MultiVoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> From (Credit) </Label>
+                                    <Label className="col-4"  size={'sm'} for="credit"> From (Credit) </Label>
                                     <Input 
-                                        name="account"
+                                        name="credit"
+                                        id="credit"
                                         type="select" 
+                                        defaultValue={fields.credit}
                                         onChange={change}
                                     >
                                         <option> --SELECT-- </option>
                                         <option value={`credit`}> Credit </option>
+                                        { accounts.map( acc => {
+                                            return <option value={acc.id} key={acc.id}>{ acc.name }</option>
+                                        })}
                                     </Input>   
                                 </div>
                             </Col > 
@@ -146,14 +154,18 @@ function MultiVoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> To (Debit) </Label>
+                                    <Label className="col-4"  size={'sm'} for="debit"> To (Debit) </Label>
                                     <Input 
-                                        name="account"
+                                        id="debit"
+                                        name="debit"
                                         type="select" 
+                                        defaultValue={fields.debit}
                                         onChange={change}
                                     >
                                         <option> --SELECT-- </option>
-                                        <option value={`credit`}> Credit </option>
+                                        { accounts.map( acc => {
+                                            return <option value={acc.id} key={acc.id}>{ acc.name }</option>
+                                        })}
                                     </Input>   
                                 </div>
                             </Col > 
@@ -161,8 +173,9 @@ function MultiVoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Narration </Label>
+                                    <Label className="col-4"  size={'sm'} for="narration"> Narration </Label>
                                     <Input 
+                                        id="narration"
                                         name="narration"
                                         type="textarea"
                                         placeholder={errors.narration??"Enter Narration"}
@@ -174,10 +187,12 @@ function MultiVoucherEntry() {
                         <Row className='mt-3' >
                             <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="exampleEmail"> Amount </Label>
+                                    <Label className="col-4"  size={'sm'} for="amount"> Amount </Label>
                                     <Input 
+                                        id="amount"
                                         name="amount"
                                         type="text"
+                                        cast={'num'}
                                         onChange={change}
                                         placeholder={errors.amount?? "Enter amount "}
                                     />  
@@ -186,7 +201,7 @@ function MultiVoucherEntry() {
                         </Row> 
                         <Row className='mt-3' >
                             <Col md="12">
-                                <button type="button" className='btn btn-success w-100'> 
+                                <button className='btn btn-success w-100' type='submit'> 
                                 + Add Transaction </button>
                             </Col > 
                         </Row> 
