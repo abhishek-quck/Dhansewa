@@ -98,7 +98,7 @@ function MultiVoucherEntry() {
                                         type="select" 
                                         onChange={change}
                                     >
-                                        <option> 01- Benipur </option>
+                                        <option> --SELECT-- </option>
                                         {branches.map((opt,i)=>{
                                             return <option key={i} value={opt.id}>{opt.name}</option>
                                         })}
