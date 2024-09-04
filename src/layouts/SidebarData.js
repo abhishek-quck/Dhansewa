@@ -11,23 +11,31 @@ export const navigation= [
       name:'enroll',
       sub:[
         {
-          title: "CGT Entry",
-          href: "/cgt-entry",
-        },
-        {
           title: "New Enrollment",
           href: "/new-enrollment",
+        },
+        {
+          title: "CGT Entry",
+          href: "/cgt-entry",
         },
         {
           title: "Update CIS",
           href: "/update-cis",
         },
         {
+          title: "Cibil Upload",
+          href: "/cibil-upload",
+        },
+        {
+          title: "Credit Appraisal",
+          href: "/credit-appraisal",
+        },
+        {
           title: "Speed Enrollments",
           href: "#",
         },
       ],
-      links:["new-enrollment",'update-cis','cgt-entry','/add-enrollment']
+      links:["new-enrollment",'update-cis','cgt-entry','/add-enrollment','/add-enrolled-cgt','/credit-appraisal','/manage-client/:id']
     },
     {
       title: "Centers Info",

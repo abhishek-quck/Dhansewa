@@ -153,3 +153,21 @@ export const isValidDate = ( date, range ) => {
     let intended = new Date(today.replace(year, (parseInt(year)-range)));
     return intended > new Date(date)
 }
+
+export const capitalFirst = (string) => {
+    if (!string) return string; // Handle empty or null strings
+    if(string.includes(' ')){
+        let str= '';
+        string.split(' ').forEach( part => {
+           str+=' '+ part.charAt(0).toUpperCase() + part.slice(1); 
+        })
+        return str;
+    }
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export const getDocumentName = str => {
+    if( str.toLowerCase().includes('vote') ) return 'VOTER CARD';
+    if( str.toLowerCase().includes('adhaa') ) return 'AADHAAR CARD';
+    if( str.toLowerCase().includes('assbook') ) return 'BANK PASSBOOK';
+}

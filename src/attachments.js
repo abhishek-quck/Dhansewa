@@ -5,7 +5,7 @@ import { dataURLtoFile } from './helpers/utils';
 var Attachments =
 {
     messageOrigin: null,
-    preview: function(hasData, clientID, filename)
+    preview: function(hasData, filename, clientID)
     {
         // Remove existing elements, we already faced enough errors
         let cModalBody=document.body.querySelectorAll('.attachment-viewer.d-none');
@@ -22,7 +22,6 @@ var Attachments =
         oImg.src=singlePixel;
         let oUL=oModalBody.appendChild(document.createElement('div')).appendChild(document.createElement('ul'));
         oUL.id='images';
-        console.log('has data : - ', hasData)
         if(hasData)
         {
             if(hasData[0].includes('application/pdf'))
@@ -105,7 +104,9 @@ var Attachments =
                                 {
                                     viewer.destroy();
                                     let oContainer=document.body.querySelector('div.attachment-viewer');
-                                    document.body.removeChild(oContainer);
+                                    if(oContainer) {
+                                        document.body.removeChild(oContainer);
+                                    }
                                 }, 1000, e.target.viewer);
                             }
                         });
@@ -161,9 +162,9 @@ var Attachments =
     }
 }
 
-function preview(hasData=null, clientID=null, filename=null)
+function preview(hasData=null,filename=null, clientID=null)
 {   
-    Attachments.preview( hasData, clientID, filename);
+    Attachments.preview( hasData, filename, clientID );
 }
  
 export { preview }

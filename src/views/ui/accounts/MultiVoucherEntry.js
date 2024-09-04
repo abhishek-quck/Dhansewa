@@ -3,15 +3,14 @@ import { Card, CardBody,  CardHeader , Col, Form, Input, Label, Row } from 'reac
 import { validate } from '../../../helpers/utils';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
-import $ from 'jquery';
 import toast from 'react-hot-toast';
 
 function MultiVoucherEntry() {
-    const dispatch = useDispatch();
     let initial={}
+    const dispatch = useDispatch();
     const [branches, setBranches] = useState([])
     const [accounts, setAccounts] = useState([])
-    const [fields, setFields] = useState(initial={
+    const [fields, setFields]     = useState(initial={
         branch:'',
         date:'',
         type:'',
@@ -19,6 +18,7 @@ function MultiVoucherEntry() {
         amount:'',
         account:'',
     })
+    const [errors, setErrors]     = useState(fields)
     const change = e => {
         if(e?.target)
         {
@@ -26,13 +26,12 @@ function MultiVoucherEntry() {
             setFields({...fields,[e.target.name]:e.target.value})
         }
     }
-    const [errors, setErrors]=useState(fields)
 
     const handleSubmit = e => {
 
         e.preventDefault()
         let {result, shouldGo } = validate(fields)
-        if(shouldGo===false)
+        if( shouldGo === false )
         {
             console.log(result)
             setErrors(result)
@@ -47,15 +46,13 @@ function MultiVoucherEntry() {
 
     }
 
-    useEffect(()=>{
+    useEffect(() => {
+        
         axios.get('get-branches')
-		.then(({data})=>{
-			setBranches(data)
-		})
-        axios.get('get-accounts').then(({data}) => {
-            setAccounts(data)
-        })
+		.then(({data})=> setBranches(data) ).catch()
+        axios.get('get-accounts').then(({data}) => setAccounts(data) )
         return ()=> null
+
     },[])
 
     return (

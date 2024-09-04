@@ -8,15 +8,18 @@ import { preview } from '../../../../attachments'
 import { validate } from '../../../../helpers/utils'
 
 const AddGRT = () => {
+
+	let {id}= useParams()
     const dispatch = useDispatch()
     const navigateTo = useNavigate()
     const [docs, setDocuments] = useState([])
     const [doc, setDocument] = useState(null)
     const [visitPhoto, setVisitPhoto] = useState({b64:null,blob:null})
+    const [groupPhoto, setGroupPhoto] = useState({b64:null,blob:null})
 	const [districts, fillDistricts] = useState([])
 	const [centers, fillCenters] = useState([])
-    let {id}= useParams()
-    let thisUser = useSelector(state=>state.auth.GRTs[id]??{}) 
+
+	let thisUser = useSelector(state=>state.auth.GRTs[id]??{}) 
 	const previousDocument = thisUser?.latest_document?.file_name??'' 
 
     const [fields,setFields] = useState({
@@ -33,14 +36,13 @@ const AddGRT = () => {
     const onChange = e => setFields({...fields, [e.target.name]:e.target.value})
     
     const handleSubmit = e => {
-        e.preventDefault()
-		console.log(fields)
-		let {shouldGo,result} = validate(fields)
-		if(shouldGo===false)
+        
+		e.preventDefault()
+		let { shouldGo,result } = validate(fields)
+		if( shouldGo===false)
 		{
 			console.log(result);
-			toast.error('Fill the required fields!')
-			return 
+			return toast.error('Fill the required fields!')
 		}
         let formData = new FormData()
 		formData.append('id', id );
@@ -50,20 +52,20 @@ const AddGRT = () => {
         }
         formData.append('document', doc)
         formData.append('visit_photo', visitPhoto.blob)
+        formData.append('group_photo', groupPhoto.blob)
         axios.post('/update-client-details', formData, {
             headers:{
                 "Accept":"application/json",
                 "Content-Type": "multipart/form-data",
                 "Authorization":"Bearer "+localStorage.getItem('auth-token')
             }
-        }).then(({data})=>{
-            console.log(data)
-            if(typeof data === 'object' && Object.keys(data).length)
+        }).then(({data}) => {
+			if( typeof data === 'object' && Object.keys(data).length )
             {
-                dispatch({type:'UPDATE_GRT',payload:data})
-                setTimeout(()=>{
+                dispatch({ type:'UPDATE_GRT', payload:data })
+                setTimeout(()=> {
                     toast.success('Record updated successfully!')
-                    setTimeout(()=>navigateTo('/client-grt'),3000)
+                    setTimeout(()=>navigateTo('/client-grt'), 3000 )
                 })
             }
         }).catch(({response})=>{
@@ -71,19 +73,22 @@ const AddGRT = () => {
 			console.log( response );
 		})
     }
-	const init = () =>{ 
+
+	const init = () => {
+
 		axios.get('get-options/all')
 		.then(({data})=>{ 
 			if(data.district) fillDistricts(data.district)
 		}).catch(err=>console.log(err.message))
+	
 		let branch_id = fields.branch || fields.branch_id;
 		axios.get('get-branch-centers/'+ branch_id )
 		.then(({data})=>{
 			let bCenters = [];
 			data.forEach( item => bCenters.push({value:item.id, label:item.name}) );
 		    fillCenters(bCenters)
-			axios.get('documents').then(({data})=> setDocuments(data) ).catch(err=>console.log(err.message))
-		})
+			axios.get('documents').then(({data})=> setDocuments(data) ).catch(err=>console.log(err))
+		}).catch()
 	}
 
 	const previewDoc = () => {
@@ -92,18 +97,25 @@ const AddGRT = () => {
 		preview(data!==undefined?[data]:false, clientID,thisUser.verification_type, 'preview-document')
 	}
 	
-	const previewImage = () => {
-		preview([visitPhoto.b64], thisUser?.grt?.enroll_id )
+	const previewImage = (e) => {
+		let name = e.target.name;
+		preview([name==='visit'? visitPhoto.b64 : groupPhoto.b64 ], thisUser?.grt?.enroll_id )
 	}
 
-	const uploadVisitPhoto = e => {
-		let file = e.target.files[0]
+	const uploadPhoto = e => {
+		let file = e.target.files[0];
+		let name = e.target.name;
         var reader = new FileReader();
         reader.readAsDataURL(file); 
         reader.onload = function() {
-			setVisitPhoto({...doc, b64:reader.result, blob:file})
+			if( name === 'visit_photo') {
+				setVisitPhoto({...visitPhoto, b64:reader.result, blob:file});
+			} else {
+				setGroupPhoto({...groupPhoto, b64:reader.result, blob:file})
+			}
         }; 
 	}
+	
     useEffect(()=>{
 		
 		if(Object.keys(thisUser).length)
@@ -289,12 +301,36 @@ const AddGRT = () => {
 						id="visit_photo" 
 						name="visit_photo"
 						type="file" 
-						onChange={uploadVisitPhoto}
+						accept='image/*'
+						onChange={uploadPhoto}
 					/>
 					{visitPhoto.b64 && 
 					 (
 						<>
-						<button className='btn' type='button' onClick={previewImage} style={{border:'1px dashed'}}
+						<button className='btn' name='visit' type='button' onClick={previewImage} style={{border:'1px dashed'}}
+						> Preview </button> 
+						<small className='mx-4'> </small>
+						</>
+					 )
+					}
+				</div>
+				</Col > 
+			</Row>
+			<Row className="mt-2">
+				<Col md="12">
+				<div className="d-flex">
+					<Label className="col-4" size={'sm'} for="group_photo"> Upload Group Photo </Label>
+					<Input
+						id="group_photo" 
+						name="group_photo"
+						type="file" 
+						accept='image/*'
+						onChange={uploadPhoto}
+					/>
+					{groupPhoto.b64 && 
+					 (
+						<>
+						<button className='btn' name='group' type='button' onClick={previewImage} style={{border:'1px dashed'}}
 						> Preview </button> 
 						<small className='mx-4'> </small>
 						</>

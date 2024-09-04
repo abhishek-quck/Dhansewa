@@ -1,10 +1,10 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch, useSelector } from 'react-redux'
-import { Card, CardBody, CardFooter, CardHeader, CardText, Col, Form, Input, Label, Row, Spinner, Table } from 'reactstrap'
-import $ from 'jquery'
-import { validate } from '../../../helpers/utils'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
+import { Card, CardBody, CardFooter, CardHeader, CardText, Col, Form, Input, Label, Row, Spinner, Table } from 'reactstrap';
+import $ from 'jquery';
+import { validate } from '../../../helpers/utils';
 
 let initial = {
     name:null,
@@ -18,12 +18,14 @@ let initial = {
     key_type:null,
 }
 function AccountMaster() {
-  const dispatch = useDispatch()
-  const [fields, setFields] = useState(initial)
-  const [formSubmitted, trigger] = useState(false)
-  const [heads, setHeads] = useState([])
-  const app = useSelector( state => state.auth )
-  const [accounts, setAccounts] = useState([]);
+  
+  const dispatch = useDispatch();
+  const app = useSelector( state => state.auth );
+  const [fields, setFields]           = useState(initial);
+  const [formSubmitted, trigger]      = useState(false);
+  const [heads, setHeads]             = useState([]);
+  const [accounts, setAccounts]       = useState([]);
+  const [placeholder, setPlaceHolder] = useState(fields);
   const rawAccounts = [
     {name:'Cash in Hand - Benipur', ob_head:'Assets', key_type:'Other'},
     {name:'Loan Disbursement - Benipur', ob_head:'Assets', key_type:'Other'},
@@ -31,36 +33,34 @@ function AccountMaster() {
     {name:'Furniture', ob_head:'Assets', key_type:'Other'},
     {name:'Equity Fund', ob_head:'Assets', key_type:'Other'},
     {name:'Computer & Printer', ob_head:'Assets', key_type:'Other'},
-  ]
-  const [placeholder, setPlaceHolder]=useState(fields)
-  const change = e => {
+];
+const change = e => {
     if(e?.target)
     {
-        e.target.style.border=''
-        setFields({...fields, [e.target.name]:e.target.value})
+        e.target.style.border='';
+        setFields({...fields, [e.target.name]:e.target.value});
     }
   }
 
   const handleSubmit = e => {
     e.preventDefault();
-    trigger(!formSubmitted)  // use `!` instead `true|false`
-    let {result, shouldGo} = validate(fields)
+    trigger(!formSubmitted);  // use `!` instead `true|false`
+    let {result, shouldGo} = validate(fields);
     if(shouldGo===false)
     { 
-        return setPlaceHolder(result)
+        return setPlaceHolder(result);
     }
     const selectedHead = heads.find(item => item.name === fields.ob_head)
-    fields.head_id = selectedHead.id
-    dispatch({type:'LOADING'})
+    fields.head_id = selectedHead.id;
+    dispatch({type:'LOADING'});
     axios.post('create-account',fields)
-    .then(({data})=>{
-        console.log(data)
-        toast.success(data.message)
-        setFields(()=>initial) // reset here
+    .then(({data}) => {
+        toast.success(data.message);
+        setFields(()=>initial); // reset here
     })
     .catch(err => {
-        console.log(err)
-        toast.error('Something went wrong!')
+        console.log(err);
+        toast.error('Something went wrong!');
     })
     .finally(()=> dispatch({type:'STOP_LOADING'}) )
   }
@@ -71,9 +71,9 @@ function AccountMaster() {
         $('tbody tr').each((i,row) => {
             if(!row.textContent.toLowerCase().includes(this.value?.toLowerCase()))
             {
-                $(row).addClass('d-none')   
-            }else{
-                $(row).removeClass('d-none')   
+                $(row).addClass('d-none');   
+            } else {
+                $(row).removeClass('d-none');
             }
         });
     });
@@ -83,9 +83,9 @@ function AccountMaster() {
         setHeads(data); 
         axios.get('get-accounts').then(({data}) => setAccounts(data)).catch(()=>setAccounts(rawAccounts)) // org-accounts
     }).catch( err => {
-        toast.error('An error occurred!')
-        console.log(err.message|err)
-        setAccounts([])
+        toast.error('An error occurred!');
+        console.log(err.message|err);
+        setAccounts([]);
     }).finally(()=>dispatch({type:'STOP_LOADING'}))
 
     return ()=>null

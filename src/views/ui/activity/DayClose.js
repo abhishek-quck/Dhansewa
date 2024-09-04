@@ -101,12 +101,12 @@ function DayClose() {
                             {
                                 collection.map(item=>{
                                     return (<tr key={item.id}>
-                                        <td>{item.total_client}</td>
-                                        <td>{item.due_amount}</td>
-                                        <td>{0}</td>
-                                        <td>{0}</td>
-                                        <td>{item.due_amount}</td>
-                                        <td>{0}</td>
+                                        <td><span>{item.total_client}</span></td>
+                                        <td><span>{item.due_amount}</span></td>
+                                        <td><span>{0}</span></td>
+                                        <td><span>{0}</span></td>
+                                        <td><span>{item.due_amount}</span></td>
+                                        <td><span>{0}</span></td>
                                     </tr>)
                                 })
                             }
@@ -132,14 +132,14 @@ function DayClose() {
                             </tr>
                         </thead>
                         <tbody>
-                            { branchID && <tr>
-                                <td> {branchInfo.id+' - '+branchInfo.name} </td>
-                                <td> {formatDate(null,'dmY')} </td>
-                                <td> {getCurrentDay()} </td>
-                                <td> {getCurrentTime()} </td>
-                                <td> {branchInfo.sddsf??null} </td>
-                                <td>  </td>
-                            </tr> }
+                            { branchID ? <tr>
+                                <td><span>{branchInfo.id+'-'+branchInfo.name}</span></td>
+                                <td><span>{formatDate(null,'dmY')}</span></td>
+                                <td><span>{getCurrentDay()}</span></td>
+                                <td><span>{getCurrentTime()}</span></td>
+                                <td><span>{branchInfo.sddsf??null}</span></td>
+                                <td><span></span></td>
+                            </tr> : null}
                         </tbody>
                     </Table>
                 </Col>

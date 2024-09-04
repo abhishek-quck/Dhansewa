@@ -49,8 +49,11 @@ const AccountLedger = lazy(()=> import("../views/ui/accounts/AccountLedger.js"))
 const Dashboard = lazy(() => import("../views/Dashboard.js"));
 const Enrollment = lazy(() => import("../views/ui/enrollment/Enrollment"));
 const EditEnrollment = lazy(()=>import("../views/ui/enrollment/EditEnrollment.js"))
+const AddEnrolledCGT = lazy(() => import("../views/ui/enrollment/AddEnrolledCGT.js"));
 const CGTEntry = lazy(() => import("../views/ui/enrollment/CGTEntry"));
-const AddEnrolledGRT = lazy(() => import("../views/ui/enrollment/AddEnrolledGRT"));
+const CibilUpload = lazy(() => import("../views/ui/enrollment/CibilUpload.js"));
+const CreditAppraisal = lazy(() => import("../views/ui/enrollment/CreditAppraisal.js"));
+const ManageClient = lazy(() => import("../views/ui/enrollment/ManageClient.js"));
 
 /*****Routes******/
 
@@ -103,7 +106,7 @@ const ThemeRoutes = [
         exact: true, 
         element: (
         <ProtectedRoute permission={constant.EDIT_ENROLL}>
-          <AddEnrolledGRT />
+          <AddEnrolledCGT />
         </ProtectedRoute>
         )
       },
@@ -122,6 +125,33 @@ const ThemeRoutes = [
         element: (
         <ProtectedRoute permission={constant.EDIT_ENROLL}>
           <EditEnrollment />
+        </ProtectedRoute>
+        )
+      },
+      { 
+        path: "/cibil-upload", 
+        exact: true, 
+        element: (
+        <ProtectedRoute permission={constant.EDIT_ENROLL}>
+          <CibilUpload />
+        </ProtectedRoute>
+        )
+      },
+      { 
+        path: "/credit-appraisal", 
+        exact: true, 
+        element: (
+        <ProtectedRoute permission={constant.EDIT_ENROLL}>
+          <CreditAppraisal />
+        </ProtectedRoute>
+        )
+      },
+      { 
+        path: "/manage-client/:id", 
+        exact: true, 
+        element: (
+        <ProtectedRoute permission={constant.EDIT_ENROLL}>
+          <ManageClient />
         </ProtectedRoute>
         )
       },
