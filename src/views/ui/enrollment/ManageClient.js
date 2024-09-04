@@ -1,13 +1,16 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Row } from 'reactstrap';
-import { capitalFirst, getDocumentName } from '../../../helpers/utils';
+import { Form, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Row } from 'reactstrap';
+import { capitalFirst, getDocumentName, validate } from '../../../helpers/utils';
 import ReactSelect from 'react-select';
 import { preview } from '../../../attachments';
+import { useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
 
 function ManageClient() {
 
+    const dispatch = useDispatch();
     const {id} = useParams();
     const [fields, setFields]       = useState({});
     const [reply, setReply]         = useState({status:'',remark:''});
@@ -25,6 +28,20 @@ function ManageClient() {
 		preview([doc.data], doc.file_name )
 	}
 
+    const handleSubmit = e => {
+        e.preventDefault(); // prevent to nhi kr paaye tum , likh kyo rhe fir ?
+        const {shouldGo, result} = validate(reply)
+        if( shouldGo===false )
+        {
+            console.log(result);
+            return toast.error('Fill the required fields!');
+        }
+        dispatch({ type:'LOADING' })
+        axios.post('update-client-appraisal-status', {...reply, enroll_id: id }).then(({ data }) => {
+            console.log(data);
+            toast.success(data.message);
+        }).catch(err=>console.log(err)).finally(()=>dispatch({ type:'STOP_LOADING' }))
+    }
     useEffect(() => {
         
         axios.get('get-clients-for-appraisal/'+ id )
@@ -110,6 +127,7 @@ function ManageClient() {
             </Card>
         </div>
         <Card className='col-3 offset-1' style={{position:'fixed',right:10,top:'100px'}}>
+            <Form onSubmit={handleSubmit}> 
             <CardHeader>
                 <b> UPDATE </b>
             </CardHeader>
@@ -118,6 +136,7 @@ function ManageClient() {
                     <Label> Status </Label>
                     <ReactSelect 
                         options={status}
+                        className='status'
                         onChange={e => setReply({...reply, status:e.value})}
                     />
                 </FormGroup>
@@ -125,6 +144,7 @@ function ManageClient() {
                     <Label> Remark </Label>
                     <Input 
                         type={'textarea'}
+                        name='remark'
                         onChange={ e => setReply({...reply, remark:e.target.value})}
                     />
                 </FormGroup>
@@ -132,6 +152,7 @@ function ManageClient() {
             <CardFooter>
                 <Button type='submit' className='w-100' color='success'> Submit </Button>
             </CardFooter>
+            </Form>
         </Card>
         </>
     )
