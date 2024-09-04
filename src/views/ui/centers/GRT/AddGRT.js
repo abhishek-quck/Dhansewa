@@ -20,6 +20,7 @@ const AddGRT = () => {
 	const [centers, fillCenters] = useState([])
 
 	let thisUser = useSelector(state=>state.auth.GRTs[id]??{}) 
+	console.log(thisUser)
 	const previousDocument = thisUser?.latest_document?.file_name??'' 
 
     const [fields,setFields] = useState({
@@ -94,11 +95,11 @@ const AddGRT = () => {
 	const previewDoc = () => {
 		let data = thisUser?.latest_document?.data
 		let clientID = thisUser?.grt?.enroll_id
-		preview(data!==undefined?[data]:false, clientID,thisUser.verification_type, 'preview-document')
+		preview( data!==undefined?[data]:false, null, clientID )
 	}
 	
 	const previewImage = (e) => {
-		let name = e.target.name;
+		let name = e.target.name; // only 2 options dere
 		preview([name==='visit'? visitPhoto.b64 : groupPhoto.b64 ], thisUser?.grt?.enroll_id )
 	}
 

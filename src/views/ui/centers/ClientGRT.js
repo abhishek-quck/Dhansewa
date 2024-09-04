@@ -39,8 +39,7 @@ const AddEnrollment = () => {
         setSearch(true)
         dispatch({type:'LOADING'})
         axios.post('/get-GRT-clients', fields )
-        .then(({data})=>{
-            console.log(data)
+        .then(({data})=> {
             setResponse(data)
             let object = {}
             if(data.length)
@@ -51,17 +50,11 @@ const AddEnrollment = () => {
                 }
                 dispatch({type:'PUT_GRTs',payload:object})
             }
-        }).finally(()=>{
-            dispatch({type:'STOP_LOADING'})
-        })
+        }).finally(()=> dispatch({type:'STOP_LOADING'}))
     }
 
-    useEffect(()=>{
-        axios.get('get-branches')
-		.then(({data})=>{
-			console.log(data)
-			fillBranches(data)
-		})
+    useEffect(() => {
+        axios.get('get-branches').then(({data})=> fillBranches(data)).catch()
     },[])
 
     return (

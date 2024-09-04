@@ -26,7 +26,7 @@ const [centers, setCenters] = useState([]);
 const [clients, setClients] = useState([]);
 
 const previewDoc = (dataArr,filename) => {
-    preview(dataArr,null, filename)
+    preview(dataArr,filename )
 }
 
 const getDocumentName = str => {
