@@ -102,7 +102,7 @@ var Attachments =
                             {
                                 setTimeout(function(viewer) 
                                 {
-                                    viewer.destroy();
+                                    // viewer.destroy();
                                     let oContainer=document.body.querySelector('div.attachment-viewer');
                                     if(oContainer) {
                                         document.body.removeChild(oContainer);
@@ -121,6 +121,9 @@ var Attachments =
                         viewer.show(); 
                     }
                 }
+                oImg.onerror = function() {
+                    toast.error('Incorrect file format!');
+                };
                 oImg.src=data[i];
             }
         },

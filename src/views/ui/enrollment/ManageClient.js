@@ -20,10 +20,8 @@ function ManageClient() {
     ];
 
     const previewImage = (e) => {
-        console.log(e.target.dataset.key, typeof e.target.dataset.key);
         let { key }= e.target.dataset
         let doc = docs[parseInt(key)]
-        console.log(doc)
 		preview([doc.data], doc.file_name )
 	}
 
@@ -41,7 +39,7 @@ function ManageClient() {
                     if(typeof data.data[0][key] === 'object')
                     { 
                         for(let k in data.data[0][key]) {
-                            stack[key+'_'+k] = data.data[0][key][k]
+                            stack[k] = data.data[0][key][k]
                         }
                     } else stack[key] = data.data[0][key]
                 }

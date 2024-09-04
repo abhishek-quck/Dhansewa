@@ -170,4 +170,8 @@ export const getDocumentName = str => {
     if( str.toLowerCase().includes('vote') ) return 'VOTER CARD';
     if( str.toLowerCase().includes('adhaa') ) return 'AADHAAR CARD';
     if( str.toLowerCase().includes('assbook') ) return 'BANK PASSBOOK';
+    if( str.toLowerCase().includes('visit') ) return 'GRT VISIT PHOTO';
+    if( str.toLowerCase().includes('group') ) return 'GRT GROUP PHOTO';
+    if( str.toLowerCase().includes('pan') ) return 'PAN CARD';
+    if( str.toLowerCase().includes('kyc') ) return 'KYC Document';
 }
