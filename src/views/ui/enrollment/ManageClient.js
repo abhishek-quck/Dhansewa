@@ -19,7 +19,7 @@ function ManageClient() {
     const status = [
         { value : 1, label:'APPROVE' },
         { value : 0, label:'REJECT' },
-        { value : 2, label:'RETURN' }
+        { value : 2, label:'FURTHER' }
     ];
 
     const previewImage = (e) => {
