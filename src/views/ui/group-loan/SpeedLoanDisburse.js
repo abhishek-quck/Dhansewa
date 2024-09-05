@@ -23,7 +23,6 @@ import { useDispatch } from "react-redux";
 import { formatDate, getCurrentDate, validate } from "../../../helpers/utils";
 import { Link } from "react-router-dom";
 var allData = {branch:{}, center:{}, clients:{}}
-let initial;
  
 const SpeedLoanDisburse = () => { 
     const dispatch = useDispatch()
@@ -37,7 +36,7 @@ const SpeedLoanDisburse = () => {
 	const [branches, setBranches] = useState([])
     const [submitted, submitForm] = useState(false)
     const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-    const [fields, setFields] = useState(initial={
+    const [fields, setFields] = useState({
         loan_date:'',
         loan_product:'',
         loan_amount:'',
@@ -59,12 +58,12 @@ const SpeedLoanDisburse = () => {
         household_expense:'',
         loan_installment:'',
         total_expense:0, 
-    })
+    });
     const [sFields, setSearchField] = useState({
         branch:'',
         center:'',
         client:''
-    })
+    });
     const [errors, setErrors] = useState({...fields, ...sFields})
 
     const paymentOptions = [
@@ -88,7 +87,7 @@ const SpeedLoanDisburse = () => {
                 loan_amount:data.amount,
                 loan_product:id
             })
-        })
+        }).catch()
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
     const loanProductRef = useRef(null)
@@ -109,16 +108,13 @@ const SpeedLoanDisburse = () => {
     }
 
     const updateBranch = (e) => {
+
         clientRef.current.clearValue()
         setSearchField({...sFields, branch:e.value})
         dispatch({type:'LOADING'})
         axios.get('get-branch-centers/'+ e.value).then(({data})=> {
             let options=[]
-            if(data.length) {
-                for (const item of data) {
-                    options.push({ value: item.id, label: item.name})
-                }
-            }
+            data.forEach( item => options.push({ value: item.id, label: item.name}))
             setCenters(options)
             setClients([])
         }).catch(err=>{
@@ -126,20 +122,21 @@ const SpeedLoanDisburse = () => {
             setCenters([])
             setClients([])
         }).finally(()=>dispatch({type:'STOP_LOADING'}))
-        //setClients(allData['clients'][e.value]) // reset clients according to branch
+        
     }
 
     const updateCenter = (e) => {
+
         setSearchField({...sFields, center:e.value })
-        dispatch({type:'LOADING'})
-        axios.get('get-center-clients/'+e.value )
+        dispatch({ type:'LOADING' })
+        axios.get('get-center-loans/'+ e.value )
         .then(({data})=> setClients(data))
         .catch(err=>{
             console.log(err.message)
             toast.error('Something went wrong!');
             setClients([])
-        }).finally(()=>dispatch({type:'STOP_LOADING'}))
-        // setClients(allData['clients'][e.value])
+        }).finally(()=> dispatch({ type:'STOP_LOADING' }))
+        
     }
 
     const updateClient = (e) => {
@@ -173,16 +170,6 @@ const SpeedLoanDisburse = () => {
         return day===days.indexOf(meetingDay)
     }
 
-    const formReset = () => {
-        
-        setLoanAmount(0)
-        setDate('')
-        setClients([])
-        setSearchField({...sFields, client:''})
-        setFields(initial)
-
-    }
-
     const handleDate = date => {
         setDate(date)
         setFields({...fields, first_installment: formatDate(date) })
@@ -214,9 +201,8 @@ const SpeedLoanDisburse = () => {
         const formData = Object.assign({}, fields, sFields);
         axios.post('/speed-loan-disburse',formData)
         .then(({data})=>{
-            formReset()
             toast.success('Loan disbursed successfully!')
-            submitForm(!submitted);
+            submitForm(!submitted); // this is proper reset
         }).catch(err=>{
             console.log(err);
             toast.error('Something went wrong!')

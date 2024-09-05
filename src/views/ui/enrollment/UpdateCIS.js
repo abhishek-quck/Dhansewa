@@ -15,7 +15,8 @@ function UpdateCIS() {
     const [KYCtypes, setKYCtypes]   = useState([])
     const [states, setStates]       = useState([])
     const [branches, setBranches]   = useState([])
-    const {review_clients}          = useSelector( state => state.auth )
+    const {review_clients, client_remarks} = useSelector( state => state.auth )
+    const [showHint, setHint]       = useState(Object(client_remarks).hasOwnProperty(id))
     const submitStyle = { 
         position:'fixed',
         maxWidth:'360px',
@@ -23,7 +24,6 @@ function UpdateCIS() {
         top:'90%',
         zIndex:'121'
     }
-    
     const [fields, updateFields] = useState({
         client_id:'',
         aadhaar:'',
@@ -190,6 +190,11 @@ function UpdateCIS() {
 
     return (
     <>
+        {showHint && (
+            <div className='text-center'>
+                <b className='text-white'>{client_remarks[id]}</b>
+            </div>
+        )}
         <div>
             <Form style={{display:'flex',width:'-webkit-fill-available'}} onSubmit={handleSubmit}>
             <div className='col-6'>

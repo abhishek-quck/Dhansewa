@@ -9,6 +9,7 @@ const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 const AddEnrollment = lazy(()=>import("../views/ui/enrollment/AddEnrollment.js"))
 const ClientGRT = lazy(()=>import("../views/ui/centers/ClientGRT.js"))
 const SpeedLoanDisburse = lazy(()=>import("../views/ui/group-loan/SpeedLoanDisburse.js"))
+const InitLoan = lazy(()=>import("../views/ui/group-loan/InitLoan.js"))
 const LedgerRevise = lazy(()=>import("../views/ui/advance-settings/LedgerRevise.js"))
 const DataTruncate = lazy(()=>import("../views/ui/advance-settings/DataTruncate.js"))
 const CreditReport = lazy(()=>import("../views/ui/CreditReport.js"))
@@ -251,6 +252,15 @@ const ThemeRoutes = [
         element: (
         <ProtectedRoute permission={constant.SPEED_LOAN_DISB}>
           <SpeedLoanDisburse />
+        </ProtectedRoute>
+        )
+      },
+      { 
+        path: "/initiate-loan", 
+        exact: true, 
+        element: (
+        <ProtectedRoute permission={constant.SPEED_LOAN_DISB}>
+          <InitLoan />
         </ProtectedRoute>
         )
       },

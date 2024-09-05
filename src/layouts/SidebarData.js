@@ -106,6 +106,10 @@ export const navigation= [
       name:'group',
       sub:[
         {
+          title: "Loan Initiate",
+          href: "/initiate-loan",
+        }, 
+        {
           title: "Loan Proposal",
           href: "#",
         }, 
