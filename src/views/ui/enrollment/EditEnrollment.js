@@ -192,6 +192,14 @@ const EditEnrollment = () => {
 						})
 					)
 				}
+				{
+					!showSearch && reviewList.length === 0 ? (
+					<tr>
+						<td colSpan={9} className="text-center text-danger">
+							<h5> No records found! </h5>
+						</td>	
+					</tr>
+				) : null }
 				</tbody>
 				</Table> 
 			</div>

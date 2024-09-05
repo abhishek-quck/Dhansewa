@@ -35,6 +35,7 @@ const SpeedLoanDisburse = () => {
     const [loanAmount, setLoanAmount] = useState('')
     const [date, setDate] = useState('');
 	const [branches, setBranches] = useState([])
+    const [submitted, submitForm] = useState(false)
     const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     const [fields, setFields] = useState(initial={
         loan_date:'',
@@ -48,7 +49,16 @@ const SpeedLoanDisburse = () => {
         utilization:'',
         first_installment:'',
         number_of_emis:'',
-        payment_mode:''
+        payment_mode:'',
+        self_income:'',
+        husband_income:'',
+        other_income:'',
+        direct_income:0,
+        total_income:'',
+        business_expense:'',
+        household_expense:'',
+        loan_installment:'',
+        total_expense:0, 
     })
     const [sFields, setSearchField] = useState({
         branch:'',
@@ -60,7 +70,8 @@ const SpeedLoanDisburse = () => {
     const paymentOptions = [
         {value:'Cash',label:'Cash'},
         {value:'Banking',label:'Banking'}
-    ]
+    ];
+
     const inputChange = e => {
         if(e.target) {
             e.target.style.border = ''
@@ -94,10 +105,7 @@ const SpeedLoanDisburse = () => {
         .catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
         .finally(() => dispatch({ type:'STOP_LOADING' }))
         axios.get('/loan-products-options')
-        .then(({data})=>{
-            console.log(data)
-            setLoanProducts(data)
-        }).catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
+        .then(({data})=> setLoanProducts(data) ).catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
     }
 
     const updateBranch = (e) => {
@@ -144,6 +152,7 @@ const SpeedLoanDisburse = () => {
     }
 
     const fetchData = () => {         
+
         if(sFields.branch && sFields.center && sFields.client)
         {
             dispatch({type:'LOADING'})
@@ -156,6 +165,7 @@ const SpeedLoanDisburse = () => {
                 dispatch({type:'STOP_LOADING'})
             })
         }
+
     }
 
     const isOpenDay = date => {
@@ -177,6 +187,7 @@ const SpeedLoanDisburse = () => {
         setDate(date)
         setFields({...fields, first_installment: formatDate(date) })
     }
+
     const handleSubmit = async e => {
         e.preventDefault()
         if(!sFields.client)
@@ -197,7 +208,7 @@ const SpeedLoanDisburse = () => {
         { 
             console.log(result)
             setErrors(result)
-            return 
+            return toast.error('Fill the required fields!')
         }
         dispatch({type:'LOADING'})
         const formData = Object.assign({}, fields, sFields);
@@ -205,8 +216,10 @@ const SpeedLoanDisburse = () => {
         .then(({data})=>{
             formReset()
             toast.success('Loan disbursed successfully!')
+            submitForm(!submitted);
         }).catch(err=>{
-            console.log(err)
+            console.log(err);
+            toast.error('Something went wrong!')
         })
         .finally(()=> dispatch({type:'STOP_LOADING'}))
     }
@@ -219,15 +232,44 @@ const SpeedLoanDisburse = () => {
         }).catch(err=>console.log(err.message))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
-	useEffect(()=>{
-        init()
+
+	useEffect(() => {
+
+        init();
         $(document).on('change','select', function(){
             this.style.border = ''
-        })
-        return ()=>{
-            $(document).off('change','input,select,textarea')
+        });
+        $('.income-input, .expense-input').on('keyup',function(){
+            let finalAmount = 0, final=0;
+            $('.income-input').each(function( k,input ) {
+                if( input.value && !isNaN(parseFloat( input.value ))) {
+                    finalAmount+= parseFloat(input.value)
+                }
+            });
+            $('.expense-input').each( function( l,inp ) {
+                if( inp && !isNaN(parseFloat(inp.value))) {
+                    final += parseFloat( inp.value );
+                }
+            });
+            let direct_income = finalAmount - final;
+            setFields({...fields, 
+                total_income:finalAmount, 
+                total_expense:final,
+                direct_income,
+                self_income: $('input[name=self_income]').val(),
+                husband_income: $('input[name=husband_income]').val(),
+                other_income: $('input[name=other_income]').val(),
+                business_expense: $('input[name=business_expense]').val(),
+                household_expense: $('input[name=household_expense]').val(),
+                loan_installment: $('input[name=loan_installment]').val(),
+            })
+        });
+        
+        return ()=> {
+            $(document).off('change','input,select,textarea') 
+            $('.income-input, .expense-input').off('keyup');
         }
-	},[])
+	},[submitted])
 
   return (
     <div> 
@@ -238,9 +280,9 @@ const SpeedLoanDisburse = () => {
         <CardBody className="">
             <Form onSubmit={handleSubmit} name="speedLoan">
               <FormGroup>
-                <Row className="">
-                 <Col md="3">
-                        <Label size={'sm'} for="branches"> Branches </Label>
+                <Row >
+                 <Col md="4">
+                        <Label size={'sm'} for="branches"> Branch </Label>
                         <ReactSelect
                             id='branches'
                             name='branch'
@@ -248,8 +290,8 @@ const SpeedLoanDisburse = () => {
                             options={branches}
                         />
                  </Col > 
-                 <Col md="3">
-                        <Label size={'sm'} for="center"> Centers </Label>
+                 <Col md="4">
+                        <Label size={'sm'} for="center"> Center </Label>
                         <ReactSelect
                             id='branches'
                             name='branch'
@@ -257,8 +299,8 @@ const SpeedLoanDisburse = () => {
                             options={centers}
                         />
                  </Col > 
-                 <Col md="5">
-                    <Label size={'sm'} for="clientID"> Client ID </Label>
+                 <Col md="4">
+                    <Label size={'sm'} for="clientID"> Loan ID </Label>
                     <div className="d-flex">
                         <ReactSelect
                             id="clientID"
@@ -274,7 +316,7 @@ const SpeedLoanDisburse = () => {
                 </Row>   
               </FormGroup> 
               <div className="d-flex"> 
-                <div className="col-md-11">
+                <div className="col-md-12">
                     <Card>
                         <CardHeader>
                             <CardTitle> New Loan Disbursement For </CardTitle>
@@ -354,7 +396,7 @@ const SpeedLoanDisburse = () => {
                                         Funding By
                                     </Label>
                                     <CreatableSelect
-                                        placeholder="Search or select"
+                                        placeholder="Write to create"
                                         isDisabled={sFields.client?.length<1}
                                         id="funding_by" 
                                         name="funding_by" 
@@ -406,6 +448,7 @@ const SpeedLoanDisburse = () => {
                                         onChange={inputChange}
                                         defaultValue={fields.gst}
                                         type={'text'}
+                                        readOnly
                                     />
                                 </Col>
                                 <Col sm="4" md="4">
@@ -426,16 +469,16 @@ const SpeedLoanDisburse = () => {
                             </Row>
                             <Row className="mt-2 container">
                                 <Col sm="4" md="4">
-                                    <Label  size={'sm'} for="first_installment">
-                                    First Installment Date
-                                    </Label>
-
+                                    <Label size={'sm'} for="first_installment">
+                                        First Installment Date
+                                    </Label> <br/>
                                     <DatePicker
                                         selected={date}
                                         onChange={handleDate}
-                                        minDate={(new Date)}
+                                        minDate={new Date()}
                                         disabled={!meetingDay}
                                         filterDate={isOpenDay}
+                                        className="form-control w-100"
                                         placeholderText="Select a date"
                                     />
                                 </Col>
@@ -446,7 +489,7 @@ const SpeedLoanDisburse = () => {
                                     <Input 
                                         type="text"
                                         placeholder="Enter no. of "
-                                        isDisabled={sFields.client?.length<1}
+                                        disabled={sFields.client?.length<1}
                                         id="number_of_emis" 
                                         name="number_of_emis" 
                                         className="number_of_emis" 
@@ -466,6 +509,136 @@ const SpeedLoanDisburse = () => {
                                         className="payment_mode"
                                         value={fields.payment_mode}
                                         options={paymentOptions}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row className="mt-2 container">
+                                <Col sm="4" md="4">
+                                    <Label size={'sm'} for="self_income">
+                                        Self Income
+                                    </Label> 
+                                    <Input
+                                        type="text"
+                                        name="self_income"
+                                        onChange={inputChange}
+                                        disabled={sFields.client?.length < 1} 
+                                        placeholder="Enter self income"
+                                        className="income-input"
+                                    />
+                                </Col>
+                                <Col sm="4" md="4">
+                                    <Label  size={'sm'} for="husband_income">
+                                        Husband/ Son Income
+                                    </Label>
+                                    <Input 
+                                        type="text"
+                                        placeholder="Enter husband/son income"
+                                        disabled={sFields.client?.length<1}
+                                        id="husband_income" 
+                                        name="husband_income" 
+                                        className="husband_income income-input" 
+                                        defaultValue={fields.husband_income}
+                                        onChange={inputChange}
+                                    />
+                                </Col>
+                                <Col sm="4" md="4">
+                                    <Label  size={'sm'} for="other_income" >
+                                        Other Income
+                                    </Label>
+                                    <Input
+                                        type="text"
+                                        disabled={sFields.client?.length<1}
+                                        id="other_income" 
+                                        onChange={inputChange}
+                                        name="other_income" 
+                                        defaultValue={fields.other_income} 
+                                        className="income-input"
+                                    />
+                                </Col>
+                            </Row>
+                            <Row className="mt-2 container">
+                                <Col sm="4" md="4">
+                                    <Label size={'sm'} for="total_income">
+                                        Total Income
+                                    </Label> 
+                                    <Input
+                                        type={'text'}
+                                        id="total_income"
+                                        onChange={inputChange} 
+                                        disabled={sFields.client?.length<1}
+                                        name="total_income" 
+                                        value={fields.total_income}
+                                        readOnly 
+                                    />
+                                </Col>
+                                <Col sm="4" md="4">
+                                    <Label size={'sm'} for="direct_income">
+                                        Direct Income
+                                    </Label>
+                                    <Input 
+                                        type="text" 
+                                        disabled={sFields.client?.length<1}
+                                        id="direct_income" 
+                                        name="direct_income"  
+                                        value={fields.direct_income}
+                                        readOnly
+                                        onChange={inputChange}
+                                    />
+                                </Col>
+                                <Col sm="4" md="4">
+                                    <Label size={'sm'} for="business_expense" >
+                                        Business Expense
+                                    </Label>
+                                    <Input
+                                        disabled={sFields.client?.length < 1}
+                                        id="business_expense" 
+                                        onChange={inputChange}
+                                        name="business_expense" 
+                                        defaultValue={fields.business_expense} 
+                                        className="expense-input"
+                                    />
+                                </Col>
+                            </Row>
+                            <Row className="mt-2 container">
+                                <Col sm="4" md="4">
+                                    <Label size={'sm'} for="household_expense">
+                                        Household Expense
+                                    </Label>
+                                    <Input
+                                        disabled={sFields.client?.length < 1}
+                                        id="household_expense" 
+                                        onChange={inputChange}
+                                        name="household_expense" 
+                                        defaultValue={fields.household_expense}
+                                        className="expense-input" 
+                                    />
+                                </Col>
+                                <Col sm="4" md="4">
+                                    <Label size={'sm'} for="loan_installment">
+                                        Loan Installment
+                                    </Label>
+                                    <Input 
+                                        type="text"
+                                        placeholder="Enter loan installment amount"
+                                        disabled={sFields.client?.length<1}
+                                        id="loan_installment" 
+                                        name="loan_installment"  
+                                        defaultValue={fields.loan_installment}
+                                        className="expense-input"
+                                        onChange={inputChange}
+                                    />
+                                </Col>
+                                <Col sm="4" md="4">
+                                    <Label size={'sm'} for="total_expense" >
+                                        Total Expense
+                                    </Label>
+                                    <Input
+                                        disabled={sFields.client?.length<1}
+                                        id="total_expense" 
+                                        onChange={inputChange}
+                                        name="total_expense"
+                                        type="text"
+                                        value={fields.total_expense} 
                                     />
                                 </Col>
                             </Row>
