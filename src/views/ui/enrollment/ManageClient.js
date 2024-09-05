@@ -44,6 +44,7 @@ function ManageClient() {
     }
     useEffect(() => {
         
+        dispatch({ type:'LOADING' })
         axios.get('get-clients-for-appraisal/'+ id )
         .then(({ data })=> {
             let stack = {};
@@ -64,6 +65,7 @@ function ManageClient() {
             setFields(stack)
             //console.log(stack)
         }).catch()
+        .finally(()=> dispatch({ type:'STOP_LOADING' }))
 
     },[]);
 

@@ -1,23 +1,22 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, CardFooter, CardHeader, Table } from 'reactstrap';
 
 function CreditAppraisal() {
     
-    let initial = {};
-    const [fields, setFields]   = useState(initial);
+    const dispatch = useDispatch();
     const [clients, setClients] = useState([])
 
     useEffect(()=>{
         
+        dispatch({ type: 'LOADING' })       
         axios.get('get-clients-for-appraisal')
-        .then(({data}) => {
-            console.log(data);
-            setClients(data)
-        }).catch()
+        .then(({data}) => setClients(data) ).catch()
+        .finally(()=> dispatch({ type:'STOP_LOADING' }))
 
-    },[]);
+    },[dispatch]);
 
     return (
         <>

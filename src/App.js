@@ -15,22 +15,25 @@ axios.defaults.headers.common = {
 }  
 
 const App = () => {     
-  let state = useSelector(state=>state.auth)
-  const {error} = useSelector(state=>state.auth)
-  let navigate = useNavigate()
-  useEffect(()=>{
-    if(state.userToken===null)
-    {
-      navigate('/login')
-    } 
-    return ()=>{}
-  },[state.userToken,navigate])
-  const routing = useRoutes(Themeroutes);
-  if(error)
-  {
-    return <ShowError/>
-  }
-  return <div>{routing}</div>;
+
+    let { userToken } = useSelector(state=>state.auth)
+    const { error } = useSelector( state=>state.auth )
+    let navigate = useNavigate()
+    useEffect(()=> {
+
+        if( userToken===null ) {
+            navigate('/login')
+        } 
+        return () => {}
+
+    },[ userToken, navigate ])
+    const routing = useRoutes(Themeroutes);
+
+    if(error) {
+        return <ShowError/>
+    }
+    return <div>{routing}</div>;
+    
 };
 
 export default App;

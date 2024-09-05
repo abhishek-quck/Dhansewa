@@ -181,7 +181,7 @@ function UpdateCIS() {
             })
 		}).catch(err=>{
             console.log(err.message)
-            dispatch({type:'STOP_LOADING'})
+            toast.error('Something went wrong!');
         })
         .finally(()=> dispatch({type:'STOP_LOADING'}) )
 		
@@ -214,9 +214,7 @@ function UpdateCIS() {
                                     style={{border:errors.branch_id ?'1px solid red':''}}
                                 >
                                     <option > Select Branch </option>
-                                    {branches.map((option,i)=>{
-                                        return <option key={i} value={option.value}>{option.label}</option>
-                                    })}
+                                    {branches.map((option,i) => <option key={i} value={option.value}>{option.label}</option> )}
                                 </Input>
                             </div>
                             </Col > 
@@ -250,9 +248,7 @@ function UpdateCIS() {
                                         value={fields.verification_type}
                                     >
                                     <option></option>
-                                    {KYCtypes.map( opt => {
-                                        return <option key={opt.id} value={opt.id}>{opt.name}</option>
-                                    })} 
+                                    {KYCtypes.map( opt => <option key={opt.id} value={opt.id}>{opt.name}</option> )} 
                                     </Input>
                                 </div>
                                 <Input
@@ -569,11 +565,7 @@ function UpdateCIS() {
                                     style={{border:errors.state?'1px solid red':''}}
                                 >
                                     <option> </option>
-                                    {states.map(opt => {
-                                        return <option key={opt.value} value={opt.value}>
-                                            {opt.label}
-                                        </option>
-                                    })}
+                                    {states.map( opt => <option key={opt.value} value={opt.value}> {opt.label} </option> )}
                                 </Input>
                             </div>
                             </Col > 
@@ -592,9 +584,7 @@ function UpdateCIS() {
                                     style={{border:errors.district?'1px solid red':''}}
                                 >
                                     <option>  </option>
-                                    {districts.map(option=>{
-                                        return <option key={option.value} value={option.value}>{option.label}</option>
-                                    })}
+                                    {districts.map( opt => <option key={opt.value} value={opt.value}>{ opt.label }</option> )}
                                 </Input>
                             </div>
                             </Col > 
@@ -730,9 +720,7 @@ function UpdateCIS() {
                                         defaultValue={fields.document_id}
                                     >
                                     <option></option>
-                                    {KYCtypes.map( opt => {
-                                        return <option key={opt.id} value={opt.id}>{opt.name}</option>
-                                    })} 
+                                    {KYCtypes.map( opt => <option key={opt.id} value={opt.id}>{opt.name}</option> )} 
                                     </Input>
                                 </div>
                                 <Input
