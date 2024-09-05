@@ -1,18 +1,29 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Button, Card, CardBody, CardText, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 import { preview } from '../../../attachments'
 import { validate } from '../../../helpers/utils'
 
 function UpdateCIS() {
-    const dispatch = useDispatch()
-    const {id} = useParams()
-    const submitStyle = {position:'fixed',maxWidth:'360px',left:'40%',top:'90%',zIndex:'121'}
-    const [doc, setDoc] = useState({b64:null,blob:null})
-
+    const {id}      = useParams()
+    const dispatch  = useDispatch()
+    const [doc, setDoc]             = useState({b64:null,blob:null})
+    const [districts, setDistricts] = useState([])
+    const [KYCtypes, setKYCtypes]   = useState([])
+    const [states, setStates]       = useState([])
+    const [branches, setBranches]   = useState([])
+    const {review_clients}          = useSelector( state => state.auth )
+    const submitStyle = { 
+        position:'fixed',
+        maxWidth:'360px',
+        left:'40%',
+        top:'90%',
+        zIndex:'121'
+    }
+    
     const [fields, updateFields] = useState({
         client_id:'',
         aadhaar:'',
@@ -72,17 +83,12 @@ function UpdateCIS() {
         email:'',
         guarantor:'',
     })
-    const [districts, setDistricts] = useState([])
-    const [KYCtypes, setKYCtypes] = useState([])
-    const [states, setStates] = useState([])
     const [errors, setErrors] = useState(fields)
     const onChange = e => {
-        if(e?.target)
-        {
+        if(e?.target) {
             updateFields({...fields, [e.target.name]:e.target.value})
         }
     }
-    const [branches, setBranches] = useState([])
 
     const handleFile = e => {
         let file = e.target.files[0]
@@ -105,21 +111,23 @@ function UpdateCIS() {
             if(fields[sfield]==='' || fields[sfield]===null || fields[sfield]==='null') unrequired.push(sfield)
         }
         let {result,shouldGo} = validate(fields,[...unrequired, 'other_info','center_id']) // other_info is relationship; center_id is null because GRT of client isn't completed yet
-        if(shouldGo===false)
+        if( shouldGo===false )
         {
             console.log(result)
-            toast.error('All fields are required!')
-            return 
+            return toast.error('All fields are required!')
         }
-        dispatch({type:'LOADING'})
+        dispatch({ type:'LOADING' })
         let formData= new FormData();
         for (const key in fields) {
             if(!(['latest_document','grt']).includes(key))
             {
-                formData.append(key, fields[key])
+                formData.append(key, fields[key]);
             }
         }
-        formData.append('kyc_doc', doc.blob)
+        formData.append('kyc_doc', doc.blob);
+        if(review_clients.includes(typeof id==='string'? parseInt(id): id)) {
+            formData.append('review', true);
+        }
         axios.post('update-additional-enroll-information', formData, {
             headers:{
                 "Accept":"application/json",
@@ -127,26 +135,27 @@ function UpdateCIS() {
                 "Authorization":"Bearer "+localStorage.getItem('auth-token')
             }
         })
-        .then(({data})=>{
+        .then(({data})=> {
+            localStorage.setItem('review_clients', JSON.stringify( review_clients.filter( item => item !== parseInt(id)) ));
             toast.success(data.message)
-        })
-        .catch(err=>{
-            toast.error(err.message)
-        })
-        .finally(()=>dispatch({type:'STOP_LOADING'}))
+        } )
+        .catch(err=> toast.error(err.message) )
+        .finally(()=>dispatch({type:'STOP_LOADING'}));
+
     }
 
     useEffect(()=>{ 
+
         dispatch({type:'LOADING'})
         axios.get('get-options/all')
-		.then(({data})=>{
+		.then(({ data }) => {
 			if(data.state) setStates(data.state)
 			if(data.district) setDistricts(data.district)
 			if(data.branches) setBranches(data.branches)
 			if(data.documents) setKYCtypes(data.documents)
                 
-            axios.post('get-enrollment-details/'+id)
-            .then(({data})=>{
+            axios.post('get-enrollment-details/'+id )
+            .then(({ data }) => {
                 if(data.other_info)
                 {
                     data={...data, ...data.other_info}
@@ -168,15 +177,13 @@ function UpdateCIS() {
                 }
                 delete data.latest_document
                 updateFields({...fields, ...data, document_id:docID}) 
-                console.log({...fields,...data});
+
             })
 		}).catch(err=>{
             console.log(err.message)
             dispatch({type:'STOP_LOADING'})
         })
-        .finally(()=>{
-            dispatch({type:'STOP_LOADING'})
-        })
+        .finally(()=> dispatch({type:'STOP_LOADING'}) )
 		
         return ()=> null
     },[])

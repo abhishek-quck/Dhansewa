@@ -13,6 +13,7 @@ import {
   CardHeader,
   Table,
   Spinner,
+  Button,
 } from "reactstrap";
 import { useSearchEnrollmentsQuery } from "../../../features/centerSlice";
 import toast from "react-hot-toast";
@@ -25,7 +26,9 @@ const EditEnrollment = () => {
 	const { hasPermission } = usePermissions()
 	const [branches , setBranches] = useState([])
 	const [searched, hitSearch]= useState(false)
-	const enrollTerm= useSelector(state=>state.auth.enrollTerm)
+	const [showSearch, setSearch] = useState(false)
+	const [reviewList, setReviewList] = useState([])
+	const enrollTerm= useSelector( state => state.auth.enrollTerm )
 	const [fields, setFields] = useState({ term:enrollTerm||'',branch:'' })
 
 	const { data, error, isLoading } = useSearchEnrollmentsQuery(fields, {
@@ -40,13 +43,27 @@ const EditEnrollment = () => {
 	const handleSearch = ev => {
 		ev.preventDefault()
 		hitSearch(a=>!a)
-		dispatch({type:'SEARCH_ENROLLED', payload:fields})
+		setSearch(true);
+		dispatch({ type:'SEARCH_ENROLLED', payload:fields })
 	}
-	useEffect(()=>{
-		axios.get('get-branches')
-		.then(({data})=>{
-			setBranches(data)
-		})
+
+	const fetchResubmit = () => {
+		setSearch(false)
+		dispatch({ type:'LOADING' })
+		axios.get('get-review-clients').then(({data}) => {
+			
+			let ids = [];
+			data.forEach( elem => ids.push(elem.id));
+			dispatch({ type:'SET_REVIEW_CLIENTS', payload:ids });
+			setReviewList(data);
+
+		}).catch().finally(() => dispatch({ type:'STOP_LOADING' }))
+	}
+
+	useEffect(() => {
+
+		axios.get('get-branches').then(({data})=> setBranches(data) )
+
 	},[])
 	return (
 	<div> 
@@ -62,36 +79,41 @@ const EditEnrollment = () => {
 				<FormGroup>
 				<Row>
 					<Col xs="3">
-					<Label for="branch"> Branch </Label>
-					<Input
-						id="branch" 
-						name="branch"
-						type="select"
-						onChange={e=>setFields({...fields,branch:e.target.value})}
-					>
-					<option value={''}> All </option>
-					{ 
-						branches.map((option,i)=>{
-							return <option key={i} value={option.id}>{option.name}</option>
-						})
-					} 
-					</Input>
+						<Label for="branch"> Branch </Label>
+						<Input
+							id="branch" 
+							name="branch"
+							type="select"
+							onChange={e=>setFields({...fields,branch:e.target.value})}
+						>
+						<option value={''}> All </option>
+						{  branches.map((option,i)=> <option key={i} value={option.id}>{option.name}</option> ) } 
+						</Input>
 					</Col >
 					<Col xs="3" >
-					<Label for="search"> Applicant Name/ Aadhaar </Label>
-					<div className="d-flex">
-						<Input
-							id="search"
-							name="term"
-							placeholder="Search name/phone/KYC"
-							type="text"
-							value={fields.term}
-							onChange={e=>setFields({...fields,[e.target.name]:e.target.value})}
-						/>
-						<button type="submit" className="btn btn-primary">
-							<i className="fa fa-search" />
-						</button>
-					</div>
+						<Label for="search"> Applicant Name/ Aadhaar </Label>
+						<div className="d-flex">
+							<Input
+								id="search"
+								name="term"
+								placeholder="Search name/phone/KYC"
+								type="text"
+								value={fields.term}
+								onChange={e=>setFields({...fields,[e.target.name]:e.target.value})}
+							/>
+							<button type="submit" className="btn btn-primary">
+								<i className="fa fa-search" />
+							</button>
+						</div>
+					</Col>
+					<Col xs="6" >
+						<Button 
+							type="button" 
+							className="btn mt-4 offset-8 resubmit"
+							onClick={fetchResubmit}
+						>
+							Re-submit List
+						</Button>
 					</Col>
 				</Row>
 				</FormGroup> 
@@ -112,12 +134,13 @@ const EditEnrollment = () => {
 						<th> Village </th>
 						<th> Center ID </th>
 						<th> Aadhaar </th>
-						<th> Type </th>
+						<th> {showSearch? 'Type':'Remarks'} </th>
 					</tr>
 				</thead>
 				<tbody> 
-				{isLoading? <tr><td colSpan={9} className="text-center"><Spinner/></td></tr> :
-					data?.length ? data.map((row,index)=>{
+				{ showSearch ?
+					(isLoading?  <tr> <td colSpan={9} className="text-center"><Spinner/></td></tr> :
+					(data.length ? data.map((row,index)=>{
 						return (<tr key={index}>
 							<td>
                                {hasPermission(EDIT_ENROLL,'edit') && <button className="btn-primary btn-sm btn">
@@ -143,7 +166,31 @@ const EditEnrollment = () => {
 						<td colSpan={6} className="text-center text-danger">
 							No records found!
 						</td>
-					</tr> 
+					</tr>))
+					: (
+						reviewList.map( (row,i) => {
+							return (<tr key={row.id} className="reviewList">
+							<td>
+                               {hasPermission(EDIT_ENROLL,'edit') && <button className="btn-primary btn-sm btn">
+                                    <Link 
+										to={'/edit-enrolled/'+ row.id} 
+										className="text-decoration-none text-white"
+									> 
+										Manage 
+									</Link>
+                                </button> }
+                            </td>
+							<td>{i+1}</td>
+							<td>{row.applicant_name}</td>
+							<td>{row.district??'N/A'}</td>
+							<td>{row.phone}</td>
+							<td>{row.village??'N/A'}</td>
+							<td>{row.center_id??'N/A'}</td>
+							<td>{row.aadhaar}</td>
+							<td>{row.appraisal.remarks??'N/A'}</td> 
+							</tr>)
+						})
+					)
 				}
 				</tbody>
 				</Table> 

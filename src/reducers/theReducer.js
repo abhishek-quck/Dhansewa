@@ -5,6 +5,7 @@ const isAdmin = JSON.parse(localStorage.getItem('isAdmin'))??false;
 const permMap = JSON.parse(localStorage.getItem('permMap'))??{}
 const myInfo = JSON.parse(localStorage.getItem('auth-user'))??{}
 const permissions = JSON.parse(localStorage.getItem('permissions'))??{}
+const review_clients = JSON.parse(localStorage.getItem('review_clients'))??[]
 async function getUserDetails ()
 {
   try
@@ -33,7 +34,8 @@ const initialState = {
     menus,
     isAdmin,
     permissions,
-    permMap
+    permMap,
+    review_clients
 }
 
 const authReducer = (state=initialState,action) => {
@@ -52,14 +54,11 @@ const authReducer = (state=initialState,action) => {
                 myInfo:action.payload
             }
         case 'LOGOUT':
-            axios.post('/logout').then(({data})=>{
-                console.log(data)
-                if(data)
-                {
-                    localStorage.removeItem('auth-token')
-                    localStorage.removeItem('companyID')
-                }
-            })
+            axios.post('/logout').then(({ data }) => {  
+                localStorage.removeItem('auth-token')
+                localStorage.removeItem('companyID') 
+            }).catch()
+
             return {
                 ...state,
                 myInfo:null,
@@ -74,13 +73,11 @@ const authReducer = (state=initialState,action) => {
                 loading:true
             } 
         case 'SET_COMPANY': 
-            axios.post('/set-company',{id:action.payload.id, name:action.payload.name}).then(resp=>{
-                if(resp.status===200)
-                {  
-                   localStorage.setItem(`companyID`, action.payload.id)
-                   localStorage.setItem(`companyName`, action.payload.name)
-                }
-            })
+            axios.post('/set-company',{id:action.payload.id, name:action.payload.name}).then( resp =>{
+                localStorage.setItem(`companyID`, action.payload.id)
+                localStorage.setItem(`companyName`, action.payload.name)
+            }).catch()
+
             return {
                 ...state,
                 companyID:action.payload.id,
@@ -149,6 +146,12 @@ const authReducer = (state=initialState,action) => {
             return {
                 ...state,
                 permissions:action.payload
+            }
+        case 'SET_REVIEW_CLIENTS':
+            localStorage.setItem('review_clients', JSON.stringify(action.payload??[]));
+            return {
+                ...state,
+                review_clients:action.payload
             }
         default : return state
     }

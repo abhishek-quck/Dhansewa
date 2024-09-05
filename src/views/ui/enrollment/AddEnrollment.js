@@ -154,8 +154,7 @@ const AddEnrollment = () => {
 			toast.error('Something went wrong!')
 		})
 
-		axios.get('documents')
-		.then(({data})=>setDocuments(data))
+		axios.get('documents').then(({data})=>setDocuments(data)).catch(err=> console.log(err))
 
 	},[])
 
