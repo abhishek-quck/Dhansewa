@@ -17,7 +17,7 @@ axios.defaults.headers.common = {
 const App = () => {     
 
     let { userToken } = useSelector(state=>state.auth)
-    const { error } = useSelector( state=>state.auth )
+    const { error, errorCode } = useSelector( state=>state.auth )
     let navigate = useNavigate()
     useEffect(()=> {
 
@@ -30,7 +30,9 @@ const App = () => {
     const routing = useRoutes(Themeroutes);
 
     if(error) {
-        return <ShowError/>
+        if(errorCode===500) {
+            return <ShowError error={error}/>
+        }
     }
     return <div>{routing}</div>;
     
