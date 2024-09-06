@@ -228,7 +228,7 @@ const CGTEntry = () => {
         </Card>
         <Modal isOpen={modal} toggle={toggleModal} > 
             <Form onSubmit={uploadCGT} >
-                <ModalHeader toggle={toggleModal}> Previous Loans </ModalHeader>
+                <ModalHeader toggle={toggleModal}> Upload CGT </ModalHeader>
                     <ModalBody>
                         <Container>
                             <Row>
