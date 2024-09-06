@@ -6,13 +6,10 @@ const permMap = JSON.parse(localStorage.getItem('permMap'))??{}
 const myInfo = JSON.parse(localStorage.getItem('auth-user'))??{}
 const permissions = JSON.parse(localStorage.getItem('permissions'))??{}
 const review_clients = JSON.parse(localStorage.getItem('review_clients'))??[]
-async function getUserDetails ()
-{
-  try
-  {
+async function getUserDetails () {
+  try {
     return axios.get('user').then(resp=>resp.data)  
-  }catch(er)
-  {
+  } catch(er) {
     console.log(er.message)
     return {}
   }
@@ -24,6 +21,7 @@ const initialState = {
 	theme:localStorage.getItem('theme')??'Light',
     userToken,
     error: null,
+    errorCode:null,
     success: false, 
     companyID: localStorage.getItem('companyID'),  
     companyName: localStorage.getItem('companyName'),  
@@ -116,7 +114,8 @@ const authReducer = (state=initialState,action) => {
         case 'ERROR':{
             return {
                 ...state,
-                error:action.payload.error
+                error:action.payload.error,
+                errorCode:action.payload.code
             }
         }
         case 'UPDATE_GRT':

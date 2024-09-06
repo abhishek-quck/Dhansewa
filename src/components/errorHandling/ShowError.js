@@ -1,17 +1,20 @@
 import React, { useEffect } from 'react'
 import $ from 'jquery'
 
-function ShowError() {
+const ShowError = ({error='Unexpected Error'}) => {
+    
     useEffect(()=>{
+
         setTimeout(function(){
             $('div.loading').removeClass('loading');
         }, 0);
+
     },[])
 
   return (
     <div className="loading"> 
         <h1>500</h1>
-        <h2>Unexpected Error &nbsp;<b> :(</b> </h2>
+        <h2>{error} &nbsp;<b> :(</b> </h2>
         <div className="gears">
             <div className="gear one">
             <div className="bar"></div>

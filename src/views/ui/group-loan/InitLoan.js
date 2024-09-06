@@ -2,18 +2,51 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom';
 import ReactSelect from 'react-select';
-import { Card, CardBody, CardHeader, Col, Container, Label, Row, Table } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Container, Form, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
 
 function InitLoan() {
 
     const dispatch = useDispatch();
+    const [modal, setModal]      = useState(false);
     const [branches,setBranches] = useState([]);
     const [centers, setCenters ] = useState([]);
-    const [fields, setFields  ] = useState({branch:''});
-    const [clients, setClients] = useState([]);
-    const [search, setSearch] = useState(false);
+    const [fields, setFields  ]  = useState({branch:''});
+    const [clients, setClients]  = useState([]);
+    const [search, setSearch]    = useState(false);
+    const [previous,setPrevious] = useState([]);
+    const style = { cursor:'pointer' }
+    
+    const toggleModal = () => setModal(!modal);
+
+    const generateLoanID = e => {
+
+        let {client_id} = e.target.dataset
+        dispatch({ type:'LOADING' });
+        axios.get('initiate-client-loan/'+ client_id, )
+        .then(({ data }) => {
+            if(data.status) {
+                toast.success(data.message)
+            } else {
+                toast.error(data.message)
+            }
+        }).catch( e => {
+            console.log(e.message)
+            dispatch({ type:'ERROR', payload:{ error:e.message }})
+        }).finally(()=> dispatch({ type:'STOP_LOADING' }))
+
+    }
+
+    const viewPrevious = e => {
+        let {client_id} = e.target.dataset;
+        dispatch({ type:'LOADING' });
+        axios.get('view-client-loan/'+ client_id )
+        .then(({data})=>{
+            setPrevious(data.data)
+            toggleModal();
+        }).catch(er=>console.log(er))
+        .finally(()=>dispatch({ type:'STOP_LOADING' }));
+    } 
 
     const updateBranch = (e) => {
         setFields({...fields, branch:e.value})
@@ -26,10 +59,11 @@ function InitLoan() {
                 }
             }
             setCenters(options)
+            axios.get('get-branch-client-info/'+ e.value).then(({data})=> setClients(data.data))
         }).catch(err=>{
             console.log(err.message)
             setCenters([])
-        }).finally(()=>dispatch({type:'STOP_LOADING'}))
+        }).finally(()=>dispatch({ type:'STOP_LOADING' }))
     }
     
     const updateCenter = (e) => {
@@ -40,13 +74,13 @@ function InitLoan() {
         axios.get('get-center-client-info/'+ e.value )
         .then(({data})=> {
             console.log(data)
-            setClients(data);
+            setClients(data.data);
         })
         .catch(err=>{
             console.log(err.message)
             toast.error('Something went wrong!');
         }).finally(()=> dispatch({type:'STOP_LOADING'}))
-        // setClients(allData['clients'][e.value])
+
     }
     
 
@@ -56,7 +90,7 @@ function InitLoan() {
         axios.get('get-options').then(({data}) => setBranches(data.branches) ).catch()
         .finally(() => dispatch({ type:'STOP_LOADING' }))
 
-    },[]);
+    },[dispatch]);
 
     return (
         <>
@@ -106,15 +140,16 @@ function InitLoan() {
                             {  clients.map((row,index) => {
                                 return (<tr key={index}>
                                     <td>
-                                        <Link 
-                                            to={'/edit-enrolled/'+row.id} 
-                                            className="text-decoration-none"
+                                        <span 
+                                            onClick={generateLoanID} 
+                                            className="text-primary"
+                                            data-client_id={row.enc}
                                         > 
                                             Generate Loan ID 
-                                        </Link>
+                                        </span>
                                     </td>
                                     <td>
-                                        <span className='text-primary'> View </span>
+                                        <span className='text-primary' data-client_id={row.id} style={style} onClick={viewPrevious}> View </span>
                                     </td>
                                     <td>{index+1}</td>
                                     <td>{row.applicant_name}</td>
@@ -140,6 +175,50 @@ function InitLoan() {
                     </Container>
                 </CardBody>
             </Card>
+            <Modal isOpen={modal} toggle={toggleModal} >
+                
+                <ModalHeader toggle={toggleModal}> Previous Loans </ModalHeader>
+                    <ModalBody>
+                        <Container>
+                            <Row>
+                                <Table bordered hover>
+                                    <thead>
+                                        <tr>
+                                            <th>LOAN ID</th>
+                                            <th>Created On</th>
+                                            <th>Created By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {previous.length? (
+                                            previous.map( row => {
+                                                return (
+                                                    <tr key={row.loan_id}>
+                                                        <td><span>{row.loan_id}</span></td>
+                                                        <td><span>{row.created_at}</span></td>
+                                                        <td><span>{row.creator}</span></td>
+                                                    </tr>
+                                                )
+                                            })
+                                        ) : (
+                                            <tr>
+                                                <td className='text-center text-danger' colSpan={3}>
+                                                    <span>No records</span>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </Table>
+                            </Row>
+                        </Container>
+                    </ModalBody>
+                <ModalFooter>
+                    <button className="btn btn-primary" type="button" onClick={toggleModal}>
+                        Close
+                    </button>
+                </ModalFooter>
+                 
+            </Modal>
         </>
     )
 }

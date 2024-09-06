@@ -101,10 +101,13 @@ const SpeedLoanDisburse = () => {
             allData['center'] = data.centers.map(ite => ite.value)
             if(data.branches) setBranches(data.branches)  
         })
-        .catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
+        .catch(e => dispatch({ type:'ERROR', payload: {code:e.response.status, error:e.message }}))
         .finally(() => dispatch({ type:'STOP_LOADING' }))
         axios.get('/loan-products-options')
-        .then(({data})=> setLoanProducts(data) ).catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
+        .then(({data})=> setLoanProducts(data) ).catch(e => dispatch({ 
+            type:'ERROR', 
+            payload: {code:e.response.status, error:e.message }
+        }))
     }
 
     const updateBranch = (e) => {
@@ -157,10 +160,8 @@ const SpeedLoanDisburse = () => {
             .then(({data})=>{
                 console.log(data)
             })
-            .catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
-            .finally(()=>{
-                dispatch({type:'STOP_LOADING'})
-            })
+            .catch(e => dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}}))
+            .finally(()=> dispatch({ type:'STOP_LOADING' }) )
         }
 
     }

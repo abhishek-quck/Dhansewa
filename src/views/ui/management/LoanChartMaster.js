@@ -10,11 +10,12 @@ function LoanChartMaster() {
   const dispatch = useDispatch()
   const [refresh, call] = useState(false)
   const [loanProducts, setLoanProducts] = useState([])
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState([]);
   const [fields, setFields] = useState({
     id:'',
     amount:''
-  })
+  });
+
   const updateProduct = e => {
       e.preventDefault()
       const {shouldGo} = validate(fields)
@@ -33,7 +34,9 @@ function LoanChartMaster() {
       .catch(err=>toast.error(err.message))
       .finally(()=>dispatch({type:'STOP_LOADING'}))
   }
-  useEffect(()=>{
+
+  useEffect(()=> {
+
       axios.get('get-loan-products')
       .then(({data})=>{
           setProducts(data)
@@ -41,12 +44,13 @@ function LoanChartMaster() {
           .then(({data})=>{
               console.log(data)
               setLoanProducts(data)
-          }).catch(err=>dispatch({type:'ERROR',payload:{error:err.message}}))
+          }).catch(e => dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}}))
       })
       .catch(err=>toast.error(err.message))
       .finally(()=>dispatch({type:'STOP_LOADING'}))
       
   },[refresh])
+
   return (
     <>
       <Row>
