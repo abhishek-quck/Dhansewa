@@ -6,7 +6,8 @@ import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ReactSelect from 'react-select'
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap'
-
+import { preview } from '../../../attachments'
+import docEnum from '../../../enums/documentEnum'
 const CGTEntry = () => {
     const [sFields, setFields] = useState({ 
         branch:'', 
@@ -14,40 +15,47 @@ const CGTEntry = () => {
         process:'pending', 
         term:''
     });
+    const {CGT_FIRST, CGT_SECOND} = docEnum
     const [client, setClient]     = useState(null);
     const [images, setImages]     = useState({ first_day:null, second_day:null });
+    const [loadedImages, put]     = useState({});
+    const [askImage, askFor ]     = useState({ first:false, second:false })
     const [modal, setModal ]      = useState(false);
     const [branches, setBranches] = useState([]);
     const [clients, setClients]   = useState([]);
-    const toggleModal = () => setModal(!modal);
-    // const processes = [
-    //     {value:'all',label:'ALL'},
-    //     {value:'pending',label:'PENDING'},
-    //     {value:'hold',label:'HOLD'},
-    //     {value:'under_process',label:'UNDER_PROCESS'},
-    //     {value:'approved',label:'APPROVED'},
-    //     {value:'editable',label:'EDITABLE'},
-    //     {value:'reject',label:'REJECT'},
-    //     {value:'forgery',label:'FORGERY'},
-    //     {value:'cgt_entry',label:'CGT_ENTRY'},
-    //     {value:'cgt_revised',label:'CGT_REVISED'},
-    //     {value:'doc_uploaded',label:'DOC_UPLOADED'},
-    //     {value:'grt_complete',label:'GRT_COMPLETE'},
-    //     {value:'cb_approved',label:'CB_APPROVED'},
-    // ];
-    // const employeeRef = useRef(null);
-    // const processRef = useRef(null);
-    // const [employees, setEmployees] = useState([])
+    const toggleModal = () => {
+        if( modal===true ) {
+            setImages({first_day:null, second_day:null});
+        }
+        setModal(!modal)
+    };
+
+    const previewImage = e => {
+
+        let { doc_id }= e.target.dataset;
+        let b64image = loadedImages[client][doc_id];
+		preview([b64image])
+
+	}
+
     const searchRef = useRef(null);
     const dispatch = useDispatch();
 
-    const handleSubmit = e => {
+    const handleSubmit = e => {  // searching form
         
         e.preventDefault();
         dispatch({ type:'LOADING' })
         axios.post('/search-enrolled', sFields )
         .then(({ data }) => {
-            // console.log(data)
+            let docs = {}
+            data.forEach( row => {
+                if( row.documents && row.documents.length ) {
+                    row.documents.forEach( doc => {
+                        docs[row.id] = {...docs[row.id] , [doc.document_id]: doc.data}
+                    })
+                } 
+            })
+            put(docs)
             setClients(data)
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
@@ -55,17 +63,18 @@ const CGTEntry = () => {
     }
     
     const openModal = e => {
-        let {client} = e.target
+        let { client,first, second } = e.target.dataset
+        askFor({...askImage, first:first!=='0', second:second!=='0'})
         setClient(client)
         toggleModal(!modal); 
     }
 
-    const uploadCGT = e => {
+    const uploadCGT = e => {  // upload CGT form
 
         e.preventDefault();
-        if(!images.first_day || client===null )
+        if( !askImage.first || client===null || client===undefined )
         {
-            return toast('Upload first day image first!',
+            return toast(client===undefined? 'Select the client first' :'Upload first day image first!',
                 {
                     icon: '⚠️',
                     style: {
@@ -91,13 +100,16 @@ const CGTEntry = () => {
                 "Authorization":"Bearer "+localStorage.getItem('auth-token')
             }
         }).then(({data}) => {
-            console.log(data);
+            setTimeout(()=>$('#search-cgt').trigger('click'), 500)
+            toast.success(data.message)
+            toggleModal()
         }).catch(e => console.log(e.message))    
         .finally(()=> dispatch({ type: 'STOP_LOADING' }));
     
     }
 
     const handleFile = e => {
+
         let file = e.target.files[0];
 		let name = e.target.name;
         var reader = new FileReader();
@@ -110,9 +122,9 @@ const CGTEntry = () => {
 			}
         }; 
     }
+    
     const updateBranch = e => {
-        if(e)
-        {
+        if(e) {
             setFields({...sFields, branch:e.value})
             setTimeout(()=>$('#search-cgt').trigger('click'), 500)
         }
@@ -125,12 +137,14 @@ const CGTEntry = () => {
     }
 
     useEffect(()=>{
+        
         axios.get('get-branches')
         .then(({data}) => {
             let options = [{value:'', label: 'Choose'}]
             data.forEach( item => options.push({ value:item.id, label:item.name}) );
             setBranches(options)
         }).catch(err=>err.message).finally()
+
     },[]);
 
     return (
@@ -212,6 +226,14 @@ const CGTEntry = () => {
                                                 <Button 
                                                     color='primary'
                                                     data-client={row.id}
+                                                    data-first={
+                                                        loadedImages[row.id] && 
+                                                        loadedImages[row.id][CGT_FIRST]!==undefined ? 1: 0
+                                                    }
+                                                    data-second={
+                                                        loadedImages[row.id] && 
+                                                        loadedImages[row.id][CGT_SECOND]!==undefined ? 1: 0
+                                                    }
                                                     type='button'
                                                     onClick={openModal}
                                                 > Upload 
@@ -239,7 +261,18 @@ const CGTEntry = () => {
                                         name='first_day'
                                         accept='image/*'
                                         onChange={handleFile}
+                                        disabled={askImage.first}
                                     />
+                                    {loadedImages[client] && loadedImages[client][CGT_FIRST] &&
+                                    <button 
+                                        className='btn' 
+                                        type='button'  
+                                        data-doc_id={CGT_FIRST}
+                                        onClick={ previewImage } 
+                                        style={{ border:'1px dashed' }}
+                                    > 
+                                        Preview 
+                                    </button> }
                                 </FormGroup>
                                 <FormGroup>
                                     <Label> Revised Photo </Label>
@@ -248,12 +281,28 @@ const CGTEntry = () => {
                                         name='second_day'
                                         accept='image/*'
                                         onChange={handleFile}
+                                        disabled={askImage.second}
                                     />
+                                    {loadedImages[client] && loadedImages[client][CGT_SECOND] &&
+                                    <button 
+                                        className='btn' 
+                                        type='button'  
+                                        data-doc_id={CGT_SECOND}
+                                        onClick={ previewImage } 
+                                        style={{ border:'1px dashed' }}
+                                    > 
+                                        Preview 
+                                    </button> }
                                 </FormGroup>
                             </Row>
                         </Container>
                     </ModalBody>
                 <ModalFooter>
+                    {(!askImage.first || !askImage.first ) && 
+                        <button className="btn btn-success" type="submit">
+                            Save
+                        </button>
+                    }
                     <button className="btn btn-primary" type="button" onClick={toggleModal}>
                         Close
                     </button>
