@@ -2,13 +2,17 @@ import $ from 'jquery'
 import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
+import Loader from "react-js-loader";
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ReactSelect from 'react-select'
-import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Spinner, Table } from 'reactstrap'
 import { preview } from '../../../attachments'
-import docEnum from '../../../enums/documentEnum'
+import docEnum from '../../../enums/documentEnum';
+
 const CGTEntry = () => {
+
+    const {isAdmin} = useSelector( state => state.auth );
     const [sFields, setFields] = useState({ 
         branch:'', 
         employee:'', 
@@ -23,6 +27,17 @@ const CGTEntry = () => {
     const [modal, setModal ]      = useState(false);
     const [branches, setBranches] = useState([]);
     const [clients, setClients]   = useState([]);
+    const [searched, setSearch]   = useState(false);
+
+    const processes = [ 
+        {value:'pending',label:'PENDING'},  
+        {value:'approved',label:'APPROVED'}, 
+        {value:'reject',label:'REJECT'},
+        {value:'forgery',label:'FORGERY'},
+        {value:'cgt_entry',label:'CGT_ENTRY'},
+        {value:'cgt_revised',label:'CGT_REVISED'},
+    ];
+
     const toggleModal = () => {
         if( modal===true ) {
             setImages({first_day:null, second_day:null});
@@ -57,6 +72,7 @@ const CGTEntry = () => {
             })
             put(docs)
             setClients(data)
+            setSearch(true)
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}))
 
@@ -72,7 +88,7 @@ const CGTEntry = () => {
     const uploadCGT = e => {  // upload CGT form
 
         e.preventDefault();
-        if( !askImage.first || client===null || client===undefined )
+        if( askImage.first || client===null || client===undefined )
         {
             return toast(client===undefined? 'Select the client first' :'Upload first day image first!',
                 {
@@ -130,6 +146,11 @@ const CGTEntry = () => {
         }
     }
 
+    const updateProcess = e => {
+        setFields({...sFields, process:e.value });
+        setTimeout(()=> $('#search-cgt').trigger('click'), 500 );
+    }
+
     const updateSearch = e => {
         if(e) {
             setFields({...sFields, term:e.target.value});
@@ -143,6 +164,7 @@ const CGTEntry = () => {
             let options = [{value:'', label: 'Choose'}]
             data.forEach( item => options.push({ value:item.id, label:item.name}) );
             setBranches(options)
+            setTimeout(()=>$('#search-cgt').trigger('click'), 500 );
         }).catch(err=>err.message).finally()
 
     },[]);
@@ -155,12 +177,6 @@ const CGTEntry = () => {
                     className="mt-2 mb-2 fa-solid fa-arrow-rotate-left" 
                 />
                 <b className="m-2"> CLIENT SOURCING </b>
-                <Link to={`/add-enrolled-cgt`} 
-                    className="btn btn-sm btn-rounded btn-primary" 
-                    style={{position:'absolute',left:'93%'}}
-                >
-                    <i className="fa fa-plus"/> New 
-                </Link> 
             </CardHeader>
             <CardBody>
                 <Row>
@@ -175,6 +191,15 @@ const CGTEntry = () => {
                                 options={branches}
                             />
                         </Col > 
+                        {isAdmin && 
+                        <Col md="4">
+                            <Label size={'sm'} for="process"> Process </Label>
+                            <ReactSelect
+                                id='process'
+                                onChange={updateProcess}
+                                options={processes}
+                            />
+                        </Col > }
                         <Col md="4">
                             <Label size={'sm'} for="search"> Search </Label>
                             <div className="d-flex">
@@ -214,33 +239,55 @@ const CGTEntry = () => {
                             </thead>
                             <tbody>
                                 {
-                                    clients.map( (row,i) => {
-                                        return (<tr key={i}>
-                                            <td>{i+1}</td>
-                                            <td>{row.id}</td>
-                                            <td>{row.applicant_name}</td>
-                                            <td>{row.phone}</td>
-                                            <td>{row.aadhaar}</td>
-                                            <td>{row.state}</td> 
-                                            <td>
-                                                <Button 
-                                                    color='primary'
-                                                    data-client={row.id}
-                                                    data-first={
-                                                        loadedImages[row.id] && 
-                                                        loadedImages[row.id][CGT_FIRST]!==undefined ? 1: 0
+                                    clients.length ? (
+                                        clients.map( (row,i) => {
+                                            return (<tr key={i}>
+                                                <td>{i+1}</td>
+                                                <td>{row.id}</td>
+                                                <td>{row.applicant_name}</td>
+                                                <td>{row.phone}</td>
+                                                <td>{row.aadhaar}</td>
+                                                <td>{row.state}</td> 
+                                                <td>
+                                                    <Button 
+                                                        className='btn-primary action-btn'
+                                                        data-client={row.id}
+                                                        data-first={
+                                                            loadedImages[row.id] && 
+                                                            loadedImages[row.id][CGT_FIRST]!==undefined ? 1: 0
+                                                        }
+                                                        data-second={
+                                                            loadedImages[row.id] && 
+                                                            loadedImages[row.id][CGT_SECOND]!==undefined ? 1: 0
+                                                        }
+                                                        type='button'
+                                                        onClick={openModal}
+                                                    >
+                                                        { row.cgt_complete? 'View':'Upload' }
+                                                    </Button>
+                                                    
+                                                    { ['cgt_revised','forgery'].includes(sFields.process) && isAdmin && 
+                                                        !row.cgt_complete && 
+                                                        <div className='btn action-btn' >
+                                                            <Link to={`/manage-enrolled-cgt/${row.id}`} className='text-decoration-none'>
+                                                                Manage
+                                                            </Link>
+                                                        </div>
                                                     }
-                                                    data-second={
-                                                        loadedImages[row.id] && 
-                                                        loadedImages[row.id][CGT_SECOND]!==undefined ? 1: 0
-                                                    }
-                                                    type='button'
-                                                    onClick={openModal}
-                                                > Upload 
-                                                </Button>
-                                            </td> 
-                                        </tr>)
-                                    })
+                                                </td> 
+                                            </tr>)
+                                        })
+                                    ) : ( 
+                                            <tr>
+                                            <td colSpan={7} className='text-center'>
+                                                {searched? (
+                                                    <h6 className='text-danger'>{ 'No Records Found!' }</h6>
+                                                ): (
+                                                    <Spinner color="dark"/>
+                                                )}
+                                            </td>
+                                        </tr> 
+                                    )
                                 }
                             </tbody>
                         </Table>
@@ -265,7 +312,7 @@ const CGTEntry = () => {
                                     />
                                     {loadedImages[client] && loadedImages[client][CGT_FIRST] &&
                                     <button 
-                                        className='btn' 
+                                        className='btn mt-2' 
                                         type='button'  
                                         data-doc_id={CGT_FIRST}
                                         onClick={ previewImage } 
@@ -285,7 +332,7 @@ const CGTEntry = () => {
                                     />
                                     {loadedImages[client] && loadedImages[client][CGT_SECOND] &&
                                     <button 
-                                        className='btn' 
+                                        className='btn mt-2' 
                                         type='button'  
                                         data-doc_id={CGT_SECOND}
                                         onClick={ previewImage } 
@@ -298,7 +345,7 @@ const CGTEntry = () => {
                         </Container>
                     </ModalBody>
                 <ModalFooter>
-                    {(!askImage.first || !askImage.first ) && 
+                    {(!askImage.first || !askImage.first )  && !['approved','reject'].includes(sFields.process) &&
                         <button className="btn btn-success" type="submit">
                             Save
                         </button>

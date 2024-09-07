@@ -35,7 +35,7 @@ export const navigation= [
           href: "#",
         },
       ],
-      links:["new-enrollment",'update-cis','cgt-entry','/add-enrollment','/add-enrolled-cgt','/credit-appraisal','/manage-client/:id']
+      links:["new-enrollment",'update-cis','cgt-entry','/add-enrollment','/manage-enrolled-cgt','/credit-appraisal','/manage-client/:id']
     },
     {
       title: "Centers Info",

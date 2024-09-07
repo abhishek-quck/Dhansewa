@@ -1,6 +1,7 @@
 /* 
     `PERMISSION CONSTANTS`   the values are Database accurate , don't modify
 */
+export const ADMIN = 'admin';
 export const DASHBOARD = 'Dashboard';
 export const ENROLL = 'Enrollment';
 export const NEW_ENROLL = 'New Enrollment';

@@ -320,3 +320,13 @@ td button {
 .reviewList td {
     background-color: #efbca5!important;
 }
+.action-btn {
+    border: 1px dashed;
+    border-radius: 3px;
+}
+.action-btn:nth-child(even) {
+    margin-left: 5px;
+}
+.action-btn:hover {
+    background-color: #bbd1c7;
+}

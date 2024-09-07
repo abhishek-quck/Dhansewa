@@ -1,46 +1,71 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { validate } from '../../../helpers/utils';
+import { capitalFirst, getDocumentName } from '../../../helpers/utils';
 import toast from 'react-hot-toast';
-import { Card, CardBody, CardFooter, CardHeader, CardText, Col, FormGroup, Input, Label, Row } from 'reactstrap';
-import { Form } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
+import { Form, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Row } from 'reactstrap';
+import { useParams } from 'react-router-dom';
 import ReactSelect from 'react-select';
+import { preview } from '../../../attachments';
 
 function AddEnrolledCGT() {
 
-    let initial = {
-        branch_id:'',
-        aadhaar : '',
-        applicant:'',
-        fatherName:'',
-        gender:'',
-        date_of_birth:'',
-        phone:'',
-        district:'',
-        state:'',
-        PIN:'',
-        village:'',
-    };
-
     const dispatch = useDispatch();
-    const [errors, setErrors]      = useState(initial);
-    const [branches , setBranches] = useState([]);
-    const [fields, setFields]      = useState(initial);
-    const [bankInfo, setBankInfo]  = useState(false);
+    
+    const {enroll_id} = useParams();
+    const [fields, setFields]      = useState({});
+    const [docs, setDocs]          = useState([]);
+    const [reply, setReply]        = useState({status:'',remark:''});
 
-    const change = (e) => {
-        setFields({...fields, [e.target.name]:e.target.value})
+    const status = [
+        { value : 1, label:'APPROVE' },
+        { value : 2, label:'REJECT' },
+        { value : 3, label:'FURTHER' }
+    ];
+
+    const previewImage = (e) => {
+        let { key }= e.target.dataset
+        let doc = docs[parseInt(key)]
+		preview([doc.data], doc.file_name )
+	}
+
+    const handleSubmit = e => {
+
+        e.preventDefault();
+        if( fields.status==='' ) {
+            return toast.error('Fill the required fields!')
+        }
+        dispatch({ type:'LOADING' });
+        axios.post('update-client-cgt-status', {...reply, enroll_id} )
+        .then(({data}) => {
+            console.log(data);
+            toast.success(data.message)
+        }).catch(e => console.log(e.message))
+        .finally(()=> dispatch({ type:"STOP_LOADING" }));
+
     }
 
     useEffect(()=> {
 
-        axios.get('get-branches')
+        axios.post('search-enrolled/'+ enroll_id)
         .then(({data})=>{
-            let options = []
-            data.forEach( item => options.push({value:item.id, label:item.name}))
-            setBranches(options)
+            let stack = {};
+            if( data.data?.length )
+            {
+                let { documents }= data.data[0];
+                delete data.data[0].documents;
+                delete data.data[0].other_info;
+                setDocs(documents)
+                for(let key in data.data[0]) {
+                    if(typeof data.data[0][key] === 'object')
+                    { 
+                        for(let k in data.data[0][key]) {
+                            stack[k] = data.data[0][key][k]
+                        }
+                    } else stack[key] = data.data[0][key]
+                }
+            }
+            setFields(stack)
         })
 
     },[]);
@@ -50,226 +75,88 @@ function AddEnrolledCGT() {
         <div> 
           <Card className="col-7">
             <CardHeader className="d-flex">
-              <b> BASIC INFORMATION </b>
+              <b> CGT INFORMATION </b>
             </CardHeader>
             <CardBody className="bg-gray-300">
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4" size={'sm'} for="branch">Branch Name</Label>
-                            <ReactSelect
-                                id="branch" 
-                                name="branch"
-                                type="select"
-                                className="w-100"
-                                onChange={e=>setFields({...fields, branch_id:e.value})}
-                                options={branches}
-                           />
-                        </div>
-                    </Col > 
-                </Row>
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4" size={'sm'} for="aadhaar"> Aadhaar(UID) </Label>
-                            <Input
-                                id="aadhaar" 
-                                name="aadhaar"
-                                type="text"
-                                onChange={change}
-                                placeholder={errors.centerName??"Enter aadhaar no."}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4" size={'sm'} for="address"> Address </Label>
-                            <Input
-                                id="address" 
-                                name="address"
-                                type="text" 
-                                onChange={change}
-                                placeholder={errors.address}
-                                disabled
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="applicant"> Applicant Name </Label>
-                            <Input
-                                id='applicant'
-                                name="applicant"
-                                type="text"
-                            /> 
-                             
-                        </div>
-                    </Col > 
-                </Row>
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="fatherName"> Father Name </Label>
-                            <Input
-                                id='fatherName'
-                                name="fatherName"
-                                type="text"
-                                onChange={change}
-                                placeholder={errors.fatherName}
-                            />   
-                        </div>
-                    </Col > 
-                </Row>
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="gender"> Gender </Label>
-                            <Input
-                                id='gender'
-                                name="gender"
-                                type="text"
-                                onChange={change}
-                                placeholder={errors.gender}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="date_of_birth"> Date Of Birth </Label>
-                            <DatePicker 
-                                id='date_of_birth'
-                                name="date_of_birth"
-                                type="date"
-                                className='form-control'
-                                maxDate={(new Date())}
-                                placeholderText='Date of Birth'
-                                onChange={change}
-                                placeholder={errors.date_of_birth}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                   
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="phone"> Phone </Label>
-                            <Input
-                                id='phone'
-                                name="phone"
-                                type="text"
-                                onChange={change}
-                                placeholder={errors.phone}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                   
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="village"> Village/City Name </Label>
-                            <Input
-                                id='village'
-                                name="village"
-                                type="text"
-                                onChange={change}
-                                placeholder={errors.village}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                   
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="district"> District </Label>
-                            <Input
-                                id='district'
-                                name="district"
-                                type="text"
-                                onChange={change}
-                                placeholder={errors.district}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                   
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="phone"> Phone </Label>
-                            <Input
-                                id='phone'
-                                name="phone"
-                                type="text"
-                                onChange={change}
-                                placeholder={errors.phone}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                   
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="PIN"> Postal PIN </Label>
-                            <Input
-                                id='PIN'
-                                name="PIN"
-                                type="text"
-                                onChange={change}
-                                placeholder={errors.PIN}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                   
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="state"> State Name </Label>
-                            <Input
-                                id='state'
-                                name="state"
-                                type="text"
-                                onChange={change}
-                                placeholder={errors.state}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
-                
-                <Row className="mt-2">
-                    <Col md="12">
-                        <div className="d-flex">
-                            <Label className="col-4"  size={'sm'} for="bank_info"> Bank Info </Label>
-                            <Input
-                                id='bank_info'
-                                name="bank_info"
-                                type="checkbox"
-                                onChange={change}
-                                placeholder={errors.bank_info}
-                            />
-                        </div>
-                    </Col > 
-                </Row>
+                    {
+                        Object.keys(fields).map( key => {
+                            return (
+                                <Row className="mt-2" key={key}>
+                                    <Col md="12">
+                                        <div className="d-flex">
+                                            <Label className="col-4" size={'sm'} for={key}>
+                                                {capitalFirst(key.replaceAll('_',' '))}</Label>
+                                            <Input
+                                                id={key} 
+                                                name={key}
+                                                type={key.includes('address')? 'textarea':"text"}
+                                                disabled
+                                                defaultValue={fields[key]}
+                                            />
+                                        </div>
+                                    </Col> 
+                                </Row>
+                            )
+                        })
+                    }  
+                    {
+                        docs.map( (doc,i) => {
+                            return (
+                                <Row className="mt-2" key={i} >
+                                    <Col md={12}>
+                                        <div className={'d-flex'} >
+                                            <Label className="col-4" size={'sm'} > 
+                                                { getDocumentName(doc.file_name) }    
+                                            </Label>
+                                            <button 
+                                                className='btn' 
+                                                type='button' 
+                                                data-key={i} 
+                                                onClick={ previewImage } 
+                                                style={{ border:'1px dashed' }}
+                                            > 
+                                                Preview 
+                                            </button> 
+                                        </div>
+                                    </Col> 
+                                </Row>                
+                            )
+                        })
+                    }
             </CardBody>
             <CardFooter>
-              <Row className="d-flex" style={{justifyContent:'space-between'}}>
-                <button  className="col-3 btn btn-success" style={{marginLeft:'5px'}}> Save & Process </button>
-                <button className="col-2 btn bg-gray-300" style={{marginRight:'5px'}}> Home </button>
-              </Row>
             </CardFooter>
           </Card>
            
         </div>
+        <Card className='col-3 offset-1' style={{position:'fixed',right:10,top:'100px'}}>
+            <Form onSubmit={handleSubmit}> 
+            <CardHeader>
+                <b> UPDATE </b>
+            </CardHeader>
+            <CardBody>
+                <FormGroup>
+                    <Label> Status </Label>
+                    <ReactSelect 
+                        options={status}
+                        className='status'
+                        onChange={e => setReply({...reply, status:e.value})}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label> Remark </Label>
+                    <Input 
+                        type={'textarea'}
+                        name='remark'
+                        onChange={ e => setReply({...reply, remark:e.target.value})}
+                    />
+                </FormGroup>
+            </CardBody>
+            <CardFooter>
+                <Button type='submit' className='w-100' color='success'> Submit </Button>
+            </CardFooter>
+            </Form>
+        </Card>
         </>
     );
 }
