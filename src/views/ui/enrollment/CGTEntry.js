@@ -346,6 +346,7 @@ const CGTEntry = () => {
                     </ModalBody>
                 <ModalFooter>
                     {(!askImage.first || !askImage.first )  && !['approved','reject'].includes(sFields.process) &&
+                        isAdmin &&
                         <button className="btn btn-success" type="submit">
                             Save
                         </button>
