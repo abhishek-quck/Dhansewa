@@ -15,12 +15,16 @@ export const navigation= [
           href: "/new-enrollment",
         },
         {
+          title: "Update CIS",
+          href: "/update-cis",
+        },
+        {
           title: "CGT Entry",
           href: "/cgt-entry",
         },
         {
-          title: "Update CIS",
-          href: "/update-cis",
+          title: "Client GRT",
+          href: "/client-grt",
         },
         {
           title: "Cibil Upload",
@@ -35,7 +39,7 @@ export const navigation= [
           href: "#",
         },
       ],
-      links:["new-enrollment",'update-cis','cgt-entry','/add-enrollment','/manage-enrolled-cgt','/credit-appraisal','/manage-client/:id']
+      links:["new-enrollment",'update-cis','cgt-entry','/add-enrollment','/manage-enrolled-cgt','/credit-appraisal','/manage-client/:id','/client-grt']
     },
     {
       title: "Centers Info",
@@ -46,10 +50,6 @@ export const navigation= [
         {
           title: "Center Master",
           href: "/center-master",
-        },
-        {
-          title: "Client GRT",
-          href: "/client-grt",
         },
         {
           title: "Meeting Handover",
@@ -68,7 +68,7 @@ export const navigation= [
             href: "/client-adv-update",
         },
       ],
-      links:["/center-master","/client-grt","/meeting-handover","/center-visit","/center-adv-update","/client-adv-update"]
+      links:["/center-master","/meeting-handover","/center-visit","/center-adv-update","/client-adv-update"]
     },
     {
       title: "Accounts",

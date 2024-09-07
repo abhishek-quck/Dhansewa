@@ -2,7 +2,6 @@ import $ from 'jquery'
 import axios from 'axios'
 import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-import Loader from "react-js-loader";
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ReactSelect from 'react-select'

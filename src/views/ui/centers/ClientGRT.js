@@ -86,7 +86,7 @@ const AddEnrollment = () => {
                                 type="select"
                                 onChange={setChange}
                             >
-                                <option> All </option>
+                                <option value={''}> All </option>
                                 { 
                                     branches.map((option,i)=>{
                                         return <option key={i} value={option.id}>{option.name}</option>
