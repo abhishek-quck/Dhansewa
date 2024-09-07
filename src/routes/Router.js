@@ -103,7 +103,7 @@ const ThemeRoutes = [
         )
       },
       { 
-        path: "/add-enrolled-cgt", 
+        path: "/manage-enrolled-cgt/:enroll_id", 
         exact: true, 
         element: (
         <ProtectedRoute permission={constant.EDIT_ENROLL}>
