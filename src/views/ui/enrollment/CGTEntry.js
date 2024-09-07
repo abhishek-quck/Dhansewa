@@ -263,7 +263,7 @@ const CGTEntry = () => {
                                                         type='button'
                                                         onClick={openModal}
                                                     >
-                                                        { row.cgt_complete? 'View':'Upload' }
+                                                        { row.cgt_complete || sFields.process==='cgt_revised'? 'View':'Upload' }
                                                     </Button>
                                                     
                                                     { ['cgt_revised','forgery'].includes(sFields.process) && isAdmin && 
