@@ -38,9 +38,14 @@ function ManageClient() {
         }
         dispatch({ type:'LOADING' })
         axios.post('update-client-appraisal-status', {...reply, enroll_id: id }).then(({ data }) => {
-            console.log(data);
+            if( data.sanction_letter ) {
+                preview([data.sanction_letter.data], data.sanction_letter.file_name )
+            }
             toast.success(data.message);
-        }).catch(err=>console.log(err)).finally(()=>dispatch({ type:'STOP_LOADING' }))
+        }).catch(err=>{
+            console.log(err)
+            toast.error(err.message)
+        }).finally(()=>dispatch({ type:'STOP_LOADING' }))
     }
     useEffect(() => {
         
