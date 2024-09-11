@@ -25,7 +25,7 @@ const LedgerRevise = () => {
     const [centers, setCenters ]      = useState([]);
     const [clients, setClients ]      = useState([]);
     const [ledgerContent, setContent] = useState([]) 
-    const [searchfields, setSearchFields] = useState({ client:null })
+    const [searchfields, setSearchFields] = useState({ client:null, loan_id:null })
 
     const [view, setView] = useState({
         id:'',
@@ -62,7 +62,8 @@ const LedgerRevise = () => {
     const generateLedger = (e) => {
 
         hit(true)
-        e.preventDefault()
+        e.preventDefault();
+        console.log(searchfields)
         if(!searchfields.client) {
             $('.client').css('border','1px solid red')
             return toast('Select a client first!',
@@ -78,7 +79,7 @@ const LedgerRevise = () => {
         }
         dispatch({type:'LOADING'});
 
-        axios.post('/search-client-ledger',searchfields)
+        axios.post('/get-client-ledger',searchfields)
         .then(({data})=> setContent(data) )
         .catch(() => toast.error('Something went wrong!'))
         .finally(() => dispatch({type:'STOP_LOADING'}));
@@ -88,11 +89,13 @@ const LedgerRevise = () => {
     const getClient = clientID => 
     {
         $('.client').css('border','')
-        setSearchFields({...searchfields, client: clientID})
         dispatch({type:'LOADING'})
 
         axios.get('get-disbursement-details/'+clientID)
-        .then(({data})=>setView(data))
+        .then(({data})=>{
+            setView(data);
+            setSearchFields({...searchfields, client: clientID, loan_id :data.loan_id });
+        })
         .finally(()=>dispatch({type:'STOP_LOADING'}));
     }
 
@@ -339,7 +342,7 @@ const LedgerRevise = () => {
                         <th> SEQ </th>
                         <th> OTHER </th>
                         <th> DateStamp </th>
-                        <th> <Input type="checkbox" onClick={doSomething}/> </th>
+                        {/* <th> <Input type="checkbox" onClick={doSomething}/> </th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -348,18 +351,19 @@ const LedgerRevise = () => {
                             <tr key={index}>
                                 <td> <Input type="text" disabled value={ row.emi_no } /> </td>
                                 <td> <Input type="date" disabled value={ row.transaction_date } /> </td>
-                                <td> <Input type="text" name="pr_date" defaultValue={ row.pr_date } /> </td>
-                                <td> <Input type="text" name="int_collected" defaultValue={ row.int_collected } /> </td>
-                                <td> <Input type="text" name="total_collected" defaultValue={ row.total_collected } /> </td>
+                                <td> <Input type="text" name="pr_due" defaultValue={ row.pr_due } /> </td>
+                                <td> <Input type="text" name="int_due" defaultValue={ row.int_due } /> </td>
+                                <td> <Input type="text" name="total_due" defaultValue={ row.total_due } /> </td>
                                 <td> <Input type="text" name="pr_collected" defaultValue={ row.pr_collected } /> </td>
+                                <td> <Input type="text" name="int_collected" defaultValue={ row.int_collected } /> </td>
                                 <td> <Input type="text" name="total_collected" defaultValue={ row.total_collected } /> </td>
                                 <td> <Input type="text" name="attend" defaultValue={ row.attend } /> </td>
                                 <td> <Input type="text" name="receipt_no" defaultValue={ row.receipt_no } /> </td>
                                 <td> <Input type="text" name="staff_id" defaultValue={ row.staff_id } /> </td>
                                 <td> <Input type="text" disabled value={index+1} /> </td>
-                                <td> <Input type="text" name="other" defaultValue={ row.other } /> </td>
+                                <td> <Input type="text" defaultValue={ row.other??'' } /> </td>
                                 <td> <Input type="text" disabled value={ row.created_at } /> </td>
-                                <td> <Input type="checkbox" onClick={()=>null}/> </td>
+                                {/* <td> <Input type="checkbox" onClick={()=>null}/> </td> */}
                             </tr>
                         )
                         })

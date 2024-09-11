@@ -25,16 +25,18 @@ import { Link } from "react-router-dom";
 var allData = {branch:{}, center:{}, clients:{}}
  
 const SpeedLoanDisburse = () => { 
+
     const dispatch = useDispatch()
     const clientRef = useRef(null)
+    const [date, setDate]             = useState('');
     const [meetingDay, setMeetingDay] = useState('');
-    const [centers, setCenters] = useState([]);
-    const [clients, setClients] = useState([]);
-    const [loanProducts, setLoanProducts]= useState([])
+    const [centers, setCenters]       = useState([]);
+    const [clients, setClients]       = useState([]);
     const [loanAmount, setLoanAmount] = useState('')
-    const [date, setDate] = useState('');
-	const [branches, setBranches] = useState([])
-    const [submitted, submitForm] = useState(false)
+	const [branches, setBranches]     = useState([])
+    const [submitted, submitForm]     = useState(false)
+    const [loanProducts, setLoanProducts]= useState([])
+    
     const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
     const [fields, setFields] = useState({
         loan_date:'',
@@ -219,12 +221,12 @@ const SpeedLoanDisburse = () => {
     }
 
     const getCenterWorkingDay = centerID => {
+
         dispatch({type:'LOADING'})
         axios.get('get-center-working-days/'+centerID)
-        .then(({data})=> { 
-            setMeetingDay(data.meeting_days);
-        }).catch(err=>console.log(err.message))
+        .then(({data})=> setMeetingDay(data.meeting_days)).catch(err=>console.log(err.message))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
+
     }
 
 	useEffect(() => {

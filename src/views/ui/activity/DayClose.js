@@ -17,13 +17,13 @@ function DayClose() {
 
     // Submit Form `day-close`
     const closeDay = e => {
+
         e.preventDefault()
         dispatch({ type:'LOADING' });
         axios.get('day-close/'+branchID)
-        .then(({data}) => {
-            console.log(data)
-        }).catch( err => console.log(err.message))
+        .then(({data}) => toast.success(data.message)).catch( e => toast.error(e.response?.data.message?? 'Something went wrong!'))
         .finally(() => dispatch({type:'STOP_LOADING'}));
+
     }
 
     const getBranchCollection = e => {
@@ -40,7 +40,7 @@ function DayClose() {
     }
 
     useEffect(() => {
-        axios.get('get-branches').then(({data})=>setBranches(data)).catch()
+        axios.get('get-branches').then(({data})=>setBranches(data)).catch(e=>console.log(e.message))
     },[])
 
   return (
