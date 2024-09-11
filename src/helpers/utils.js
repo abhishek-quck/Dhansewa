@@ -1,5 +1,4 @@
 import $ from 'jquery'
-const days = []
 export const validate = (fields,exceptions=[]) => {
     let result={}
     var shouldGo=true;
@@ -175,5 +174,7 @@ export const getDocumentName = str => {
     if( str.toLowerCase().includes('group') ) return 'GRT GROUP PHOTO';
     if( str.toLowerCase().includes('pan') ) return 'PAN CARD';
     if( str.toLowerCase().includes('kyc') ) return 'KYC Document';
+    if( str.toLowerCase().includes('first') ) return 'CGT_FIRST';
+    if( str.toLowerCase().includes('second') ) return 'CGT_SECOND';
     return 'Document '+ str;
 }

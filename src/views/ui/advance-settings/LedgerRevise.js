@@ -19,9 +19,14 @@ import {
 } from "reactstrap";
 
 const LedgerRevise = () => { 
-    const [branches, setBranches ] = useState([])
-    const [centers, setCenters ] = useState([])
-    const [clients, setClients ] = useState([])
+
+    const [hitSearch, hit]            = useState(false)
+    const [branches, setBranches ]    = useState([]);
+    const [centers, setCenters ]      = useState([]);
+    const [clients, setClients ]      = useState([]);
+    const [ledgerContent, setContent] = useState([]) 
+    const [searchfields, setSearchFields] = useState({ client:null })
+
     const [view, setView] = useState({
         id:'',
         client_id:'',
@@ -40,27 +45,22 @@ const LedgerRevise = () => {
         payment_mode:'',
         schedule_recurring:'',
         cross_sale_products:'',
-    })
-    const dispatch = useDispatch()
-    const [fields, setFields] = useState({
+    });
 
-    })
-    const [searchfields, setSearchFields] = useState({
-        client:null
-    })
-    const checkStyle = {marginTop:'10px',marginRight:'8px'}
-    const setSearchInputs = e => {
-        setSearchFields({...searchfields, [e.target.name]:e.target.value })
-    }
-    const handleChange = e => {
-        setFields({...fields, [e.target.name]:e.target.value})
-    }
-    const [hitSearch, hit] = useState(false)
+    const dispatch = useDispatch();
+
+    const [fields, setFields] = useState({ })
+
+    const checkStyle = { marginTop:'10px', marginRight:'8px' };
+
+    const setSearchInputs = e => setSearchFields({...searchfields, [e.target.name]:e.target.value })
+     
+    const handleChange = e => setFields({...fields, [e.target.name]:e.target.value})
 
     const doSomething = () => { }
-    const [ledgerContent ,setContent]= useState([]) 
 
     const generateLedger = (e) => {
+
         hit(true)
         e.preventDefault()
         if(!searchfields.client) {
@@ -76,13 +76,13 @@ const LedgerRevise = () => {
                 }
             );
         }
-        dispatch({type:'LOADING'})
+        dispatch({type:'LOADING'});
+
         axios.post('/search-client-ledger',searchfields)
-        .then(({data})=>{
-            if(data!==undefined) setContent(data)
-        })
-        .catch(()=>toast.error('Something went wrong!'))
-        .finally(()=>dispatch({type:'STOP_LOADING'}))
+        .then(({data})=> setContent(data) )
+        .catch(() => toast.error('Something went wrong!'))
+        .finally(() => dispatch({type:'STOP_LOADING'}));
+
     }
 
     const getClient = clientID => 
@@ -93,32 +93,31 @@ const LedgerRevise = () => {
 
         axios.get('get-disbursement-details/'+clientID)
         .then(({data})=>setView(data))
-        .finally(()=>dispatch({type:'STOP_LOADING'}))
+        .finally(()=>dispatch({type:'STOP_LOADING'}));
     }
 
     const init = () => {
+
         dispatch({type:'LOADING'})
         axios.get('get-options/all')
-		.then(({data})=>{
+		.then(({data}) => {
             if(data.centers) setCenters(data.centers)
             if(data.branches) setBranches(data.branches)
             if(data.clients)
             {
-                let {clients} = data
                 let arr= [];
-                for(let item of clients)
-                {
-                    let obj = {value:item.value, label:item.label}
-                    arr.push(obj)
-                }
+                data.clients.forEach( item => arr.push({value:item.value, label:item.label}) ); 
                 setClients(arr)   
             }
-		}).finally(()=>dispatch({type:'STOP_LOADING'}))
+		}).finally(()=>dispatch({type:'STOP_LOADING'}));
 		
     }
-    useEffect(()=>{
+
+    useEffect(()=> {
+
         init()
         return ()=>null
+
     },[])
 
     return (
@@ -185,7 +184,7 @@ const LedgerRevise = () => {
                                     <tbody> 
                                         <tr>
                                             <td>
-                                                <small>Loan ID</small>
+                                                <small> Loan ID </small>
                                             </td>
                                             <td colSpan={3}>
                                                 <div className="d-flex"> 
@@ -324,7 +323,7 @@ const LedgerRevise = () => {
             <div className="mt-3" id="resultArea">  
             { hitSearch ?
             <Table hover bordered dashed={'true'} style={{fontSize:'small'}}>
-                <thead>
+                <thead style={{fontSize:'smaller'}}>
                     <tr>
                         <th> EMI N. </th>
                         <th> TRAN DATE </th>
@@ -347,19 +346,19 @@ const LedgerRevise = () => {
                     {ledgerContent.length ? ledgerContent.map((row,index)=>{
                         return (
                             <tr key={index}>
-                                <td> <Input type="text" value={row['emi_num']} /> </td>
-                                <td> <Input type="date" value={row['transaction_date']} /> </td>
-                                <td> <Input type="text" value={row['pr_date']} /> </td>
-                                <td> <Input type="text" value={row['int_date']} /> </td>
-                                <td> <Input type="text" value={row['t_due']} /> </td>
-                                <td> <Input type="text" value={row['pr_coltd']} /> </td>
-                                <td> <Input type="text" value={row['t_coltd']} /> </td>
-                                <td> <Input type="text" value={row['attend']} /> </td>
-                                <td> <Input type="text" value={row['receipt_num']} /> </td>
-                                <td> <Input type="text" value={row['staff_id']} /> </td>
-                                <td> <Input type="text" value={row['seq']} /> </td>
-                                <td> <Input type="text" value={row['other']} /> </td>
-                                <td> <Input type="text" value={row['date_stamp']} /> </td>
+                                <td> <Input type="text" disabled value={ row.emi_no } /> </td>
+                                <td> <Input type="date" disabled value={ row.transaction_date } /> </td>
+                                <td> <Input type="text" name="pr_date" defaultValue={ row.pr_date } /> </td>
+                                <td> <Input type="text" name="int_collected" defaultValue={ row.int_collected } /> </td>
+                                <td> <Input type="text" name="total_collected" defaultValue={ row.total_collected } /> </td>
+                                <td> <Input type="text" name="pr_collected" defaultValue={ row.pr_collected } /> </td>
+                                <td> <Input type="text" name="total_collected" defaultValue={ row.total_collected } /> </td>
+                                <td> <Input type="text" name="attend" defaultValue={ row.attend } /> </td>
+                                <td> <Input type="text" name="receipt_no" defaultValue={ row.receipt_no } /> </td>
+                                <td> <Input type="text" name="staff_id" defaultValue={ row.staff_id } /> </td>
+                                <td> <Input type="text" disabled value={index+1} /> </td>
+                                <td> <Input type="text" name="other" defaultValue={ row.other } /> </td>
+                                <td> <Input type="text" disabled value={ row.created_at } /> </td>
                                 <td> <Input type="checkbox" onClick={()=>null}/> </td>
                             </tr>
                         )

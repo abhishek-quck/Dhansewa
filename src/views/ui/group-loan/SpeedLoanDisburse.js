@@ -62,7 +62,8 @@ const SpeedLoanDisburse = () => {
     const [sFields, setSearchField] = useState({
         branch:'',
         center:'',
-        client:''
+        enroll_id:'',
+        loan_id:''
     });
     const [errors, setErrors] = useState({...fields, ...sFields})
 
@@ -87,10 +88,11 @@ const SpeedLoanDisburse = () => {
                 loan_amount:data.amount,
                 loan_product:id
             })
-        }).catch()
+        }).catch(e => console.log(e.message) )
         .finally(()=>dispatch({type:'STOP_LOADING'}))
     }
     const loanProductRef = useRef(null)
+
     const init = () => { // GEt Branches, Centers , loan-products & client info
 
         dispatch({ type:'LOADING' })
@@ -142,10 +144,10 @@ const SpeedLoanDisburse = () => {
         
     }
 
-    const updateClient = (e) => {
+    const triggerLoanID = (e) => {
         if(e)
         {
-            setSearchField({...sFields, client:e.value })
+            setSearchField({...sFields, loan_id:e.value })
             getCenterWorkingDay(sFields.center)
             fetchData()
         }
@@ -153,7 +155,7 @@ const SpeedLoanDisburse = () => {
 
     const fetchData = () => {         
 
-        if(sFields.branch && sFields.center && sFields.client)
+        if(sFields.branch && sFields.center && sFields.loan_id)
         {
             dispatch({type:'LOADING'})
             axios.post('/search-in-loan', sFields)
@@ -177,10 +179,11 @@ const SpeedLoanDisburse = () => {
     }
 
     const handleSubmit = async e => {
+
         e.preventDefault()
-        if(!sFields.client)
+        if(!sFields.loan_id)
         {
-            return toast('Select a client to get started!',
+            return toast('Select a loan ID to get started!',
                 {
                   icon: '⚠️',
                   style: {
@@ -198,6 +201,10 @@ const SpeedLoanDisburse = () => {
             setErrors(result)
             return toast.error('Fill the required fields!')
         }
+        // setting the `enroll-id` in payload 
+        let enroll_id = sFields.loan_id.split('-')[0]
+        setSearchField({...sFields, enroll_id})
+
         dispatch({type:'LOADING'})
         const formData = Object.assign({}, fields, sFields);
         axios.post('/speed-loan-disburse',formData)
@@ -295,8 +302,8 @@ const SpeedLoanDisburse = () => {
                             options={clients}
                             ref={clientRef}
                             className="w-100 client"
-                            defaultValue={sFields.client}
-                            onChange={updateClient}
+                            defaultValue={sFields.loan_id}
+                            onChange={triggerLoanID}
                         /> 
                     </div>
                  </Col > 

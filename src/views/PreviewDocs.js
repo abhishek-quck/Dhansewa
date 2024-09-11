@@ -6,6 +6,7 @@ import ReactSelect from 'react-select'
 import { Card, CardBody, CardFooter, CardHeader, CardText, Col, Container, Label, Row, Table }
 from 'reactstrap'
 import { preview } from '../attachments'
+import { getDocumentName } from '../helpers/utils'
 
 var allData = {branch:{}, center:{}, clients:{}}
 function PreviewDocs() {
@@ -29,11 +30,6 @@ const previewDoc = (dataArr,filename) => {
     preview(dataArr,filename )
 }
 
-const getDocumentName = str => {
-    if(str.toLowerCase().includes('vote')) return 'VOTER CARD';
-    if(str.toLowerCase().includes('adhaa')) return 'AADHAAR CARD';
-    if(str.toLowerCase().includes('assbook')) return 'BANK PASSBOOK';
-}
 const init = () => {
     dispatch({ type:'LOADING' })
     axios.get('get-options')

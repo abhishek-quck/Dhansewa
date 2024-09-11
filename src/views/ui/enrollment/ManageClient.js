@@ -44,7 +44,7 @@ function ManageClient() {
             toast.success(data.message);
         }).catch(err=>{
             console.log(err)
-            toast.error(err.message)
+            toast.error(err.response.data.message ?? err.message)
         }).finally(()=>dispatch({ type:'STOP_LOADING' }))
     }
     useEffect(() => {
