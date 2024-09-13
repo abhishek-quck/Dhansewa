@@ -35,11 +35,15 @@ export const navigation= [
           href: "/credit-appraisal",
         },
         {
+          title: "Manage Passbook",
+          href: "/manage-client-passbook",
+        },
+        {
           title: "Speed Enrollments",
           href: "#",
         },
       ],
-      links:["new-enrollment",'update-cis','cgt-entry','/add-enrollment','/manage-enrolled-cgt','/credit-appraisal','/manage-client/:id','/client-grt']
+      links:["new-enrollment",'update-cis','cgt-entry','/add-enrollment','/manage-enrolled-cgt','/credit-appraisal','/manage-client/:id','/client-grt', '/manage-client-passbook']
     },
     {
       title: "Centers Info",

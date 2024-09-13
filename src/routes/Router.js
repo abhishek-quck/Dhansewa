@@ -45,6 +45,7 @@ const UserAccess = lazy(()=>import("../views/ui/hr/UserAccess.js"))
 const EditProfile = lazy(()=>import("../views/EditProfile.js"))
 const BankMaster = lazy(()=>import("../views/ui/management/BankMaster.js"))
 const UpdateCIS = lazy(()=>import("../views/ui/enrollment/UpdateCIS.js"))
+const ManagePassbook = lazy(()=>import("../views/ui/enrollment/ManagePassbook.js"))
 const ManageProduct = lazy(()=>import("../views/ui/management/ManageProduct.js"))
 const AccountLedger = lazy(()=> import("../views/ui/accounts/AccountLedger.js"))
 const Dashboard = lazy(() => import("../views/Dashboard.js"));
@@ -162,6 +163,15 @@ const ThemeRoutes = [
         element: (
         <ProtectedRoute permission={constant.EDIT_ENROLL}>
           <UpdateCIS />
+        </ProtectedRoute>
+        )
+      },
+      { 
+        path: "/manage-client-passbook", 
+        exact: true, 
+        element: (
+        <ProtectedRoute permission={constant.EDIT_ENROLL}>
+          <ManagePassbook />
         </ProtectedRoute>
         )
       },
