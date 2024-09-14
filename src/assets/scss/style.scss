@@ -236,7 +236,7 @@ background: var(--main-color);
     border: none;
     background-color: transparent;
 }
-.ledger-revise table tr td:nth-child(odd){
+.ledger-revise table:not(.ledger-table) tr td:nth-child(odd){
     width: 210px;    
 }
 .table-gold tr{ 
@@ -329,4 +329,7 @@ td button {
 }
 .action-btn:hover {
     background-color: #bbd1c7;
+}
+.ledger-table td:not(.serial) {
+    max-width: 84px!important;
 }

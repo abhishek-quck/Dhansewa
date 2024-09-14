@@ -325,7 +325,7 @@ const LedgerRevise = () => {
         <CardFooter>
             <div className="mt-3" id="resultArea">  
             { hitSearch ?
-            <Table hover bordered dashed={'true'} style={{fontSize:'small'}}>
+            <Table hover bordered dashed={'true'} className="ledger-table" style={{fontSize:'small'}}>
                 <thead style={{fontSize:'smaller'}}>
                     <tr>
                         <th> EMI N. </th>
@@ -339,9 +339,7 @@ const LedgerRevise = () => {
                         <th> ATTEND </th>
                         <th> RECEIPT N. </th>
                         <th> STAFF ID </th>
-                        <th> SEQ </th>
                         <th> OTHER </th>
-                        <th> DateStamp </th>
                         {/* <th> <Input type="checkbox" onClick={doSomething}/> </th> */}
                     </tr>
                 </thead>
@@ -349,8 +347,8 @@ const LedgerRevise = () => {
                     {ledgerContent.length ? ledgerContent.map((row,index)=>{
                         return (
                             <tr key={index}>
-                                <td> <Input type="text" disabled value={ row.emi_no } /> </td>
-                                <td> <Input type="date" disabled value={ row.transaction_date } /> </td>
+                                <td className="serial"> <b className="p-2">{ row.emi_no }</b> </td>
+                                <td className="transaction_date"><span>{ row.transaction_date }</span></td>
                                 <td> <Input type="text" name="pr_due" defaultValue={ row.pr_due } /> </td>
                                 <td> <Input type="text" name="int_due" defaultValue={ row.int_due } /> </td>
                                 <td> <Input type="text" name="total_due" defaultValue={ row.total_due } /> </td>
@@ -360,10 +358,7 @@ const LedgerRevise = () => {
                                 <td> <Input type="text" name="attend" defaultValue={ row.attend } /> </td>
                                 <td> <Input type="text" name="receipt_no" defaultValue={ row.receipt_no } /> </td>
                                 <td> <Input type="text" name="staff_id" defaultValue={ row.staff_id } /> </td>
-                                <td> <Input type="text" disabled value={index+1} /> </td>
                                 <td> <Input type="text" defaultValue={ row.other??'' } /> </td>
-                                <td> <Input type="text" disabled value={ row.created_at } /> </td>
-                                {/* <td> <Input type="checkbox" onClick={()=>null}/> </td> */}
                             </tr>
                         )
                         })
@@ -373,7 +368,7 @@ const LedgerRevise = () => {
                 <tfoot>
                     <tr>
                         <td> <b> Total </b> </td>
-                        <td> <b> Row Count: {ledgerContent.length}</b> </td>
+                        <td> <b> Count: {ledgerContent.length}</b> </td>
                         <td> <b>{''}</b> </td>
                         <td> <b>{''}</b> </td>
                         <td> <b>{''}</b> </td>
@@ -384,8 +379,6 @@ const LedgerRevise = () => {
                         <td> <b>{''}</b> </td>
                         <td> <b>{''}</b> </td>
                         <td> <b> 0 </b> </td>
-                        <td> <b>{''}</b> </td>
-                        <td> <b>{''}</b> </td>
                     </tr>
                 </tfoot>
             </Table>
