@@ -236,7 +236,7 @@ background: var(--main-color);
     border: none;
     background-color: transparent;
 }
-.ledger-revise table:not(.ledger-table) tr td:nth-child(odd){
+.ledger-revise table tr td:nth-child(odd){
     width: 210px;    
 }
 .table-gold tr{ 
@@ -330,6 +330,45 @@ td button {
 .action-btn:hover {
     background-color: #bbd1c7;
 }
-.ledger-table td:not(.serial) {
-    max-width: 84px!important;
-}
+ 
+.pdf {font-weight: 600;}
+.pdf body { margin: 20px 120px; }
+.pdf .d-flex{ display: flex;}
+.pdf .center {font-family: sans-serif;}
+.pdf table { border-collapse: collapse;width: 80%;margin-left: 10%; }
+.pdf .header-table table td, th { border: 2px solid black;text-align: center;padding: 0px;height:40px;font-weight: 600; }
+.pdf table div {font-size: 15px;}
+.pdf .head { margin-bottom: 20px;margin-top: 80px; }
+.pdf .left { text-align: left;padding-left: 10px; }
+.pdf .header-table { width:70%;padding:8px; }
+.pdf .header-table table{ margin-top: 15px; }
+.pdf .header-ends { width:15%; border:2px solid; padding:8px; }
+.pdf .header-ends:last-of-type{display:flex;justify-content:center;align-items:center;}
+.pdf .blocks { display: flex; margin-top:16%; margin-left:5%; }
+.pdf .cell {border:2px solid black; height:15px; width:15px;margin-left: 6px;margin-top: 3px; }
+.pdf .header-table table tr td:nth-child(even){ width:10%;width:120px }
+.pdf .header-table table tr td:nth-child(odd){ border:0px }
+.pdf .box { height:auto;min-height:250px; width:50%; border: 2px solid; }
+.pdf .box:first-child .text-row {margin: 30px 40px}
+.pdf .raw:nth-child(2) .box:nth-child(2) .text-row {margin:25px 40px}
+.pdf .raw:first-child .box:nth-child(2) .text-row {margin:40px 60px}
+.pdf .raw { margin-top: 5%; display: flex; width:80%;margin-left: 10%; }
+.pdf .raw:nth-child(even){ margin-top: 40px; }
+.pdf .box:nth-child(even){ margin-left: 5%; }
+.pdf .text-row{display:flex;justify-content:space-between}
+.pdf .box-input {float:right;border-bottom:2px dashed;min-width:220px;max-width:300px;}
+.pdf .footer-table, .second-last-table, .Opera { margin-top:40px; }
+.pdf .footer-table td,.second-last-table td{ border:2px solid; }
+.pdf .footer-table tr:first-child{ height:90px; }
+.pdf .footer-table td .span { width: 50%;margin-left:10px }
+.pdf .footer-table tr:last-child td {padding:6px}
+.pdf .footer-table:nth-child(2) td {padding:12px}
+.pdf .Opera {border:2px solid;width:35%;border-left:0px}
+.pdf .second-last-table {width:65%;}
+.pdf .second-last-table td {width:20%;padding: 14px;}
+.pdf .second-last-table:last-child {margin-bottom: 15px;}
+.pdf .header-table table tr:first-child td:nth-child(6) {width:50px!important}
+.pdf .table-last {margin-top:30px;border:2px solid;font-size: 15px;}
+.pdf .table-last td{padding:15px; font-size: 14px;}
+.pdf .table-item {height:50%;padding: 15px;}
+.pdf .page2{ margin-top:340px }

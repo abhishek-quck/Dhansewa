@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Form, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Row } from 'reactstrap';
 import { capitalFirst, getDocumentName, validate } from '../../../helpers/utils';
 import ReactSelect from 'react-select';
@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 function ManageClient() {
 
     const dispatch = useDispatch();
+    const navigateTo = useNavigate();
     const {id} = useParams();
     const [fields, setFields]       = useState({});
     const [reply, setReply]         = useState({status:'',remark:''});
@@ -38,10 +39,13 @@ function ManageClient() {
         }
         dispatch({ type:'LOADING' })
         axios.post('update-client-appraisal-status', {...reply, enroll_id: id }).then(({ data }) => {
-            if( data.sanction_letter ) {
-                preview([data.sanction_letter.data], data.sanction_letter.file_name )
-            }
+            // if( data.sanction_letter ) {
+            //     preview([data.sanction_letter.data], data.sanction_letter.file_name )
+            // }
             toast.success(data.message);
+            if(data.loan) {
+                navigateTo('/print-sanction-letter/'+data.loan.loan_id)
+            }
         }).catch(err=>{
             console.log(err)
             toast.error(err.response.data.message ?? err.message)

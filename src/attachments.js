@@ -2,6 +2,8 @@ import $ from 'jquery'
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { dataURLtoFile } from './helpers/utils';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 var Attachments =
 {
     messageOrigin: null,
@@ -152,7 +154,7 @@ var Attachments =
             }
         } 
     },
-    print: function(id, sFunction)
+    print: async function(id, sFunction)
     { 
         let oIframe=document.querySelector('iframe[name="_print"]');
         if (oIframe === null)
@@ -161,7 +163,29 @@ var Attachments =
             oIframe.name='_print';
             document.body.appendChild(oIframe);
         }
-        oIframe.src=[axios.defaults.baseURL, sFunction, id].join('/');   
+        // oIframe.src=[axios.defaults.baseURL, sFunction, id].join('/');   
+        // oIframe.src='http://localhost:3000/#/dashboard';   
+        // const input = oIframe.contentDocument || oIframe.contentWindow.document;
+        let html = '';
+        let {data} = await axios.get('toPdf');
+        html = data
+        try {
+                const canvas = await html2canvas(html)
+                const imgData = canvas.toDataURL('image/png')
+                const data = new jsPDF({
+                    orientation : 'portrait',
+                    unit : 'px',
+                    format : 'a4',
+                });
+                const width = data.internal.pageSize.getWidth();
+                const height = (canvas.height * width)/ canvas.width;
+                data.addImage(imgData, 'PNG', 0, 0, width, height, '','MEDIUM' )
+                data.save('abc.pdf');
+
+            } catch (e) {
+                console.log(e) 
+            }
+
     }
 }
 

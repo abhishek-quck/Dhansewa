@@ -1,3 +1,4 @@
+import $ from "jquery";
 import axios from "axios";
 import React, { useEffect, useState } from "react"; 
 import { useDispatch } from "react-redux";
@@ -54,7 +55,10 @@ const AddEnrollment = () => {
     }
 
     useEffect(() => {
-        axios.get('get-branches').then(({data})=> fillBranches(data)).catch()
+        axios.get('get-branches').then(({data})=> {
+            fillBranches(data)
+            $('#getGRTs').trigger('click')
+        }).catch()
     },[])
 
     return (
@@ -106,7 +110,7 @@ const AddEnrollment = () => {
                                 placeholder="Search Name / Aadhaar"
                                 onChange={setChange}
                             />
-                            <button className="btn btn-sm btn-danger mx-4"> Pending GRT </button>
+                            <button id="getGRTs" className="btn btn-sm btn-danger mx-4"> Pending GRT </button>
                         </div>
                         </Col > 
                     </Row>   

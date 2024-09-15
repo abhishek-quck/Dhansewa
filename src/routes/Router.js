@@ -56,6 +56,7 @@ const CGTEntry = lazy(() => import("../views/ui/enrollment/CGTEntry"));
 const CibilUpload = lazy(() => import("../views/ui/enrollment/CibilUpload.js"));
 const CreditAppraisal = lazy(() => import("../views/ui/enrollment/CreditAppraisal.js"));
 const ManageClient = lazy(() => import("../views/ui/enrollment/ManageClient.js"));
+const PrintSanctionLetter = lazy(() => import("../views/PrintSanctionLetter.js"));
 
 /*****Routes******/
 
@@ -154,6 +155,15 @@ const ThemeRoutes = [
         element: (
         <ProtectedRoute permission={constant.EDIT_ENROLL}>
           <ManageClient />
+        </ProtectedRoute>
+        )
+      },
+      { 
+        path: "/print-sanction-letter/:loanId", 
+        exact: true, 
+        element: (
+        <ProtectedRoute permission={constant.EDIT_ENROLL}>
+          <PrintSanctionLetter />
         </ProtectedRoute>
         )
       },

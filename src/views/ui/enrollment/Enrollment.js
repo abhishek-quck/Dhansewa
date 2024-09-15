@@ -1,3 +1,4 @@
+import $ from "jquery";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -48,6 +49,7 @@ const Enrollment = () => {
 		axios.get('get-branches')
 		.then(({data})=>{
 			setBranches(data)
+			$('#searchEnrolls').trigger('click')
 		})
 		.catch( err => {
 			console.log(err.message)
@@ -94,7 +96,7 @@ const Enrollment = () => {
 							value={fields.term}
 							onChange={e=>setFields({...fields,[e.target.name]:e.target.value})}
 						/>
-						<button type="submit" className="btn btn-primary">
+						<button type="submit" id="searchEnrolls" className="btn btn-primary">
 							<i className="fa fa-search" />
 						</button>
 					</div>

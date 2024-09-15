@@ -1,3 +1,4 @@
+import $ from "jquery";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -62,7 +63,10 @@ const EditEnrollment = () => {
 
 	useEffect(() => {
 
-		axios.get('get-branches').then(({data})=> setBranches(data) )
+		axios.get('get-branches').then(({data})=> {
+			setBranches(data) 
+			$('#editEnrolls').trigger('click')
+		})
 
 	},[])
 	return (
@@ -101,7 +105,7 @@ const EditEnrollment = () => {
 								value={fields.term}
 								onChange={e=>setFields({...fields,[e.target.name]:e.target.value})}
 							/>
-							<button type="submit" className="btn btn-primary">
+							<button type="submit" id="editEnrolls" className="btn btn-primary">
 								<i className="fa fa-search" />
 							</button>
 						</div>
@@ -143,28 +147,28 @@ const EditEnrollment = () => {
 					(data.length ? data.map((row,index)=>{
 						return (<tr key={index}>
 							<td>
-                               {hasPermission(EDIT_ENROLL,'edit') && <button className="btn-primary btn-sm btn">
+                               {hasPermission(EDIT_ENROLL,'edit') ? <button className="btn-primary btn-sm btn">
                                     <Link 
 										to={'/edit-enrolled/'+row.id} 
 										className="text-decoration-none text-white"
 									> 
 										Manage 
 									</Link>
-                                </button> }
+                                </button> : null }
                             </td>
-							<td>{index+1}</td>
-							<td>{row.applicant_name}</td>
-							<td>{row.district??'N/A'}</td>
-							<td>{row.phone}</td>
-							<td>{row.village??'N/A'}</td>
-							<td>{row.center_id??'N/A'}</td>
-							<td>{row.aadhaar}</td>
-							<td>{row.type??'N/A'}</td> 
+							<td><span>{index+1}</span></td>
+							<td><span>{row.applicant_name}</span></td>
+							<td><span>{row.district??'N/A'}</span></td>
+							<td><span>{row.phone}</span></td>
+							<td><span>{row.village??'N/A'}</span></td>
+							<td><span>{row.center_id??'N/A'}</span></td>
+							<td><span>{row.aadhaar}</span></td>
+							<td><span>{row.type??'N/A'}</span></td> 
 						</tr>)
 					}):
 					searched && <tr>
 						<td colSpan={6} className="text-center text-danger">
-							No records found!
+							<span>No records found!</span>
 						</td>
 					</tr>))
 					: (

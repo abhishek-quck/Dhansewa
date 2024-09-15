@@ -33,7 +33,6 @@ function ManagePassbook() {
     const [centers, setCenters]       = useState([]);
     const [clients, setClients]       = useState([]);
     const [passbook, setPassbook]     = useState(null)
-    const [isOpen, setIsOpen]         = useState(false);
     const [modal, setModal]           = useState(false);
     const toggleModal = () => setModal(!modal);
 
@@ -120,7 +119,7 @@ function ManagePassbook() {
 
         e.preventDefault();
 
-        let fd = new FormData
+        let fd = new FormData()
         fd.append('enroll_id', fields.client )
         fd.append('doc_id', POST_APPRAISAL_DOC )
         fd.append('passbook', passbook )
@@ -162,7 +161,7 @@ function ManagePassbook() {
         <div>
             <Card>
                 <CardHeader>
-                    <b> PREVIEW DOCUMENTS </b>
+                    <b> Manage Passbook </b>
                 </CardHeader>
                 <CardBody>
                     <Container>
