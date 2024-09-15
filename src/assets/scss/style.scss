@@ -336,7 +336,7 @@ td button {
 .pdf .d-flex{ display: flex;}
 .pdf .center {font-family: sans-serif;}
 .pdf table { border-collapse: collapse;width: 80%;margin-left: 10%; }
-.pdf .header-table table td, th { border: 2px solid black;text-align: center;padding: 0px;height:40px;font-weight: 600; }
+.pdf .header-table td, .pdf .header-table th { border: 2px solid black;text-align: center;padding: 0px;height:40px;font-weight: 600; }
 .pdf table div {font-size: 15px;}
 .pdf .head { margin-bottom: 20px;margin-top: 80px; }
 .pdf .left { text-align: left;padding-left: 10px; }
