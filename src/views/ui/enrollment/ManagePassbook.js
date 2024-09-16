@@ -132,7 +132,10 @@ function ManagePassbook() {
 				"Authorization":"Bearer "+localStorage.getItem('auth-token')
 			}
 		})
-        .then(({data})=> toast.success(data.message))
+        .then(({data})=> {
+            toast.success(data.message);
+            fetch(fields.client)
+        })
         .catch( e => {
             console.log(e.message)
             toast.error('Something went wrong!')
@@ -214,18 +217,19 @@ function ManagePassbook() {
                                                 <td>
                                                     { row.documents.length ? (
                                                         <>
-                                                        <span 
-                                                            className='text-decoration-none text-dark' data-id={row.id} 
+                                                        <button 
+                                                            className='btn text-dark' data-id={row.id} 
                                                             onClick={()=>previewDoc([row.documents[0].data], row.documents[0].file_name)} 
-                                                            style={{cursor:'pointer'}}
+                                                            style={{cursor:'pointer',border:'1px dashed'}}
                                                         > 
+                                                            Preview &nbsp;
                                                             {
                                                                 (row.documents[0].data).includes('application/pdf') ? 
                                                                 <i className='fs-3 fa-regular fa-file-pdf'/> : 
                                                                 <i className='fa fa-paperclip'/> 
                                                             }
-                                                        </span> &nbsp;&nbsp;
-                                                        <Button className='action-btn' onClick={toggleModal}> Manage </Button>
+                                                        </button> &nbsp;&nbsp;
+                                                        <Button className='btn-light action-btn' onClick={toggleModal}> Manage </Button>
                                                         </>
                                                     ) : (
                                                         <Button className='btn-primary' onClick={toggleModal} > Upload </Button>
