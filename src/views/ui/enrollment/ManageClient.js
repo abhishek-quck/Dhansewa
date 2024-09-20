@@ -30,7 +30,7 @@ function ManageClient() {
 	}
 
     const handleSubmit = e => {
-        e.preventDefault(); // prevent to nhi kr paaye tum , likh kyo rhe fir ?
+        e.preventDefault(); 
         const {shouldGo, result} = validate(reply)
         if( shouldGo===false )
         {
@@ -39,9 +39,6 @@ function ManageClient() {
         }
         dispatch({ type:'LOADING' })
         axios.post('update-client-appraisal-status', {...reply, enroll_id: id }).then(({ data }) => {
-            // if( data.sanction_letter ) {
-            //     preview([data.sanction_letter.data], data.sanction_letter.file_name )
-            // }
             toast.success(data.message);
             if(data.loan) {
                 navigateTo('/print-sanction-letter/'+data.loan.loan_id)
