@@ -29,7 +29,7 @@ function PrintDocs() {
 
     const printPassbook = async() => {
         dispatch({type:'LOADING'})
-        console.log(fields)
+ 
         return axios.get('print-passbook/'+fields.client,
             {
             responseType:'blob',
@@ -91,6 +91,29 @@ function PrintDocs() {
     const updateClient = (e) => {
         setFields({...fields, client:e.value})
         fetch(e.value)
+    }
+
+    const downloadSanction = () => {
+        
+        dispatch({type:'LOADING'})
+        return axios.get('download-sanction/'+fields.client,
+        {
+            responseType:'blob',
+            headers:{
+                "Content-Type": "multipart/form-data",
+                "Authorization":"Bearer "+localStorage.getItem('auth-token')
+            }}
+        ).then(({data}) => {
+            const href = URL.createObjectURL(data)
+            const link = document.createElement('a')
+            link.href  = href 
+            link.download='Sanction_'+fields.client+'.pdf' // Don't ignore <3
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(href)
+        })
+        .finally( ()=> dispatch({type:'STOP_LOADING'}))
     }
 
     const fetch = (clientID) => {
@@ -278,7 +301,7 @@ function PrintDocs() {
                                                 <td> {row.p_out} </td>
                                                 <td> {row.int_out} </td>
                                                 <td> 
-                                                    <Link to='#' className='text-decoration-none'>
+                                                    <Link to='#' onClick={downloadSanction} className='text-decoration-none'>
                                                         Sanction Letter
                                                     </Link> 
                                                 </td>

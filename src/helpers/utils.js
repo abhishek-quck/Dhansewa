@@ -176,5 +176,6 @@ export const getDocumentName = str => {
     if( str.toLowerCase().includes('kyc') ) return 'KYC Document';
     if( str.toLowerCase().includes('first') ) return 'CGT_FIRST';
     if( str.toLowerCase().includes('second') ) return 'CGT_SECOND';
+    if( str.toLowerCase().includes('cibil') ) return 'CIBIL';
     return 'Document '+ str;
 }
