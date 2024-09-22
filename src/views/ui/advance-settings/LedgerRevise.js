@@ -106,11 +106,9 @@ const LedgerRevise = () => {
 		.then(({data}) => {
             if(data.centers) setCenters(data.centers)
             if(data.branches) setBranches(data.branches)
-            if(data.clients)
+            if(data.clients) 
             {
-                let arr= [];
-                data.clients.forEach( item => arr.push({value:item.value, label:item.label}) ); 
-                setClients(arr)   
+                setClients(data.clients.map( item => ({value:item.value, label:item.label})))   
             }
 		}).finally(()=>dispatch({type:'STOP_LOADING'}));
 		

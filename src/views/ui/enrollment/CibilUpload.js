@@ -13,8 +13,8 @@ function CibilUpload() {
     
     const CIBIL = {docEnum}
     const [targetInfo, setTargetInfo] = useState([])
-    const [cibil, setCibil]     = useState(null)
-    const [modal, setModal]     = useState(false);
+    const [cibil, setCibil] = useState(null)
+    const [modal, setModal] = useState(false);
     const toggleModal = () => setModal(!modal);
     const [fields, setFields]= useState({
         branch:'',
@@ -45,13 +45,7 @@ function CibilUpload() {
         clientRef.current?.clearValue()
         dispatch({type:'LOADING'})
         axios.get('get-branch-centers/'+ e.value).then(({data})=> {
-            let options=[]
-            if(data.length) {
-                for (const item of data) {
-                    options.push({ value: item.id, label: item.name})
-                }
-            }
-            setCenters(options)
+            setCenters(data.map( item => ({ value: item.id, label: item.name})))
             setClients([])
         }).catch(err=>{
             console.log(err.message)

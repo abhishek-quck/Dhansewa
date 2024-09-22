@@ -5,16 +5,18 @@ import { useDispatch } from 'react-redux';
 import ReactSelect from 'react-select';
 import { validate } from '../../../helpers/utils';
 import ErrorMessage from '../../../layouts/error/ErrorMessage';
+import toast from 'react-hot-toast';
 // import { DataGrid } from '@mui/x-data-grid';
 // import Loader from '../../../layouts/loader/Loader'
 
 function AccountLedger() {
 	const dispatch = useDispatch()
     let initialState= { branch:'', accountName:'', from:'',to:'' }
-	const [fields,setFields] = useState(initialState)
-	const [errors,setErrors] = useState(initialState)
-    const [branches , setBranches] = useState([])
-	const [data, setData] = useState([])
+	const [data, setData]         = useState([])
+	const [fields,setFields]      = useState(initialState)
+	const [errors,setErrors]      = useState(initialState)
+    const [branches, setBranches] = useState([])
+    const [accounts, setAccounts] = useState([])
 	const handleSubmit = e => {
         e.preventDefault()
         let {result,shouldGo} = validate(fields,[])
@@ -39,14 +41,13 @@ function AccountLedger() {
     useEffect(()=>{
         axios.get('get-branches')
         .then(({data})=>{
-            let options = []
-            for(let index of data)
-            {
-                options.push({value:index.id, label:index.name})
-            }
-            console.log(options)
-            setBranches(options)
-        })
+           
+            setBranches(data.map(item=>({value:item.id, label:item.name})))
+
+            axios.get('get-accounts').then(({data}) => setAccounts(data.map(item => ({label:item.name, value:item.id}))))
+            .catch(()=> toast.error('Something went wrong with accounts!'))
+            
+        }).catch(_=> toast.error('Something went wrong!'))
     },[])
 
     // Generate EXCEL
@@ -117,17 +118,12 @@ function AccountLedger() {
                                                     A/C Name
                                                     <span className='text-danger'>*</span> 
                                                 </Label>
-                                                <Input 
-                                                    name="accountName"
-                                                    type="select"  
-													onChange={ e=>
-														setFields({...fields, [e.target.name]:e.target.value })
-													}
-                                                >
-                                                  <option>{' '}</option>
-                                                  <option> Axis Bank Disbursement </option>
-                                                  <option> Electricity Bill </option>
-                                                </Input>
+                                                <ReactSelect 
+                                                    name="account"
+                                                    className='w-100'
+                                                    options={accounts}
+													onChange={ e => setFields({...fields, account:e.value })}
+                                                />
                                             </div>
                                         </Col > 
                                         </Row>

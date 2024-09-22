@@ -20,11 +20,7 @@ function PartialCollection() {
         setSearchField({...sFields, branch:e.value})
         dispatch({ type:'LOADING' })
         axios.get('get-branch-centers/'+ e.value).then(({data})=> {
-            let options=[]
-            if(data.length) {
-                data.forEach( item => options.push({ value: item.id, label: item.name}))
-            }
-            setCenters(options)
+            setCenters(data.map(item => ({ value: item.id, label: item.name})))
             setClients([])
         }).catch(err=>{
             console.log(err.message)
@@ -53,11 +49,8 @@ function PartialCollection() {
     useEffect(() => {
     
         axios.get('get-branches')
-        .then(({ data }) => {
-            let options = [];
-            data.forEach(item => options.push({value:item.id, label:item.name}) );
-            setBranches(options);
-        })
+        .then(({ data }) => setBranches(data.map(item => ({ value: item.id, label: item.name}))))
+        .catch(()=> {})
 
     },[]);
 

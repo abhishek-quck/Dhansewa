@@ -5,7 +5,9 @@ const isAdmin = JSON.parse(localStorage.getItem('isAdmin'))??false;
 const permMap = JSON.parse(localStorage.getItem('permMap'))??{}
 const myInfo = JSON.parse(localStorage.getItem('auth-user'))??{}
 const permissions = JSON.parse(localStorage.getItem('permissions'))??{}
-const review_clients = JSON.parse(localStorage.getItem('review_clients'))??[]
+const review_clients = JSON.parse(localStorage.getItem('review_clients'))??[];
+const loanProducts = JSON.parse(localStorage.getItem('loanProducts'))??{}
+const loanProductID = JSON.parse(localStorage.getItem('loanProductID'))??undefined
 async function getUserDetails () {
   try {
     return axios.get('user').then(resp=>resp.data)  
@@ -33,7 +35,9 @@ const initialState = {
     isAdmin,
     permissions,
     permMap,
-    review_clients
+    review_clients,
+    loanProductID,
+    loanProducts,
 }
 
 const authReducer = (state=initialState,action) => {
@@ -151,6 +155,18 @@ const authReducer = (state=initialState,action) => {
             return {
                 ...state,
                 review_clients:action.payload
+            }
+        case 'SET_LOAN_PRODUCTS':
+            localStorage.setItem('loanProducts', JSON.stringify(action.payload??{}));
+            return {
+                ...state,
+                loanProducts:action.payload
+            }
+        case 'CHOOSEN_LOAN_PRODUCT':
+            localStorage.setItem('loanProductID', JSON.stringify(action.payload??{}));
+            return {
+                ...state,
+                loanProductID:action.payload
             }
         default : return state
     }

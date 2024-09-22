@@ -84,12 +84,11 @@ const AddGRT = () => {
 	
 		let branch_id = fields.branch || fields.branch_id;
 		axios.get('get-branch-centers/'+ branch_id )
-		.then(({data})=>{
-			let bCenters = [];
-			data.forEach( item => bCenters.push({value:item.id, label:item.name}) );
-		    fillCenters(bCenters)
+		.then(({data}) => {
+ 		    fillCenters(data.map( item => ({value:item.id, label:item.name})))
 			axios.get('documents').then(({data})=> setDocuments(data) ).catch(err=>console.log(err))
-		}).catch()
+		}).catch(e=>{})
+
 	}
 
 	const previewDoc = () => {

@@ -113,6 +113,7 @@ function PrintDocs() {
             document.body.removeChild(link)
             URL.revokeObjectURL(href)
         })
+        .catch(()=> toast.error('File not found!'))
         .finally( ()=> dispatch({type:'STOP_LOADING'}))
     }
 
@@ -162,12 +163,6 @@ function PrintDocs() {
                                 <ReactSelect
                                     onChange={updateCenter}
                                     options={centers}
-                                />
-                            </Col>                               
-                            <Col>
-                                <Label> Groups </Label>
-                                <ReactSelect
-                                    options={groups}
                                 />
                             </Col>                               
                             <Col>

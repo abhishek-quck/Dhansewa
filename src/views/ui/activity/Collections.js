@@ -34,10 +34,10 @@ function Collections() {
             setCollections(data)
             if(data.length)
             {
-                let totalDue = data.reduce( (acc,item) => acc + parseFloat(item.dues), 0 )
+                let totalDue = data.reduce( (acc,item) => acc + parseFloat(item.due), 0 )
                 let totalCollected = data.reduce( (acc,item) => acc + item.collected?? 0 , 0 )
-                let totalCenter = data.reduce( (acc,item) => acc + item.centers_count, 0 )
-                let totalClient = data.reduce( (acc,item) => acc + item.clients_count, 0 )
+                let totalCenter = data.reduce( (acc,item) => acc + item.total_center, 0 )
+                let totalClient = data.reduce( (acc,item) => acc + item.total_client, 0 )
                 let totalDBC = data.reduce( (acc,item) => acc + item.dbc, 0 )
                 let totalDisb = data.reduce( (acc,item) => acc + item.disb, 0 )
 
@@ -82,15 +82,15 @@ function Collections() {
                         return (
                             <tr key={i}>
                                 <td>{i+1}</td>                    
-                                <td>{row.name}</td>
+                                <td>{row.branch.name}</td>
                                 <td>{row.date??currentDate}</td>
-                                <td>{row.dues??0}</td>
+                                <td>{row.due??0}</td>
                                 <td>{row.collected??0}</td>
-                                <td>{row.centers_count}</td>
-                                <td>{row.clients_count}</td>
-                                <td>{row.DBC??0}</td>
+                                <td>{row.total_center}</td>
+                                <td>{row.total_client}</td>
+                                <td>{row.dbc??0}</td>
                                 <td>{row.disb??0}</td>
-                                <td><Link to={'/view-center-collections/'+row.id} className='btn btn-primary'> View Center </Link></td>
+                                <td><Link to={'/view-center-collections/'+row.branch_id} className='btn btn-primary'> View Center </Link></td>
                             </tr>
                         )
                     })} 

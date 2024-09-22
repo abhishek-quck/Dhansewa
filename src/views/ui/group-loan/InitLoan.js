@@ -52,13 +52,7 @@ function InitLoan() {
         setFields({...fields, branch:e.value})
         dispatch({type:'LOADING'})
         axios.get('get-branch-centers/'+ e.value).then(({data})=> {
-            let options=[]
-            if(data.length) {
-                for (const item of data) {
-                    options.push({ value: item.id, label: item.name})
-                }
-            }
-            setCenters(options)
+            setCenters(data.map( item => ({ value: item.id, label: item.name})))
             axios.get('get-branch-client-info/'+ e.value).then(({data})=> setClients(data.data))
         }).catch(err=>{
             console.log(err.message)
@@ -87,7 +81,7 @@ function InitLoan() {
     useEffect(()=> {
 
         dispatch({ type:'LOADING' });
-        axios.get('get-options').then(({data}) => setBranches(data.branches) ).catch()
+        axios.get('get-options').then(({data}) => setBranches(data.branches) ).catch(e=>{})
         .finally(() => dispatch({ type:'STOP_LOADING' }))
 
     },[dispatch]);

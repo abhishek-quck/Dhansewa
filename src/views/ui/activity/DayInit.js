@@ -56,9 +56,7 @@ function DayInit() {
                             id='branch'
                         >
                             <option value={''}> Select Branch </option>
-                            {branches.map(opt => {
-                                return <option key={opt.id} value={opt.id}>{opt.name}</option>
-                            })}
+                            { branches.map( opt => <option key={opt.id} value={opt.id}>{opt.name}</option> ) }
                         </Input>
                         <Button color="primary"> <i className='fa fa-search'/> </Button>
                     </div>
@@ -142,7 +140,8 @@ function DayInit() {
                         <p> Day Initialization is process of generate all collection of clients as per scheduled collection plan. </p>
                     </Col>
                     <Col md={6}>
-                        <button type='submit' className='btn btn-primary' disabled={!branch.id || !checked} style={{float:'right'}}> Next Day Initialization </button>
+                        <button type='submit' className='btn btn-primary' disabled={!branch.id || !checked} 
+                        style={{float:'right'}}> Next Day Initialization </button>
                     </Col>
                 </Row>
                 <Row>
