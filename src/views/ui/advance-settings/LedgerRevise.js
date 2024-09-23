@@ -4,19 +4,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import ReactSelect from "react-select";
-import { 
-  Card,
-  CardBody,
-  Form,
-  FormGroup,
-  Label,
-  Input, 
-  Row,
-  Col,
-  CardFooter,
-  CardHeader,
-  Table, 
-} from "reactstrap";
+import { Card, CardBody, Form, FormGroup, Label, Input, Row, Col, CardFooter, CardHeader, Table } from "reactstrap";
 
 const LedgerRevise = () => { 
 
@@ -48,14 +36,36 @@ const LedgerRevise = () => {
     });
 
     const dispatch = useDispatch();
-
     const [fields, setFields] = useState({ })
-
     const checkStyle = { marginTop:'10px', marginRight:'8px' };
-
     const setSearchInputs = e => setSearchFields({...searchfields, [e.target.name]:e.target.value })
-     
     const handleChange = e => setFields({...fields, [e.target.name]:e.target.value})
+
+    const updateBranch = (e) => {
+        setSearchFields({...searchfields, branch:e.value})
+        dispatch({type:'LOADING'})
+        axios.get('get-branch-centers/'+ e.value).then(({data})=> {
+            setCenters(data.map(item => ({ value: item.id, label: item.name})))
+            setClients([])
+        }).catch(err => {
+            console.log(err.message)
+            setCenters([])
+            setClients([])
+        }).finally(()=>dispatch({type:'STOP_LOADING'}))
+    }
+    
+    const updateCenter = (e) => {
+        setSearchFields({...searchfields, center:e.value})
+        dispatch({type:'LOADING'})
+        axios.get('get-center-clients/'+e.value )
+        .then(({data})=> setClients(data))
+        .catch(err=>{
+            console.log(err.message)
+            toast.error('Something went wrong!');
+            setClients([])
+        }).finally(()=>dispatch({type:'STOP_LOADING'}))
+        // setClients(allData['clients'][e.value])
+    }    
 
     const doSomething = () => { }
 
@@ -103,14 +113,8 @@ const LedgerRevise = () => {
 
         dispatch({type:'LOADING'})
         axios.get('get-options/all')
-		.then(({data}) => {
-            if(data.centers) setCenters(data.centers)
-            if(data.branches) setBranches(data.branches)
-            if(data.clients) 
-            {
-                setClients(data.clients.map( item => ({value:item.value, label:item.label})))   
-            }
-		}).finally(()=>dispatch({type:'STOP_LOADING'}));
+		.then(({data}) => setBranches(data.branches))
+        .finally(()=> dispatch({ type:'STOP_LOADING' }));
 		
     }
 
@@ -136,6 +140,7 @@ const LedgerRevise = () => {
                         <ReactSelect 
                             id="exampleEmail"
                             options={branches}
+                            onChange={updateBranch}
                         />
                     </Col > 
                     <Col md="3">
@@ -144,6 +149,7 @@ const LedgerRevise = () => {
                     <ReactSelect 
                         id="center"
                         name="center"
+                        onChange={updateCenter}
                         options={centers}
                     />
                     </Col > 
@@ -296,12 +302,12 @@ const LedgerRevise = () => {
                                     </tbody>
                                 </table>
                             </Row> 
+                        </CardBody>
+                        {view.id && <CardFooter>
                             <h5>Ledger Information</h5>
                             <div className="resultArea"></div>
-                        </CardBody>
-                        <CardFooter>
                             <button className="btn btn-rounded btn-success"> Ledger Regenerate </button>
-                        </CardFooter>
+                        </CardFooter> }
                     </Card>
                 </div> 
                 <div className="col-md-4 offset-1">
