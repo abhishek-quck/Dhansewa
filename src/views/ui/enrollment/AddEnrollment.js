@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useRef, useState } from "react"; 
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { 
@@ -83,6 +83,15 @@ const AddEnrollment = () => {
 	const onChange = e => {
 		e.target.style.border=''
 		const {name, value} = e.target;
+		if(name==='verification_type') {
+			if(value == 2) {
+				document.querySelector('input[name=verification]').max = 12
+				document.querySelector('input[name=verification]').min = 12
+			} else {
+				document.querySelector('input[name=verification]').max = 10
+				document.querySelector('input[name=verification]').min = 10
+			}
+		} 
 		setFields({...fields, [name]:value})
 	}
 	const handlePassbook = e => {
