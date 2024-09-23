@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap';
 import { formatDate, getCurrentDay, getCurrentTime } from '../../../helpers/utils';
 
@@ -30,8 +31,8 @@ function DayInit() {
         dispatch({type:'LOADING'})
         axios.get('day-init/'+ branch.id )
         .then(({data})=> {
-            console.log(data)
-        }).catch( err => console.log(err.message))
+            toast.success(data.message)
+        }).catch( err => toast.success("Something went wrong!"))
         .finally(()=> dispatch({type:'STOP_LOADING'}));
 
     }
