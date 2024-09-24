@@ -70,7 +70,7 @@ const AddEnrollment = () => {
         account_num:'',
         is_debit_card:'',
 	}) 
-
+	const [file, setRelProof] = useState(null)
 	const [Nominee, setNominee] = useState(NomineeInitial={
 		nominee:'',
         nominee_dob:'',
@@ -124,6 +124,7 @@ const AddEnrollment = () => {
 		}
 		fd.append('kyc', KYCdoc )
 		fd.append('passbook', passbook )
+		if(file) fd.append('rel_proof', file)
 		axios.post('/add-enrollment', fd , {
 			headers:{
 				"Accept":"application/json",
@@ -1031,8 +1032,8 @@ const AddEnrollment = () => {
 								<Input
 									id="rel_proof" 
 									name="rel_proof"
-									type="select"
-									onChange={e=>setNominee({...Nominee, rel_proof: e.target.value})}
+									type="file"
+									onChange={e=> setRelProof(e.target.files[0])}
 									style={{border:errors.rel_proof ?'1px solid red':''}}
 								>
 									<option></option>
