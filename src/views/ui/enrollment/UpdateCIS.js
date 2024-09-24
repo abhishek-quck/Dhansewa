@@ -11,6 +11,7 @@ function UpdateCIS() {
     const {id}      = useParams()
     const dispatch  = useDispatch()
     const [doc, setDoc]             = useState({b64:null,blob:null})
+    const [relProof, setRelProof]   = useState(null)
     const [districts, setDistricts] = useState([])
     const [KYCtypes, setKYCtypes]   = useState([])
     const [states, setStates]       = useState([])
@@ -125,6 +126,7 @@ function UpdateCIS() {
             }
         }
         formData.append('kyc_doc', doc.blob);
+        if(relProof) formData.append('rel_proof', relProof );
         if(review_clients.includes(typeof id==='string'? parseInt(id): id)) {
             formData.append('review', true);
         }
@@ -959,9 +961,8 @@ function UpdateCIS() {
                                     </Label>
                                     <Input
                                         id="rel_proof" 
-                                        name="rel_proof"
-                                        type="select"
-                                        onChange={onChange}
+                                        type="file"
+                                        onChange={e=>setRelProof(e.target.files[0])}
                                         style={{border:errors.rel_proof ?'1px solid red':''}}
                                     >
                                         <option></option>
