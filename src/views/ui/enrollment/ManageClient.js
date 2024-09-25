@@ -111,7 +111,7 @@ function ManageClient() {
                                     <Col md={12}>
                                         <div className={'d-flex'} >
                                             <Label className="col-4" size={'sm'} > 
-                                                { getDocumentName(doc.file_name) }    
+                                                { getDocumentName(doc.document_id) }    
                                             </Label>
                                             <button 
                                                 className='btn' 

@@ -165,17 +165,21 @@ export const capitalFirst = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export const getDocumentName = str => {
+export const getDocumentName = id => {
 
-    if( str.toLowerCase().includes('vote') ) return 'VOTER CARD';
-    if( str.toLowerCase().includes('adhaa') ) return 'AADHAAR CARD';
-    if( str.toLowerCase().includes('assbook') ) return 'BANK PASSBOOK';
-    if( str.toLowerCase().includes('visit') ) return 'GRT VISIT PHOTO';
-    if( str.toLowerCase().includes('group') ) return 'GRT GROUP PHOTO';
-    if( str.toLowerCase().includes('pan') ) return 'PAN CARD';
-    if( str.toLowerCase().includes('kyc') ) return 'KYC Document';
-    if( str.toLowerCase().includes('first') ) return 'CGT_FIRST';
-    if( str.toLowerCase().includes('second') ) return 'CGT_SECOND';
-    if( str.toLowerCase().includes('cibil') ) return 'CIBIL';
-    return 'Document '+ str;
+    const documents = {
+        1 : 'VISIT PHOTO',
+        2 : 'AADHAAR CARD',
+        3 : 'VOTER CARD',
+        4 : 'GROUP PHOTO',
+        5 : 'CGT_FIRST',
+        6 : 'CGT_SECOND',
+        7 : 'CIBIL',
+        8 : 'SANCTION LETTER',
+        9 : 'KYC',
+        10 : 'BANK PASSBOOK',
+        11 : 'RELATION PROOF DOCUMENT',
+    }
+    return documents[id];
+    
 }
