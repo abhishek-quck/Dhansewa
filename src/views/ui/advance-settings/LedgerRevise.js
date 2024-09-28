@@ -332,7 +332,7 @@ const LedgerRevise = () => {
             <Table hover bordered dashed={'true'} className="ledger-table" style={{fontSize:'small'}}>
                 <thead style={{fontSize:'smaller'}}>
                     <tr>
-                        <th colSpan={12}>
+                        <th >
                             <div className="d-flex" >
                                 <div> EMI N. </div>
                                 <div> TRAN DATE </div>
@@ -354,7 +354,7 @@ const LedgerRevise = () => {
                     {ledgerContent.length ? ledgerContent.map((row,index)=>{
                         return (
                             <tr key={index}>
-                                <td colSpan={12}>
+                                <td >
                                     <div className="d-flex" >
                                         <div> <b className="p-2">{ row.emi_no }</b> </div>      
                                         <div> {row.transaction_date}</div>
@@ -378,7 +378,7 @@ const LedgerRevise = () => {
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colSpan={12}>
+                        <td >
                             <div className="d-flex" style={{height:'30px'}}>
                                 <div> <b> Total </b> </div>
                                 <div> <b> Count: {ledgerContent.length}</b> </div>
