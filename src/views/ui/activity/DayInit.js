@@ -32,7 +32,7 @@ function DayInit() {
         axios.get('day-init/'+ branch.id )
         .then(({data})=> {
             toast.success(data.message)
-        }).catch( err => toast.success("Something went wrong!"))
+        }).catch( err => toast.error(err.response.data.message??"Something went wrong!"))
         .finally(()=> dispatch({type:'STOP_LOADING'}));
 
     }

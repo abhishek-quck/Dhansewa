@@ -1,4 +1,5 @@
 import $ from 'jquery'
+const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 export const validate = (fields,exceptions=[]) => {
     let result={}
     var shouldGo=true;
@@ -119,7 +120,6 @@ export const formatDate = (date=null,format='Ymd') => {
 }
 
 export const getCurrentDay = () => {
-    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     return daysOfWeek[(new Date()).getDay()];
 }
 

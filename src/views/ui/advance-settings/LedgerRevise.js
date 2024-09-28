@@ -332,37 +332,44 @@ const LedgerRevise = () => {
             <Table hover bordered dashed={'true'} className="ledger-table" style={{fontSize:'small'}}>
                 <thead style={{fontSize:'smaller'}}>
                     <tr>
-                        <th> EMI N. </th>
-                        <th> TRAN DATE </th>
-                        <th> PR-DUE </th>
-                        <th> INT-DUE </th>
-                        <th> T-DUE </th>
-                        <th> PR-COLTD </th>
-                        <th> INT-COLTD </th>
-                        <th> T-COLTD </th>
-                        <th> ATTEND </th>
-                        <th> RECEIPT N. </th>
-                        <th> STAFF ID </th>
-                        <th> OTHER </th>
-                        {/* <th> <Input type="checkbox" onClick={doSomething}/> </th> */}
+                        <th colSpan={12}>
+                            <div className="d-flex" >
+                                <div> EMI N. </div>
+                                <div> TRAN DATE </div>
+                                <div> PR-DUE </div>
+                                <div> INT-DUE </div>
+                                <div> T-DUE </div>
+                                <div> PR-COLTD </div>
+                                <div> INT-COLTD </div>
+                                <div> T-COLTD </div>
+                                <div> ATTEND </div>
+                                <div> RECEIPT N. </div>
+                                <div> STAFF ID </div>
+                                <div> OTHER </div>
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {ledgerContent.length ? ledgerContent.map((row,index)=>{
                         return (
                             <tr key={index}>
-                                <td className="serial"> <b className="p-2">{ row.emi_no }</b> </td>
-                                <td className="transaction_date"><span>{ row.transaction_date }</span></td>
-                                <td> <Input type="text" name="pr_due" defaultValue={ row.pr_due } /> </td>
-                                <td> <Input type="text" name="int_due" defaultValue={ row.int_due } /> </td>
-                                <td> <Input type="text" name="total_due" defaultValue={ row.total_due } /> </td>
-                                <td> <Input type="text" name="pr_collected" defaultValue={ row.pr_collected } /> </td>
-                                <td> <Input type="text" name="int_collected" defaultValue={ row.int_collected } /> </td>
-                                <td> <Input type="text" name="total_collected" defaultValue={ row.total_collected } /> </td>
-                                <td> <Input type="text" name="attend" defaultValue={ row.attend } /> </td>
-                                <td> <Input type="text" name="receipt_no" defaultValue={ row.receipt_no } /> </td>
-                                <td> <Input type="text" name="staff_id" defaultValue={ row.staff_id } /> </td>
-                                <td> <Input type="text" defaultValue={ row.other??'' } /> </td>
+                                <td colSpan={12}>
+                                    <div className="d-flex" >
+                                        <div> <b className="p-2">{ row.emi_no }</b> </div>      
+                                        <div> {row.transaction_date}</div>
+                                        <div> <Input type="text" name="pr_due" defaultValue={ row.pr_due } /> </div>
+                                        <div> <Input type="text" name="int_due" defaultValue={ row.int_due } /> </div>
+                                        <div> <Input type="text" name="total_due" defaultValue={ row.total_due } /> </div>
+                                        <div> <Input type="text" name="pr_collected" defaultValue={ row.pr_collected } /> </div>
+                                        <div> <Input type="text" name="int_collected" defaultValue={ row.int_collected } /> </div>
+                                        <div> <Input type="text" name="total_collected" defaultValue={ row.total_collected } /> </div>
+                                        <div> <Input type="text" name="attend" defaultValue={ row.attend } /> </div>
+                                        <div> <Input type="text" name="receipt_no" defaultValue={ row.receipt_no } /> </div>
+                                        <div> <Input type="text" name="staff_id" defaultValue={ row.staff_id } /> </div>
+                                        <div> <Input type="text" defaultValue={ row.other??'' } /> </div>
+                                    </div>
+                                </td>
                             </tr>
                         )
                         })
@@ -371,18 +378,22 @@ const LedgerRevise = () => {
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td> <b> Total </b> </td>
-                        <td> <b> Count: {ledgerContent.length}</b> </td>
-                        <td> <b>{''}</b> </td>
-                        <td> <b>{''}</b> </td>
-                        <td> <b>{''}</b> </td>
-                        <td> <b>{''}</b> </td>
-                        <td> <b>{''}</b> </td>
-                        <td> <b>{''}</b> </td>
-                        <td> <b> Pending:0 </b> </td>
-                        <td> <b>{''}</b> </td>
-                        <td> <b>{''}</b> </td>
-                        <td> <b> 0 </b> </td>
+                        <td colSpan={12}>
+                            <div className="d-flex" style={{height:'30px'}}>
+                                <div> <b> Total </b> </div>
+                                <div> <b> Count: {ledgerContent.length}</b> </div>
+                                <div> <b>{''}</b> </div>
+                                <div> <b>{''}</b> </div>
+                                <div> <b>{''}</b> </div>
+                                <div> <b>{''}</b> </div>
+                                <div> <b>{''}</b> </div>
+                                <div> <b>{''}</b> </div>
+                                <div> <b> Pending:0 </b> </div>
+                                <div> <b>{''}</b> </div>
+                                <div> <b>{''}</b> </div>
+                                <div> <b> 0 </b> </div>   
+                            </div>
+                        </td>
                     </tr>
                 </tfoot>
             </Table>

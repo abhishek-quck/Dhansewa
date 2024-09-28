@@ -61,9 +61,7 @@ function DayClose() {
                             style={{width:'30%'}}
                         >
                             <option> Select Branch </option>
-                            {branches.map(opt => {
-                                return <option key={opt.id} value={opt.id}>{opt.name}</option>
-                            })}
+                            {branches.map(opt => <option key={opt.id} value={opt.id}>{opt.name}</option>)}
                         </Input>
                         <Button color="primary"> <i className='fa fa-search'/> </Button>
                     </div>
@@ -99,8 +97,8 @@ function DayClose() {
                         </thead>
                         <tbody>
                             {
-                                collection.map(item=>{
-                                    return (<tr key={item.id}>
+                                collection.map( (item, index) => {
+                                    return (<tr key={index}>
                                         <td><span>{item.total_client}</span></td>
                                         <td><span>{item.due_amount}</span></td>
                                         <td><span>{0}</span></td>

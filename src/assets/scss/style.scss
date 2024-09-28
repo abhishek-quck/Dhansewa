@@ -372,3 +372,17 @@ td button {
 .pdf .table-last td{padding:15px; font-size: 14px;}
 .pdf .table-item {height:50%;padding: 15px;}
 .pdf .page2{ margin-top:340px }
+.ledger-table td .d-flex div, th .d-flex div {
+    width:100px;
+    place-content: center;
+    text-align: center;
+}
+.ledger-table td .d-flex div:not(:last-child), th .d-flex div:not(:last-child) {
+    border-right: 1px solid ;
+}
+.ledger-table td .d-flex div:first-child, th .d-flex div:first-child {
+    width:80px
+}
+.ledger-revise td .d-flex input {
+    border: 0.5px solid;
+}
