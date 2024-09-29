@@ -2,6 +2,7 @@ import axios from "axios"
 let userToken = localStorage.getItem('auth-token') ?? null
 const menus = JSON.parse(localStorage.getItem('menus'))??[];
 const isAdmin = JSON.parse(localStorage.getItem('isAdmin'))??false;
+const branchNames = JSON.parse(localStorage.getItem('branches'))??{}
 const permMap = JSON.parse(localStorage.getItem('permMap'))??{}
 const myInfo = JSON.parse(localStorage.getItem('auth-user'))??{}
 const permissions = JSON.parse(localStorage.getItem('permissions'))??{}
@@ -21,6 +22,7 @@ const initialState = {
     loading:false,
     myInfo,
 	theme:localStorage.getItem('theme')??'Light',
+    branchNames,
     userToken,
     error: null,
     errorCode:null,
@@ -97,6 +99,13 @@ const authReducer = (state=initialState,action) => {
 				...state,
 				theme: action.payload
 			}
+    
+		case 'BRANCHES' :
+            localStorage.setItem('branches', JSON.stringify(action.payload))
+			return {
+				...state,
+				branchNames: action.payload
+			}        
 		case 'SEARCH':
 			return {
 				...state,

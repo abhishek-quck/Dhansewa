@@ -109,9 +109,25 @@ const LedgerRevise = () => {
         .finally(()=>dispatch({type:'STOP_LOADING'}));
     }
 
+    const udpateLedger = e => {
+ 
+        const {name, value, dataset} = e.target;
+        dispatch({ type:'LOADING' })
+        
+        axios.put('update-client-ledger', {
+            transaction_id: dataset.id,
+            enroll_id: searchfields.client, 
+            field: name, 
+            value
+        })
+        .then(({data}) => toast.success(data.message))
+        .finally(()=> dispatch({ type:'STOP_LOADING' }))
+
+    }
+
     const init = () => {
 
-        dispatch({type:'LOADING'})
+        dispatch({ type:'LOADING' })
         axios.get('get-options/all')
 		.then(({data}) => setBranches(data.branches))
         .finally(()=> dispatch({ type:'STOP_LOADING' }));
@@ -358,16 +374,16 @@ const LedgerRevise = () => {
                                     <div className="d-flex" >
                                         <div> <b className="p-2">{ row.emi_no }</b> </div>      
                                         <div> {row.transaction_date}</div>
-                                        <div> <Input type="text" name="pr_due" defaultValue={ row.pr_due } /> </div>
-                                        <div> <Input type="text" name="int_due" defaultValue={ row.int_due } /> </div>
-                                        <div> <Input type="text" name="total_due" defaultValue={ row.total_due } /> </div>
-                                        <div> <Input type="text" name="pr_collected" defaultValue={ row.pr_collected } /> </div>
-                                        <div> <Input type="text" name="int_collected" defaultValue={ row.int_collected } /> </div>
-                                        <div> <Input type="text" name="total_collected" defaultValue={ row.total_collected } /> </div>
-                                        <div> <Input type="text" name="attend" defaultValue={ row.attend } /> </div>
-                                        <div> <Input type="text" name="receipt_no" defaultValue={ row.receipt_no } /> </div>
-                                        <div> <Input type="text" name="staff_id" defaultValue={ row.staff_id } /> </div>
-                                        <div> <Input type="text" defaultValue={ row.other??'' } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="pr_due" defaultValue={ row.pr_due } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="int_due" defaultValue={ row.int_due } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="total_due" defaultValue={ row.total_due } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="pr_collected" defaultValue={ row.pr_collected } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="int_collected" defaultValue={ row.int_collected } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="total_collected" defaultValue={ row.total_collected } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="attend" defaultValue={ row.attend } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="receipt_no" defaultValue={ row.receipt_no } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="staff_id" defaultValue={ row.staff_id } /> </div>
+                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="other" defaultValue={ row.other??'' } /> </div>
                                     </div>
                                 </td>
                             </tr>

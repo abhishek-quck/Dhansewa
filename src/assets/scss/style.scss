@@ -386,3 +386,14 @@ td button {
 .ledger-revise td .d-flex input {
     border: 0.5px solid;
 }
+.hinting {
+    min-height: 50px;
+    width: auto;
+    min-width: 100px;
+    position: fixed;
+    z-index: 999;
+    background-color: burlywood;
+    border-radius: 10px;
+    padding: 15px;
+    right: 0;
+}

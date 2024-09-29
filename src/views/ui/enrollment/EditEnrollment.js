@@ -1,5 +1,5 @@
 import $ from "jquery";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { 
@@ -29,9 +29,9 @@ const EditEnrollment = () => {
 	const [searched, hitSearch]= useState(false)
 	const [showSearch, setSearch] = useState(false)
 	const [reviewList, setReviewList] = useState([])
-	const enrollTerm= useSelector( state => state.auth.enrollTerm )
+	const {enrollTerm, branchNames}= useSelector( state => state.auth )
 	const [fields, setFields] = useState({ term:enrollTerm||'',branch:'' })
-
+	const searchRef = useRef(null)
 	const { data, error, isLoading } = useSearchEnrollmentsQuery(fields, {
 		skip:enrollTerm === null
 	})
@@ -48,17 +48,19 @@ const EditEnrollment = () => {
 		dispatch({ type:'SEARCH_ENROLLED', payload:fields })
 	}
 
-	const fetchResubmit = () => {
+	const fetchReSubmit = () => {
 		setSearch(false)
 		dispatch({ type:'LOADING' })
 		axios.get('get-review-clients').then(({data}) => {
-			
-			let ids = [];
-			data.forEach( elem => ids.push(elem.id));
-			dispatch({ type:'SET_REVIEW_CLIENTS', payload:ids });
+			let obj = {}
+			data.forEach( item => {
+				obj[item.id] = item.remarks
+			});
+			// console.log(obj)
+			dispatch({ type:'SET_REVIEW_CLIENTS', payload: obj });
 			setReviewList(data);
 
-		}).catch().finally(() => dispatch({ type:'STOP_LOADING' }))
+		}).catch(e=>{}).finally(() => dispatch({ type:'STOP_LOADING' }))
 	}
 
 	useEffect(() => {
@@ -105,7 +107,7 @@ const EditEnrollment = () => {
 								value={fields.term}
 								onChange={e=>setFields({...fields,[e.target.name]:e.target.value})}
 							/>
-							<button type="submit" id="editEnrolls" className="btn btn-primary">
+							<button type="submit" id="editEnrolls" ref={searchRef} className="btn btn-primary">
 								<i className="fa fa-search" />
 							</button>
 						</div>
@@ -113,10 +115,10 @@ const EditEnrollment = () => {
 					<Col xs="6" >
 						<Button 
 							type="button" 
-							className="btn mt-4 offset-8 resubmit"
-							onClick={fetchResubmit}
+							className={`btn mt-4 offset-8 ${showSearch?'resubmit':'btn-primary'}`}
+							onClick={showSearch? fetchReSubmit: ()=>searchRef.current.click()}
 						>
-							Re-submit List
+							{showSearch? 'Re-submit List':'Show Updated'}
 						</Button>
 					</Col>
 				</Row>
@@ -136,7 +138,7 @@ const EditEnrollment = () => {
 						<th> Address </th>
 						<th> Phone </th>
 						<th> Village </th>
-						<th> Center ID </th>
+						<th> {showSearch? 'Center ID':'Branch'} </th>
 						<th> Aadhaar </th>
 						<th> {showSearch? 'Type':'Remarks'} </th>
 					</tr>
@@ -189,9 +191,9 @@ const EditEnrollment = () => {
 							<td>{row.district??'N/A'}</td>
 							<td>{row.phone}</td>
 							<td>{row.village??'N/A'}</td>
-							<td>{row.center_id??'N/A'}</td>
+							<td>{branchNames[row.branch_id]??'N/A'}</td>
 							<td>{row.aadhaar}</td>
-							<td>{row.appraisal.remarks??'N/A'}</td> 
+							<td>{row.remarks??'N/A'}</td> 
 							</tr>)
 						})
 					)

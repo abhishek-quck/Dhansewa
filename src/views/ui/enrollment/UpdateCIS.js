@@ -10,20 +10,20 @@ import { validate } from '../../../helpers/utils'
 function UpdateCIS() {
     const {id}      = useParams()
     const dispatch  = useDispatch()
+    const {review_clients}          = useSelector( state => state.auth )
+    const [showHint, setHint]       = useState(Object(review_clients).hasOwnProperty(id))
     const [doc, setDoc]             = useState({b64:null,blob:null})
     const [relProof, setRelProof]   = useState(null)
     const [districts, setDistricts] = useState([])
     const [KYCtypes, setKYCtypes]   = useState([])
     const [states, setStates]       = useState([])
-    const [branches, setBranches]   = useState([])
-    const {review_clients, client_remarks} = useSelector( state => state.auth )
-    const [showHint, setHint]       = useState(Object(client_remarks).hasOwnProperty(id))
+    const [hitsubmit, setSubmit]       = useState([])
     const submitStyle = { 
         position:'fixed',
         maxWidth:'360px',
         left:'40%',
         top:'90%',
-        zIndex:'121'
+        zIndex:121
     }
     const [fields, updateFields] = useState({
         client_id:'',
@@ -83,7 +83,7 @@ function UpdateCIS() {
         email:'',
         guarantor:'',
     })
-    const [errors, setErrors] = useState(fields)
+
     const onChange = e => {
         if(e?.target) {
             updateFields({...fields, [e.target.name]:e.target.value})
@@ -126,7 +126,7 @@ function UpdateCIS() {
         }
         formData.append('kyc_doc', doc.blob);
         if(relProof) formData.append('rel_proof', relProof );
-        if(review_clients.includes(typeof id==='string'? parseInt(id): id)) {
+        if(review_clients[(typeof id==='string'? parseInt(id): id)]) {
             formData.append('review', true);
         }
         axios.post('update-additional-enroll-information', formData, {
@@ -137,8 +137,14 @@ function UpdateCIS() {
             }
         })
         .then(({data})=> {
-            localStorage.setItem('review_clients', JSON.stringify( review_clients.filter( item => item !== parseInt(id)) ));
+            let updatedClients = JSON.parse(JSON.stringify(review_clients))
+            delete updatedClients[id]
+            dispatch({
+                type: 'SET_REVIEW_CLIENTS',
+                payload: updatedClients
+            })
             toast.success(data.message)
+            setSubmit(!hitsubmit)
         } )
         .catch(err=> toast.error(err.message) )
         .finally(()=>dispatch({type:'STOP_LOADING'}));
@@ -152,7 +158,6 @@ function UpdateCIS() {
 		.then(({ data }) => {
 			if(data.state) setStates(data.state)
 			if(data.district) setDistricts(data.district)
-			if(data.branches) setBranches(data.branches)
 			if(data.documents) setKYCtypes(data.documents)
                 
             axios.post('get-enrollment-details/'+id )
@@ -187,13 +192,13 @@ function UpdateCIS() {
         .finally(()=> dispatch({type:'STOP_LOADING'}) )
 		
         return ()=> null
-    },[])
+    },[hitsubmit])
 
     return (
     <>
         {showHint && (
-            <div className='text-center'>
-                <b className='text-white'>{client_remarks[id]}</b>
+            <div className='text-center hinting'>
+                <b className='text-white'>{review_clients[id]}</b>
             </div>
         )}
         <div>
@@ -232,7 +237,6 @@ function UpdateCIS() {
                                     onChange={onChange}
                                     value={fields.aadhaar}
                                     placeholder="Enter Aadhaar no"
-                                    style={{border:errors.branch ?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -244,7 +248,7 @@ function UpdateCIS() {
                                     <Input 
                                         type="select" 
                                         className={'xs'} 
-                                        style={{width:120,border:errors.verification_type ?'1px solid red':''}}
+                                        style={{width:120}}
                                         name="verification_type"
                                         onChange={onChange}
                                         value={fields.verification_type}
@@ -260,7 +264,6 @@ function UpdateCIS() {
                                     onChange={onChange}
                                     placeholder="Enter other KYC No"
                                     defaultValue={fields.verification}
-                                    style={{border:errors.verification ?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -271,12 +274,11 @@ function UpdateCIS() {
                                 <Label className="col-4"  size={'sm'} for="member_name">Member Name</Label>
                                 <Input
                                     id="member_name" 
-                                    name="member_name"
+                                    name="applicant_name"
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.applicant_name}
                                     placeholder="Enter member name"
-                                    style={{border:errors.applicant_name ?'1px solid red':''}}
                                 /> 
                                     
                             </div>
@@ -293,7 +295,6 @@ function UpdateCIS() {
                                     onChange={onChange}
                                     defaultValue={fields.father_name}
                                     placeholder="Enter father name"
-                                    style={{border:errors.father_name ?'1px solid red':''}}
                                 /> 
                                     
                             </div>
@@ -311,7 +312,6 @@ function UpdateCIS() {
                                     onChange={onChange}
                                     defaultValue={fields.date_of_birth}
                                     placeholder="Enter Date of Birth"
-                                    style={{border:errors.date_of_birth ?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -328,7 +328,6 @@ function UpdateCIS() {
                                     onChange={onChange}
                                     defaultValue={fields.phone}
                                     placeholder={"Enter phone"}
-                                    style={{border:errors.phone ?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -345,7 +344,6 @@ function UpdateCIS() {
                                     onChange={onChange}
                                     defaultValue={fields.alt_phone}
                                     placeholder={"Enter alternate phone number"}
-                                    style={{border:errors.alt_phone ?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -360,7 +358,6 @@ function UpdateCIS() {
                                     type="select"
                                     onChange={onChange}
                                     value={fields.gender}
-                                    style={{border:errors.gender ?'1px solid red':''}}
                                 >
                                     <option >   </option>
                                     <option value="male">Male</option>
@@ -379,7 +376,6 @@ function UpdateCIS() {
                                     type="select"
                                     onChange={onChange}
                                     value={fields.marital_status}
-                                    style={{border:errors.marital_status ?'1px solid red':''}}
                                 >
                                     <option > </option>
                                     <option value="male"> Single </option>
@@ -400,7 +396,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.education}
-                                    style={{border:errors.education ?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -415,7 +410,6 @@ function UpdateCIS() {
                                     type="select"
                                     onChange={onChange}
                                     value={fields.religion}
-                                    style={{border:errors.religion ?'1px solid red':''}}
                                 >
                                     <option > </option>
                                     <option value={'Hindu'}> Hindu </option>
@@ -437,7 +431,6 @@ function UpdateCIS() {
                                     type="select"
                                     onChange={onChange}
                                     value={fields.category}
-                                    style={{border:errors.category ?'1px solid red':''}}
                                 >
                                     <option> </option>
                                     <option value={'Gen'}>  General </option>
@@ -462,7 +455,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.door_num}
-                                    style={{border:errors.door_num?'1px solid red':''}}
                                     placeholder="Enter door no"
                                 />
                             </div>
@@ -479,7 +471,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.crossing}
-                                    style={{border:errors.crossing?'1px solid red':''}}
                                     placeholder="Enter crossing"
                                 />
                             </div>
@@ -496,7 +487,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.street}
-                                    style={{border:errors.street?'1px solid red':''}}
                                     placeholder="Enter street"
                                 />
                             </div>
@@ -513,7 +503,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.landmark}
-                                    style={{border:errors.landmark?'1px solid red':''}}
                                     placeholder="Enter landmark"
                                 />
                             </div>
@@ -530,7 +519,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.postal_pin}
-                                    style={{border:errors.postal_pin?'1px solid red':''}}
                                     placeholder="Enter postal pin"
                                 />
                             </div>
@@ -547,7 +535,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.village}
-                                    style={{border:errors.village?'1px solid red':''}}
                                     placeholder="Enter village"
                                 />
                             </div>
@@ -564,7 +551,6 @@ function UpdateCIS() {
                                     type="select"
                                     onChange={onChange}
                                     value={fields.state}
-                                    style={{border:errors.state?'1px solid red':''}}
                                 >
                                     <option> </option>
                                     {states.map( opt => <option key={opt.value} value={opt.value}> {opt.label} </option> )}
@@ -583,7 +569,6 @@ function UpdateCIS() {
                                     type="select"
                                     onChange={onChange}
                                     value={fields.district}
-                                    style={{border:errors.district?'1px solid red':''}}
                                 >
                                     <option>  </option>
                                     {districts.map( opt => <option key={opt.value} value={opt.value}>{ opt.label }</option> )}
@@ -606,7 +591,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.ifsc}
-                                    style={{border:errors.ifsc?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -624,7 +608,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.bank}
-                                    style={{border:errors.bank?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -642,7 +625,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.bank_branch}
-                                    style={{border:errors.bank_branch?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -660,7 +642,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.account_num}
-                                    style={{border:errors.account_num?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -678,7 +659,6 @@ function UpdateCIS() {
                                     type="text"
                                     onChange={onChange}
                                     defaultValue={fields.is_debit_card}
-                                    style={{border:errors.is_debit_card?'1px solid red':''}}
                                 />
                             </div>
                             </Col > 
@@ -696,7 +676,6 @@ function UpdateCIS() {
                                     type="select"
                                     onChange={onChange}
                                     value={fields.is_account_active}
-                                    style={{border:errors.is_account_active?'1px solid red':''}}
                                 >
                                     <option>   </option>
                                     <option value={'yes'}> Yes </option>
@@ -716,7 +695,7 @@ function UpdateCIS() {
                                     <Input 
                                         type='select'
                                         className={'xs'} 
-                                        style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
+                                        style={{width:150}}
                                         name="kyc_type"
                                         onChange={onChange}
                                         value={fields.kyc_type}
@@ -729,7 +708,6 @@ function UpdateCIS() {
                                     type="file"
                                     name='doc'
                                     onChange={handleFile}
-                                    style={{border:errors.verification ?'1px solid red':''}}
                                 />
                             </div>
                             {doc.b64 && 
@@ -757,7 +735,7 @@ function UpdateCIS() {
                                             <Input 
                                                 type="select" 
                                                 className={'xs'} 
-                                                style={{width:90,border:errors.co_applicant_rel ?'1px solid red':''}}
+                                                style={{width:90}}
                                                 name="co_applicant_rel"
                                                 onChange={onChange}
                                                 value={fields.co_applicant_rel}
@@ -774,7 +752,6 @@ function UpdateCIS() {
                                             onChange={onChange}
                                             placeholder="Enter name"
                                             defaultValue={fields.co_applicant}
-                                            style={{border:errors.co_applicant ?'1px solid red':''}}
                                         />
                                     </div>
                                 </Col>
@@ -868,7 +845,6 @@ function UpdateCIS() {
                                         onChange={onChange}
                                         defaultValue={fields.nominee_aadhaar}
                                         placeholder={"Enter nominee nominee_aadhaar"}
-                                        style={{border:errors.phone ?'1px solid red':''}}
                                     />
                                 </div>
                                 </Col > 
@@ -880,7 +856,7 @@ function UpdateCIS() {
                                         <Input 
                                             type="select" 
                                             className={'xs'} 
-                                            style={{width:150,border:errors.nominee_kyc_type ?'1px solid red':''}}
+                                            style={{width:150}}
                                             name="nominee_kyc_type"
                                             onChange={onChange}
                                             value={fields.nominee_kyc_type}
@@ -897,7 +873,6 @@ function UpdateCIS() {
                                         max={fields.nominee_kyc_type==2?12:10}
                                         placeholder="Enter other KYC No"
                                         defaultValue={fields.nominee_kyc}
-                                        style={{border:errors.nominee_kyc ?'1px solid red':''}}
                                     />
                                 </div>
                                 </Col > 
@@ -913,7 +888,6 @@ function UpdateCIS() {
                                         onChange={onChange}
                                         defaultValue={fields.nominee}
                                         placeholder={"Enter nominee name"}
-                                        style={{border:errors.nominee ?'1px solid red':''}}
                                     />
                                 </div>
                                 </Col > 
@@ -928,7 +902,6 @@ function UpdateCIS() {
                                         type="date"
                                         onChange={onChange}
                                         defaultValue={fields.nominee_dob}
-                                        style={{border:errors.nominee_dob ?'1px solid red':''}}
                                     />
                                 </div>
                                 </Col > 
@@ -945,7 +918,6 @@ function UpdateCIS() {
                                         type="text"
                                         onChange={onChange}
                                         defaultValue={fields.nominee_relation}
-                                        style={{border:errors.nominee_relation ?'1px solid red':''}}
                                     />
                                 </div>
                                 </Col> 
@@ -960,7 +932,6 @@ function UpdateCIS() {
                                         id="rel_proof" 
                                         type="file"
                                         onChange={e=>setRelProof(e.target.files[0])}
-                                        style={{border:errors.rel_proof ?'1px solid red':''}}
                                     >
                                         <option></option>
                                     </Input>

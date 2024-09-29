@@ -3,7 +3,7 @@ import SalesChart from "../components/dashboard/SalesChart";
 import Summary from "../components/dashboard/Summary";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux"; 
+import { useDispatch, useSelector } from "react-redux"; 
 import IncomeChart from "../components/dashboard/IncomeChart";
 import loan from '../assets/images/loan.jpg'
 import report from '../assets/images/report.jpg'
@@ -15,6 +15,7 @@ import ComponentCard from "../components/ComponentCard";
 import axios from "axios";
 
 const Starter = () => {
+    let dispatch = useDispatch()
   let navigate = useNavigate()
   let state = useSelector(state=>state.auth)
   const [summary, setSummary] = useState({centers:0,loan_clients:0})
@@ -58,6 +59,13 @@ const Starter = () => {
       navigate('/login')  
     }
     axios.get('summary').then(({data})=> setSummary(data)).catch(err=> console.log(err.message))
+    axios.get('get-branches')
+    .then(({data})=> {
+        let branches = {}
+        data.forEach( item => (branches[item.id] = item.name));
+        dispatch({type:'BRANCHES', payload: branches })
+    })
+    .catch(err=>{})
     return ()=>null
 
   },[navigate,state.userToken,state.companyID])

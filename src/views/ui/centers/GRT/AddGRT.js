@@ -65,7 +65,7 @@ const AddGRT = () => {
             {
                 dispatch({ type:'UPDATE_GRT', payload:data })
                 setTimeout(()=> {
-                    toast.success('Record updated successfully!')
+                    toast.success(data.message??'Record updated successfully!')
                     setTimeout(()=>navigateTo('/client-grt'), 3000 )
                 })
             }
@@ -225,9 +225,7 @@ const AddGRT = () => {
 						onChange={onChange}
 					> 
 						<option> Select Center </option>
-						{centers.map((option,i)=>{
-							return <option value={option.value} key={i}>{option.label}</option>
-						})}
+						{centers.map((option,i)=> <option value={option.value} key={i}>{option.label}</option>)}
 					</Input> 
 				</div>
 				</Col> 
@@ -244,9 +242,7 @@ const AddGRT = () => {
 						onChange={onChange}
 						value={fields.district}
 					>
-						{districts.map((option,i)=>{
-							return <option key={i} value={option.value}>{option.label}</option>
-						})}
+						{districts.map((option,i)=> <option key={i} value={option.value}>{option.label}</option>)}
 					</Input>
 				</div>
 				</Col > 
@@ -263,9 +259,7 @@ const AddGRT = () => {
 							value={fields.verification_type}
 						>
 							<option> Select KYC </option>
-							{docs.map((option,i)=>{
-								return <option key={i} value={option.id}>{option.name}</option>
-							})} 
+							{docs.map((option,i)=> <option key={i} value={option.id}>{option.name}</option>)} 
 						</Input>
 					</div>
 					<Input

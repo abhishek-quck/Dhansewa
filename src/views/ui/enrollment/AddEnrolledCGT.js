@@ -36,11 +36,10 @@ function AddEnrolledCGT() {
             return toast.error('Fill the required fields!')
         }
         dispatch({ type:'LOADING' });
+
         axios.post('update-client-cgt-status', {...reply, enroll_id} )
-        .then(({data}) => {
-            console.log(data);
-            toast.success(data.message)
-        }).catch(e => console.log(e.message))
+        .then(({data}) => toast.success(data.message))
+        .catch( e => console.log(e.message))
         .finally(()=> dispatch({ type:"STOP_LOADING" }));
 
     }
