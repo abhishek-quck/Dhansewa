@@ -198,7 +198,7 @@ const LedgerRevise = () => {
                                                     <Input 
                                                         type="text"
                                                         name="search" 
-                                                        defaultValue={view.id}
+                                                        defaultValue={view.loan_id}
                                                         style={{width:'350px'}}
                                                         onChange={handleChange}
                                                         disabled

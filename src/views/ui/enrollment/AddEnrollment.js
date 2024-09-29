@@ -114,8 +114,7 @@ const AddEnrollment = () => {
 		if(shouldGo===false)
 		{
 			setErrors(result)
-			toast.error('Fill the required fields')
-			return 
+			return toast.error('Fill the required fields')
 		}
 		dispatch({type:'LOADING'})
 		let fd = new FormData()
@@ -147,9 +146,8 @@ const AddEnrollment = () => {
 		setNominee(NomineeInitial);
 	}
 
-	const handleFile = e => {
-		setKYCdoc(e.target.files[0])
-	}
+	const handleFile = e => setKYCdoc(e.target.files[0])
+
 	useEffect(()=>{
 	
 		axios.get('get-options/all')
@@ -213,9 +211,7 @@ const AddEnrollment = () => {
 							style={{border:errors.group?'1px solid red':''}}
 							placeholder="Enter group no"
 						>
-							{branches.map((option,i)=>{
-		 						return <option key={i} value={option.id}>{option.id}</option>
-							})}
+							{branches.map((option,i)=> <option key={i} value={option.id}>{option.id}</option> )}
 						</Input>
 					</div>
 					</Col > 
@@ -252,9 +248,7 @@ const AddEnrollment = () => {
 								defaultValue={fields.verification_type}
 							>
 							<option> Select </option>
-							{docs.map( option =>{
-								return <option key={option.id} value={option.id}>{option.name}</option>
-							})} 
+							{docs.map( option => <option key={option.id} value={option.id}>{option.name}</option> )} 
 							</select>
 						</div>
 						<Input
@@ -263,6 +257,7 @@ const AddEnrollment = () => {
 							type="text"
 							min="10"
 							max="10"
+							cast={fields.verification_type == 2 ? 'num': 'str'}
 							onChange={onChange}
 							placeholder="Enter KYC No"
 							defaultValue={fields.verification}
@@ -344,6 +339,8 @@ const AddEnrollment = () => {
 							name="PAN"
 							type="text"
 							onChange={onChange}
+							min={10}
+							max={10}
 							placeholder="Enter PAN No"
 							defaultValue={fields.PAN}
 							style={{border:errors.PAN ?'1px solid red':''}}
@@ -421,6 +418,7 @@ const AddEnrollment = () => {
 							name="postal_pin"
 							type="text"
 							onChange={onChange}
+							min={4}
 							defaultValue={fields.postal_pin}
 							placeholder="Enter PIN"
 							style={{border:errors.postal_pin ?'1px solid red':''}}
@@ -473,6 +471,9 @@ const AddEnrollment = () => {
 							id="alt_phone" 
 							name="alt_phone"
 							type="text"
+							min={10}
+							max={10}
+							cast={'num'}
 							onChange={onChange}
 							defaultValue={fields.alt_phone}
 							placeholder={"Enter alternate phone number"}
@@ -622,6 +623,7 @@ const AddEnrollment = () => {
 							id="door_num" 
 							name="door_num"
 							type="text"
+							cast={'num'}
 							onChange={onChange}
 							defaultValue={fields.door_num}
 							style={{border:errors.door_num?'1px solid red':''}}
@@ -706,10 +708,12 @@ const AddEnrollment = () => {
 										</Input>
 									</div>
 									<Input
-										id="voterID" 
+										id="co_applicant_name" 
 										name="co_applicant"
 										type="text"
 										onChange={onChange}
+										cast={'str'}
+										min={4}
 										placeholder="Enter name"
 										defaultValue={fields.co_applicant}
 										style={{border:errors.co_applicant ?'1px solid red':''}}
@@ -807,6 +811,7 @@ const AddEnrollment = () => {
 									id="ifsc" 
 									name="ifsc"
 									type="text"
+									min={10}
 									onChange={e=>setBank({...bank, ifsc:e.target.value })}
 									defaultValue={bank.ifsc}
 									style={{border:errors.ifsc?'1px solid red':''}}
@@ -861,6 +866,9 @@ const AddEnrollment = () => {
 									id="account_num" 
 									name="account_num"
 									type="text"
+									min={12}
+									max={16}
+									cast={'num'}
 									onChange={e=>setBank({...bank, account_num:e.target.value })}
 									defaultValue={bank.account_num}
 									style={{border:errors.account_num?'1px solid red':''}}
@@ -943,6 +951,7 @@ const AddEnrollment = () => {
 									placeholder={"Enter nominee nominee_aadhaar"}
 									min={12}
 									max={12}
+									cast={'num'}
 									style={{border:errors.phone ?'1px solid red':''}}
 								/>
 							</div>
@@ -960,8 +969,7 @@ const AddEnrollment = () => {
 										onChange={e=>setNominee({...Nominee, nominee_kyc_type: e.target.value})}
 										value={Nominee.nominee_kyc_type}
 									>
-									<option value={'voterID'}> Voter ID </option>
-									<option value={'aadhaar'}> Aadhaar </option>
+										{docs.map( option => <option key={option.id} value={option.id}>{option.name}</option> )} 
 									</Input>
 								</div>
 								<Input 

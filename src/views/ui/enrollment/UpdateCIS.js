@@ -36,7 +36,6 @@ function UpdateCIS() {
         date_of_birth:'',
         district:'',
         state:'',
-        branch_id:'',
         kyc_type:'',
         ifsc:'',
         bank:'',
@@ -111,7 +110,7 @@ function UpdateCIS() {
         for (const sfield in fields) {
             if(fields[sfield]==='' || fields[sfield]===null || fields[sfield]==='null') unrequired.push(sfield)
         }
-        let {result,shouldGo} = validate(fields,[...unrequired, 'other_info','center_id']) // other_info is relationship; center_id is null because GRT of client isn't completed yet
+        let {result,shouldGo} = validate(fields,[...unrequired, 'other_info','center_id','branch_id']) // other_info is relationship; center_id is null because GRT of client isn't completed yet
         if( shouldGo===false )
         {
             console.log(result)
@@ -178,7 +177,7 @@ function UpdateCIS() {
                     docID = ''
                 }
                 delete data.latest_document
-                updateFields({...fields, ...data, document_id:docID}) 
+                updateFields({...fields, ...data, document_id:docID, kyc_type:docID }) 
 
             })
 		}).catch(err=>{
@@ -215,14 +214,10 @@ function UpdateCIS() {
                                 <Input
                                     id="branch" 
                                     name="branch"
-                                    type="select"
-                                    defaultValue={fields.branch_id}
-                                    onChange={onChange}
-                                    style={{border:errors.branch_id ?'1px solid red':''}}
-                                >
-                                    <option > Select Branch </option>
-                                    {branches.map((option,i) => <option key={i} value={option.value}>{option.label}</option> )}
-                                </Input>
+                                    type="text"
+                                    defaultValue={fields.created_at}
+                                    disabled
+                                />
                             </div>
                             </Col > 
                         </Row>
@@ -724,7 +719,7 @@ function UpdateCIS() {
                                         style={{width:150,border:errors.kyc_type ?'1px solid red':''}}
                                         name="kyc_type"
                                         onChange={onChange}
-                                        defaultValue={fields.document_id}
+                                        value={fields.kyc_type}
                                     >
                                     <option></option>
                                     {KYCtypes.map( opt => <option key={opt.id} value={opt.id}>{opt.name}</option> )} 
@@ -890,14 +885,16 @@ function UpdateCIS() {
                                             onChange={onChange}
                                             value={fields.nominee_kyc_type}
                                         >
-                                        <option value={'voterID'}> Voter ID </option>
-                                        <option value={'aadhaar'}> Aadhaar </option>
+                                        <option></option>
+                                        {KYCtypes.map( opt => <option key={opt.id} value={opt.id}>{opt.name}</option> )} 
                                         </Input>
                                     </div>
                                     <Input 
                                         name="nominee_kyc"
                                         type="text"
                                         onChange={onChange}
+                                        min={fields.nominee_kyc_type==2?12:10}
+                                        max={fields.nominee_kyc_type==2?12:10}
                                         placeholder="Enter other KYC No"
                                         defaultValue={fields.nominee_kyc}
                                         style={{border:errors.nominee_kyc ?'1px solid red':''}}
