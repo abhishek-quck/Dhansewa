@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import ReactSelect from 'react-select';
-import { Card, CardBody, CardFooter, CardHeader, Row, Col, Label, Button, Table, CardText, Container, Form, Modal, FormGroup, Input, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Card, CardBody, CardFooter, CardHeader, Row, Col, Label, Button, Table, CardText, Container, Form, Modal, FormGroup, Input, ModalHeader, ModalBody, ModalFooter, Tooltip } from 'reactstrap';
 import docEnum from '../../../enums/documentEnum';
 
 function CibilUpload() {
@@ -22,13 +22,14 @@ function CibilUpload() {
         group:'',
         client:'',
     })
+    const [tooltipOpen, setTooltip] = useState(false)
     // options
     const [branches, setBranches] = useState([]);
     const [centers, setCenters] = useState([]);
     const [clients, setClients] = useState([]);
 
     const onFileChange = e => setCibil(e.target.files[0])
-
+    const toggle = () => setTooltip(!tooltipOpen)
     const init = () => {
         dispatch({ type:'LOADING' })
         axios.get('get-options')
@@ -126,6 +127,15 @@ function CibilUpload() {
             <Card>
                 <CardHeader>
                     <b> CIBIL UPLOAD </b>
+                    <i className='ms-2 fa-regular fa-circle-question' id='tooltip' />
+                    <Tooltip
+                        placement={'right'}
+                        isOpen={tooltipOpen}
+                        target={'tooltip'}
+                        toggle={toggle}
+                    >
+                        Upload cibil after CGT & GRT is completed!
+                    </Tooltip>
                 </CardHeader>
                 <CardBody>
                     <Row>

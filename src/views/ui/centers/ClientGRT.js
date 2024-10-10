@@ -14,7 +14,8 @@ import {
   Col,
   CardFooter,
   Table,
-  CardHeader, 
+  CardHeader,
+  Tooltip 
 } from "reactstrap";
 
 const AddEnrollment = () => { 
@@ -27,6 +28,8 @@ const AddEnrollment = () => {
         name:''
     })
     const [responseData ,setResponse] = useState([])
+    const [tooltipOpen, setTooltipOpen] = useState(false);
+    const toggle = () => setTooltipOpen(!tooltipOpen);
 
     const setChange = e => {
         setFields({...fields, [e.target.name]:e.target.value })
@@ -65,7 +68,15 @@ const AddEnrollment = () => {
         <div> 
             <Card className="col-12">
             <CardHeader tag="h6" className=" d-flex" >
-                <b>CLIENT GRT</b>
+                <b>CLIENT GRT</b> <i className ="ms-2 fa-regular fa-circle-question" id="tooltip" />
+                <Tooltip
+                    placement={'right'}
+                    isOpen={tooltipOpen}
+                    target={'tooltip'}
+                    toggle={toggle}
+                >
+                    After client CGT completes!
+                </Tooltip>
             </CardHeader>
             <CardBody>
                 <Form onSubmit={handleSearch}>

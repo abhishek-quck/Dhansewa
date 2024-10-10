@@ -2,13 +2,15 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card, CardBody, CardFooter, CardHeader, Table } from 'reactstrap';
+import { Card, CardBody, CardFooter, CardHeader, Table, Tooltip } from 'reactstrap';
 
 function CreditAppraisal() {
     
     const dispatch = useDispatch();
     const [clients, setClients] = useState([])
+    const [tooltipOpen, setTooltip] = useState(false)
 
+    const toggle = () => setTooltip(!tooltipOpen)
     useEffect(()=>{
         
         dispatch({ type: 'LOADING' })       
@@ -23,6 +25,15 @@ function CreditAppraisal() {
             <Card>
                 <CardHeader>
                     <b> CREDIT APPRAISAL </b>
+                    <i className='ms-2 fa-regular fa-circle-question' id='tooltip' />
+                    <Tooltip
+                        placement={'right'}
+                        isOpen={tooltipOpen}
+                        target={'tooltip'}
+                        toggle={toggle}
+                    >
+                        After the enrollment, CGT & GRT is completed!
+                    </Tooltip>
                 </CardHeader>
                 <CardBody>
                     <Table bordered>

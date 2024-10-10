@@ -15,6 +15,7 @@ import {
   Table,
   Spinner,
   Button,
+  Tooltip,
 } from "reactstrap";
 import { useSearchEnrollmentsQuery } from "../../../features/centerSlice";
 import toast from "react-hot-toast";
@@ -35,6 +36,9 @@ const EditEnrollment = () => {
 	const { data, error, isLoading } = useSearchEnrollmentsQuery(fields, {
 		skip:enrollTerm === null
 	})
+    const [tooltipOpen, setTooltip] = useState(false)
+
+    const toggle = () => setTooltip(!tooltipOpen)
 
 	if(error)
 	{
@@ -120,6 +124,19 @@ const EditEnrollment = () => {
 						>
 							{showSearch? 'Re-submit List':'Show Updated'}
 						</Button>
+						{showSearch &&
+							(<>
+								<i className='ms-2 fa-regular fa-circle-question' id='tooltip' />
+								<Tooltip
+									placement={'top'}
+									isOpen={tooltipOpen}
+									target={'tooltip'}
+									toggle={toggle}
+								>
+									Clients which are sent back for improvement while Credit Appraisal.
+								</Tooltip>
+							</>)
+						}
 					</Col>
 				</Row>
 				</FormGroup> 

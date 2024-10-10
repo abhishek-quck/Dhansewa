@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import ReactSelect from 'react-select'
-import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, Container, Label, Row, Table, Modal, ModalHeader, ModalBody, ModalFooter, Form, Input, FormGroup }
+import { Button, Card, CardBody, CardFooter, CardHeader, CardText, Col, Container, Label, Row, Table, Modal, ModalHeader, ModalBody, ModalFooter, Form, Input, FormGroup, Tooltip }
 from 'reactstrap'
 import { preview } from '../../../attachments'
 import docEnum from '../../../enums/documentEnum'
@@ -34,6 +34,9 @@ function ManagePassbook() {
     const [clients, setClients]       = useState([]);
     const [passbook, setPassbook]     = useState(null)
     const [modal, setModal]           = useState(false);
+    const [tooltipOpen, setTooltip] = useState(false)
+
+    const toggle = () => setTooltip(!tooltipOpen)
     const toggleModal = () => setModal(!modal);
 
     const {POST_APPRAISAL_DOC} = docEnum
@@ -159,6 +162,15 @@ function ManagePassbook() {
             <Card>
                 <CardHeader>
                     <b> Manage Passbook </b>
+                    <i className='ms-2 fa-regular fa-circle-question' id='tooltip' />
+                    <Tooltip
+                        placement={'right'}
+                        isOpen={tooltipOpen}
+                        target={'tooltip'}
+                        toggle={toggle}
+                    >
+                        For approving the bank details of a client!
+                    </Tooltip>
                 </CardHeader>
                 <CardBody>
                     <Container>
@@ -249,7 +261,7 @@ function ManagePassbook() {
             <Modal isOpen={modal} toggle={toggleModal} >
                 { isAdmin && targetInfo.length && targetInfo[0].documents.length ?
                  (<Form onSubmit={actOnPassbook}>
-                    <ModalHeader toggle={toggleModal}> Update Profile </ModalHeader>
+                    <ModalHeader toggle={toggleModal}> Send Response </ModalHeader>
                     <ModalBody>
                         <FormGroup>
                             <Label> Status </Label>

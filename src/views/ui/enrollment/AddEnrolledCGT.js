@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { capitalFirst, getDocumentName } from '../../../helpers/utils';
 import toast from 'react-hot-toast';
-import { Form, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Row } from 'reactstrap';
+import { Form, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Row, Tooltip } from 'reactstrap';
 import { useParams } from 'react-router-dom';
 import ReactSelect from 'react-select';
 import { preview } from '../../../attachments';
@@ -22,6 +22,9 @@ function AddEnrolledCGT() {
         { value : 2, label:'REJECT' },
         { value : 3, label:'FURTHER' }
     ];
+    const [tooltipOpen, setTooltip] = useState(false)
+
+    const toggle = () => setTooltip(!tooltipOpen)
 
     const previewImage = (e) => {
         let { key }= e.target.dataset
@@ -74,7 +77,16 @@ function AddEnrolledCGT() {
         <div> 
           <Card className="col-7">
             <CardHeader className="d-flex">
-              <b> CGT INFORMATION </b>
+                <b> CGT INFORMATION </b>
+                <i className='ms-2 fa-regular fa-circle-question' id='tooltip' />
+                <Tooltip
+                    placement={'top'}
+                    isOpen={tooltipOpen}
+                    target={'tooltip'}
+                    toggle={toggle}
+                >
+                    Approve or reject the CGT of any day of first or second.
+                </Tooltip>
             </CardHeader>
             <CardBody className="bg-gray-300">
                     {

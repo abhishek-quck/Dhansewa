@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Form, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Row } from 'reactstrap';
+import { Form, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Row, Tooltip } from 'reactstrap';
 import { capitalFirst, getDocumentName, validate } from '../../../helpers/utils';
 import ReactSelect from 'react-select';
 import { preview } from '../../../attachments';
@@ -16,6 +16,8 @@ function ManageClient() {
     const [fields, setFields]       = useState({});
     const [reply, setReply]         = useState({status:'',remark:''});
     const [docs, setDocs] = useState([]);
+    const [tooltipOpen, setTooltip] = useState(false)
+    const toggle = () => setTooltip(!tooltipOpen)
 
     const status = [
         { value : 1, label:'APPROVE' },
@@ -80,7 +82,15 @@ function ManageClient() {
         <div className='d-flex'>
             <Card className='col-6'>
                 <CardHeader>
-                    MANAGE CLIENT
+                    MANAGE CLIENT <i className='fa-regular fa-circle-question' id='tooltip' />
+                    <Tooltip
+                        placement={'right'}
+                        isOpen={tooltipOpen}
+                        target={'tooltip'}
+                        toggle={toggle}
+                    >
+                        After enrollment, CGT & GRT is completed, Sanction Letter will be generated here.
+                    </Tooltip>
                 </CardHeader>
                 <CardBody>
                     {

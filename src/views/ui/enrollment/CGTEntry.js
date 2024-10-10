@@ -5,12 +5,13 @@ import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ReactSelect from 'react-select'
-import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Spinner, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Spinner, Table, Tooltip } from 'reactstrap'
 import { preview } from '../../../attachments'
 import docEnum from '../../../enums/documentEnum';
 
 const CGTEntry = () => {
 
+    const [tooltipOpen, setTooltip] = useState(false)
     const {isAdmin} = useSelector( state => state.auth );
     const [sFields, setFields] = useState({ 
         branch:'', 
@@ -43,6 +44,7 @@ const CGTEntry = () => {
         }
         setModal(!modal)
     };
+    const toggle = () => setTooltip(!tooltipOpen)
 
     const previewImage = e => {
 
@@ -172,10 +174,15 @@ const CGTEntry = () => {
     <>
         <Card className="col-12">
             <CardHeader tag="h6" className="d-flex gap-auto" >
-                <span 
-                    className="mt-2 mb-2 fa-solid fa-arrow-rotate-left" 
-                />
-                <b className="m-2"> CLIENT SOURCING </b>
+                <b className="ms-2"> CLIENT SOURCING </b> <i className ="ms-2 fa-regular fa-circle-question" id="tooltip" />
+                <Tooltip
+                    placement={'right'}
+                    isOpen={tooltipOpen}
+                    target={'tooltip'}
+                    toggle={toggle}
+                >
+                    After the enrollment is completed!
+                </Tooltip>
             </CardHeader>
             <CardBody>
                 <Row>
@@ -267,11 +274,13 @@ const CGTEntry = () => {
                                                     
                                                     { ['cgt_revised','forgery'].includes(sFields.process) && isAdmin && 
                                                         !row.cgt_complete && 
-                                                        <div className='btn action-btn' >
+                                                        <>
+                                                        <div className='btn action-btn' title='Approve or reject the CGT.' >
                                                             <Link to={`/manage-enrolled-cgt/${row.id}`} className='text-decoration-none'>
                                                                 Manage
                                                             </Link>
                                                         </div>
+                                                        </>
                                                     }
                                                 </td> 
                                             </tr>)
@@ -302,16 +311,16 @@ const CGTEntry = () => {
                             <Row>
                                 <FormGroup>
                                     <Label> First Day Photo </Label>
-                                    <Input 
+                                    {!askImage.first && <Input 
                                         type='file'
                                         name='first_day'
                                         accept='image/*'
                                         onChange={handleFile}
                                         disabled={askImage.first}
-                                    />
+                                    />}
                                     {loadedImages[client] && loadedImages[client][CGT_FIRST] &&
                                     <button 
-                                        className='btn mt-2' 
+                                        className={askImage.first?'btn ms-4 mt-2':'btn mt-2'} 
                                         type='button'  
                                         data-doc_id={CGT_FIRST}
                                         onClick={ previewImage } 
@@ -322,16 +331,16 @@ const CGTEntry = () => {
                                 </FormGroup>
                                 <FormGroup>
                                     <Label> Revised Photo </Label>
-                                    <Input 
+                                    {!askImage.second && <Input 
                                         type='file'
                                         name='second_day'
                                         accept='image/*'
                                         onChange={handleFile}
                                         disabled={askImage.second}
-                                    />
+                                    />}
                                     {loadedImages[client] && loadedImages[client][CGT_SECOND] &&
                                     <button 
-                                        className='btn mt-2' 
+                                        className={ askImage.second?'btn ms-4 mt-2':'btn mt-2'} 
                                         type='button'  
                                         data-doc_id={CGT_SECOND}
                                         onClick={ previewImage } 
