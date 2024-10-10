@@ -11,7 +11,7 @@ function CibilUpload() {
     const dispatch = useDispatch();
     const clientRef = useRef(null)
     
-    const CIBIL = {docEnum}
+    const {CIBIL} = docEnum
     const [targetInfo, setTargetInfo] = useState([])
     const [cibil, setCibil] = useState(null)
     const [modal, setModal] = useState(false);
