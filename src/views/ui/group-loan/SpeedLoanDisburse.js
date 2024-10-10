@@ -519,7 +519,7 @@ const SpeedLoanDisburse = () => {
                                         onChange={e=>setFields({...fields,payment_mode:e.value})}
                                         name="payment_mode"
                                         className="payment_mode"
-                                        value={fields.payment_mode}
+                                        defaultInputValue={fields.payment_mode}
                                         options={paymentOptions}
                                     />
                                 </Col>
