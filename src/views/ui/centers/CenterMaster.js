@@ -16,10 +16,7 @@ function CenterMaster() {
 	const getInfo = (e) => {  
 		// dispatch({type:'SEARCH', payload:e.target.value})
 		setFields({...fields, branch:e.target.value })
-		if(e.target.value ==='') {
-			setCenter([])
-			return 
-		}
+		if(e.target.value ==='') return setCenter([])
 		axios.get('get-branch-centers/'+ e.target.value)
 		.then(({data})=>setCenter(data))
 	}

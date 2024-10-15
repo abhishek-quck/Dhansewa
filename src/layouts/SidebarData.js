@@ -185,7 +185,7 @@ export const navigation= [
         },
         {
           title:'Funding Agency',
-          href:'#'
+          href:'/funding-agency'
         },
         {
           title:'Funding Tranche',
@@ -220,7 +220,7 @@ export const navigation= [
           href:'#'
         }
       ],
-      links:['branches-master','/loan-products', '/sale-products','/bank-master','loan-chart-master','loan-products']      
+      links:['branches-master','/funding-agency','/loan-products', '/sale-products','/bank-master','loan-chart-master','loan-products']      
     },
     {
       title: "HR & Payroll",

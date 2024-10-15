@@ -38,6 +38,7 @@ const LoanChartMaster = lazy(()=>import("../views/ui/management/LoanChartMaster.
 const ClientDisbursement = lazy(()=>import("../views/ui/ClientDisbursement.js"))
 const AddGRT = lazy(()=>import("../views/ui/centers/GRT/AddGRT.js"))
 const BranchMaster = lazy(()=>import("../views/ui/management/BranchMaster.js"))
+const FundingAgency = lazy(()=>import("../views/ui/management/FundingAgency.js"))
 const PrintDocs = lazy(()=>import("../views/PrintDocs.js"))
 const PreviewDocs = lazy(()=>import("../views/PreviewDocs.js"))
 const EmployeeMaster = lazy(()=>import("../views/ui/hr/EmployeeMaster.js"))
@@ -308,6 +309,15 @@ const ThemeRoutes = [
         element: (
         <ProtectedRoute permission={constant.BRANCH_MASTER}>
           <BranchMaster />
+        </ProtectedRoute>
+        )
+      },
+      { 
+        path: "/funding-agency", 
+        exact: true, 
+        element: (
+        <ProtectedRoute permission={constant.BRANCH_MASTER}>
+          <FundingAgency />
         </ProtectedRoute>
         )
       },

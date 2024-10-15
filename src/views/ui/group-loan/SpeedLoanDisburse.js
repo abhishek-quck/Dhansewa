@@ -32,6 +32,7 @@ const SpeedLoanDisburse = () => {
     const [meetingDay, setMeetingDay] = useState('');
     const [centers, setCenters]       = useState([]);
     const [clients, setClients]       = useState([]);
+    const [funders, setFunders]       = useState([{value:'',label:''}]);
     const [loanAmount, setLoanAmount] = useState('')
 	const [branches, setBranches]     = useState([])
     const [submitted, submitForm]     = useState(false)
@@ -121,6 +122,7 @@ const SpeedLoanDisburse = () => {
                     })
                 }).catch(e=> {})
             }
+            axios.get('funders').then(({data})=> setFunders(data.map( item => ({value:item.id, label: item.name})) )).catch(e => console.log(e))
 
         })
         .catch(e => dispatch({ type:'ERROR', payload: {code:e.response.status, error:e.message }}))
@@ -407,15 +409,15 @@ const SpeedLoanDisburse = () => {
                                     <Label size={'sm'} for="funding_by">
                                         Funding By
                                     </Label>
-                                    <CreatableSelect
-                                        placeholder="Write to create"
+                                    <ReactSelect
+                                        placeholder="Choose funder"
                                         isDisabled={sFields.client?.length<1}
                                         id="funding_by" 
                                         name="funding_by" 
                                         className="funding_by" 
                                         defaultInputValue={fields.funding_by}
                                         onChange={e=>setFields({...fields,funding_by:e.value})}
-                                        options={[{value:'',label:''}]}
+                                        options={funders}
                                     />
                                 </Col>
                                 <Col sm="4" md="4">
