@@ -191,9 +191,9 @@ const change = e => {
                             <thead>
                                 <tr>
                                     <th> ? </th>
-                                    <th> A/C Name </th>
-                                    <th> Head </th>
-                                    <th> Type </th>
+                                    <th> Name </th>
+                                    <th> Phone </th>
+                                    <th> Lead By </th>
                                 </tr>
                             </thead>
                             <tbody>
