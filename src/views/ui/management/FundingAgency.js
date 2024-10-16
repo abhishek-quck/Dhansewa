@@ -97,6 +97,7 @@ const change = e => {
                                         cast={'str'}
                                         placeholder="Enter funder name" 
                                         onChange={change}
+                                        value={fields.name}
                                     />
                                 </div>
                             </Col > 
@@ -112,6 +113,7 @@ const change = e => {
                                         min={10}
                                         placeholder="Enter full address" 
                                         onChange={change}
+                                        value={fields.address}
                                     />
                                 </div>
                             </Col > 
@@ -127,6 +129,7 @@ const change = e => {
                                         min={8}
                                         placeholder="Enter mail ID" 
                                         onChange={change}
+                                        value={fields.email}
                                     />
                                 </div>
                             </Col > 
@@ -144,6 +147,7 @@ const change = e => {
                                         max={10}
                                         placeholder="Enter phone" 
                                         onChange={change}
+                                        value={fields.phone}
                                     />
                                 </div>
                             </Col > 
@@ -160,6 +164,7 @@ const change = e => {
                                         cast={'str'}
                                         placeholder="Enter lead by name" 
                                         onChange={change}
+                                        value={fields.leadby}
                                     />
                                 </div>
                             </Col > 
