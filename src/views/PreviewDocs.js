@@ -147,7 +147,7 @@ return (
                                         return (<tr key={i}>
                                             <td>{row.id}</td>
                                             <td>{row.client.name}</td>
-                                            <td>{getDocumentName(row.document_id)}</td>
+                                            <td>{getDocumentName(row.document_id)??row.file_name}</td>
                                             <td>
                                                 <span 
                                                     className='text-decoration-none text-dark' data-id={row.id} 
