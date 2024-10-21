@@ -42,9 +42,7 @@ function ManageClient() {
         dispatch({ type:'LOADING' })
         axios.post('update-client-appraisal-status', {...reply, enroll_id: id }).then(({ data }) => {
             toast.success(data.message);
-            if(data.loan) {
-                navigateTo('/print-sanction-letter/'+data.loan.loan_id)
-            }
+            if(data.loan_id) navigateTo('/print-sanction-letter/'+data.loan_id)
         }).catch(err=>{
             console.log(err)
             toast.error(err.response.data.message ?? err.message)
