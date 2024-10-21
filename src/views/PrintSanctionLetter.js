@@ -60,10 +60,11 @@ function PrintSanctionLetter(props) {
             let fd = new FormData()
             fd.append('enroll_id', clientID )
             fd.append('file', blob )
+            fd.append('loan_id', loanId )
             axios.post('put-sanction-letter', fd, {
                 headers:{
-                    "Accept":"application/json",
-                    "Content-Type": "multipart/form-data",
+                    "Accept"       :"application/json",
+                    "Content-Type" : "multipart/form-data",
                     "Authorization":"Bearer "+localStorage.getItem('auth-token')
                 }
             }).then(({data}) => {
