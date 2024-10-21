@@ -257,28 +257,28 @@ const SpeedLoanDisburse = () => {
         });
         $('.income-input, .expense-input').on('keyup',function(){
             let finalAmount = 0, final=0;
-            // $('.income-input').each(function( k,input ) {
-            //     if( input.value && !isNaN(parseFloat( input.value ))) {
-            //         finalAmount+= parseFloat(input.value)
-            //     }
-            // });
-            // $('.expense-input').each( function( l,inp ) {
-            //     if( inp && !isNaN(parseFloat(inp.value))) {
-            //         final += parseFloat( inp.value );
-            //     }
-            // });
-            // let direct_income = finalAmount - final;
-            // setFields({...fields, 
-            //     total_income:finalAmount, 
-            //     total_expense:final,
-            //     direct_income,
-            //     self_income: $('input[name=self_income]').val(),
-            //     husband_income: $('input[name=husband_income]').val(),
-            //     other_income: $('input[name=other_income]').val(),
-            //     business_expense: $('input[name=business_expense]').val(),
-            //     household_expense: $('input[name=household_expense]').val(),
-            //     loan_installment: $('input[name=loan_installment]').val(),
-            // })
+            $('.income-input').each(function( k,input ) {
+                if( input.value && !isNaN(parseFloat( input.value ))) {
+                    finalAmount+= parseFloat(input.value)
+                }
+            });
+            $('.expense-input').each( function( l,inp ) {
+                if( inp && !isNaN(parseFloat(inp.value))) {
+                    final += parseFloat( inp.value );
+                }
+            });
+            let direct_income = finalAmount - final;
+            setFields({...fields, 
+                total_income:finalAmount, 
+                total_expense:final,
+                direct_income,
+                self_income: $('input[name=self_income]').val(),
+                husband_income: $('input[name=husband_income]').val(),
+                other_income: $('input[name=other_income]').val(),
+                business_expense: $('input[name=business_expense]').val(),
+                household_expense: $('input[name=household_expense]').val(),
+                loan_installment: $('input[name=loan_installment]').val(),
+            })
         });
         
         return ()=> {
