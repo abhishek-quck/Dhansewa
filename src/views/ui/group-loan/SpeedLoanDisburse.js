@@ -654,7 +654,7 @@ const SpeedLoanDisburse = () => {
                                         onChange={inputChange}
                                         name="total_expense"
                                         type="text"
-                                        defaultValue={fields.total_expense} 
+                                        value={fields.total_expense} 
                                     />
                                 </Col>
                             </Row>
