@@ -1,28 +1,13 @@
 import React, { useEffect, useRef, useState } from "react"; 
-import { 
-  Card,
-  CardBody,
-  CardTitle,   
-  Form,
-  FormGroup,
-  Label,
-  Input, 
-  Row,
-  Col,
-  CardFooter,
-  CardHeader,
-  Button, 
-} from "reactstrap";
+import { Card, CardBody, CardTitle, Form, FormGroup, Label, Input, Row, Col, CardFooter, CardHeader, Button } from "reactstrap";
 import DatePicker from "react-datepicker";
 import ReactSelect from "react-select";
-import CreatableSelect from "react-select/creatable";
 import axios from "axios";
 import toast from "react-hot-toast";
 import $ from 'jquery'
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate, getCurrentDate, validate } from "../../../helpers/utils";
 import { Link } from "react-router-dom";
-var allData = {branch:{}, center:{}, clients:{}}
  
 const SpeedLoanDisburse = () => { 
 
@@ -57,7 +42,7 @@ const SpeedLoanDisburse = () => {
         husband_income:0,
         other_income:0,
         direct_income:0,
-        total_income:'',
+        total_income:0,
         business_expense:0,
         household_expense:0,
         loan_installment:'',
@@ -82,8 +67,25 @@ const SpeedLoanDisburse = () => {
             setFields({...fields, [e.target.name]:e.target.value})
         }
         
-        if(['self_income','husband_income','other_income'].includes(e.target.name)) {
-            console.log('should calculate')
+        if(['self_income','husband_income','other_income','business_expense', 'household_expense'].includes(e.target.name)) {
+            let currentValue = document.querySelector(`input[name="${e.target.name}"]`).value
+            let self = document.querySelector('input[name="self_income"]').value ?? 0
+            let other = document.querySelector('input[name="other_income"]').value ?? 0
+            let husband = document.querySelector('input[name="husband_income"]').value ?? 0
+            let sum = parseInt(self) + parseInt(other) + parseInt(husband)
+
+            document.querySelector('input[name="total_income"]').value = sum
+
+            let business = document.querySelector('input[name="business_expense"]').value
+            let household = document.querySelector('input[name="household_expense"]').value
+
+            let totalExpense = parseInt(business) + parseInt(household)
+
+            let direct = sum - totalExpense
+            document.querySelector('input[name="total_expense"]').value = totalExpense
+            document.querySelector('input[name="direct_income"]').value = direct
+
+            setFields({...fields, [e.target.name]:currentValue, total_income: sum , total_expense:totalExpense , direct_income: direct })
         }
     }
 
@@ -106,8 +108,6 @@ const SpeedLoanDisburse = () => {
         axios.get('get-options') 
         .then(({data}) => 
         {  
-            allData['branch'] = data.branches.map(ite => ite.value)
-            allData['center'] = data.centers.map(ite => ite.value)
             if(data.branches) setBranches(data.branches)  
             
             if(!Object.keys(loanProducts).length) {
@@ -219,10 +219,11 @@ const SpeedLoanDisburse = () => {
         { 
             console.log(result)
             setErrors(result)
-            return toast.error('Fill the required fields!')
+            let keys = Object.keys(result)
+            return toast.error(keys.length==1 ? keys[0].replace('_', ' ')+' is missing' :'Fill the required fields!')
         }
         // setting the `enroll-id` in payload 
-        let enroll_id = sFields.loan_id.split('-')[0]
+        let enroll_id = sFields.loan_id.split(':')[0]
         setSearchField({...sFields, enroll_id})
 
         dispatch({type:'LOADING'})
@@ -232,7 +233,9 @@ const SpeedLoanDisburse = () => {
             toast.success('Loan disbursed successfully!')
             // Now Remove the selected Loan ID ;
             localStorage.removeItem('loanProductID')
-            submitForm(!submitted); // this is proper reset
+            dispatch({type:'LOADING'})
+            setTimeout(() => window.location.reload(), 1000 );
+            // this is proper reset
         }).catch(err=>{
             console.log(err);
             toast.error('Something went wrong!')
@@ -255,35 +258,36 @@ const SpeedLoanDisburse = () => {
         $(document).on('change','select', function(){
             this.style.border = ''
         });
-        $('.income-input, .expense-input').on('keyup',function(){
-            let finalAmount = 0, final=0;
-            $('.income-input').each(function( k,input ) {
-                if( input.value && !isNaN(parseFloat( input.value ))) {
-                    finalAmount+= parseFloat(input.value)
-                }
-            });
-            $('.expense-input').each( function( l,inp ) {
-                if( inp && !isNaN(parseFloat(inp.value))) {
-                    final += parseFloat( inp.value );
-                }
-            });
-            let direct_income = finalAmount - final;
-            setFields({...fields, 
-                total_income:finalAmount, 
-                total_expense:final,
-                direct_income,
-                self_income: $('input[name=self_income]').val(),
-                husband_income: $('input[name=husband_income]').val(),
-                other_income: $('input[name=other_income]').val(),
-                business_expense: $('input[name=business_expense]').val(),
-                household_expense: $('input[name=household_expense]').val(),
-                loan_installment: $('input[name=loan_installment]').val(),
-            })
-        });
+        // $('.income-input, .expense-input').on('keyup',function(){
+        //     let finalAmount = 0, final=0;
+        //     $('.income-input').each(function( k,input ) {
+        //         if( input.value && !isNaN(parseFloat( input.value ))) {
+        //             finalAmount+= parseFloat(input.value)
+        //         }
+        //     });
+        //     $('.expense-input').each( function( l,inp ) {
+        //         if( inp && !isNaN(parseFloat(inp.value))) {
+        //             final += parseFloat( inp.value );
+        //         }
+        //     });
+        //     let direct_income = finalAmount - final;
+        //     setFields({...fields, 
+        //         total_income:finalAmount, 
+        //         total_expense:final,
+        //         direct_income,
+        //         self_income: $('input[name=self_income]').val(),
+        //         husband_income: $('input[name=husband_income]').val(),
+        //         other_income: $('input[name=other_income]').val(),
+        //         business_expense: $('input[name=business_expense]').val(),
+        //         household_expense: $('input[name=household_expense]').val(),
+        //         loan_installment: $('input[name=loan_installment]').val(),
+        //     })
+        // });
         
-        return ()=> {
-            $('.income-input, .expense-input').off('keyup');
-        }
+        // return ()=> {
+        //     $('.income-input, .expense-input').off('keyup');
+        // }
+        return ()=> {}
 	},[submitted])
 
   return (
@@ -330,6 +334,7 @@ const SpeedLoanDisburse = () => {
                  </Col > 
                 </Row>   
               </FormGroup> 
+              { sFields.loan_id &&
               <div className="d-flex"> 
                 <div className="col-md-12">
                     <Card>
@@ -358,7 +363,6 @@ const SpeedLoanDisburse = () => {
                                     </Label>
                                     <ReactSelect
                                         placeholder="Search or select"
-                                        isDisabled={sFields.client?.length<1}
                                         ref={loanProductRef}
                                         id="loan_product" 
                                         className="loan_product"
@@ -380,7 +384,6 @@ const SpeedLoanDisburse = () => {
                                     </Label>
                                     <ReactSelect
                                         placeholder="Search or select"
-                                        isDisabled={sFields.client?.length<1}
                                         id="loan_amount" 
                                         name="loan_amount"
                                         className="loan_amount"
@@ -397,7 +400,6 @@ const SpeedLoanDisburse = () => {
                                         Loan Fee
                                     </Label>
                                     <Input
-                                        disabled={sFields.client?.length<1}
                                         id="loan_fee" 
                                         name="loan_fee"
                                         defaultValue={fields.loan_fee}
@@ -411,11 +413,10 @@ const SpeedLoanDisburse = () => {
                                     </Label>
                                     <ReactSelect
                                         placeholder="Choose funder"
-                                        isDisabled={sFields.client?.length<1}
                                         id="funding_by" 
                                         name="funding_by" 
                                         className="funding_by" 
-                                        defaultInputValue={fields.funding_by}
+                                        // value={fields.funding_by}
                                         onChange={e=>setFields({...fields,funding_by:e.value})}
                                         options={funders}
                                     />
@@ -426,11 +427,10 @@ const SpeedLoanDisburse = () => {
                                     </Label>
                                     <ReactSelect
                                         placeholder="Search or select"
-                                        isDisabled={sFields.client?.length<1}
                                         id="policy" 
                                         onChange={e=>setFields({...fields,policy:e.value})}
                                         name="policy" 
-                                        defaultInputValue={fields.policy}
+                                        // value={fields.policy}
                                         className="policy" 
                                         options={[{value:'double',label:'Double'}]}
                                     />
@@ -442,12 +442,11 @@ const SpeedLoanDisburse = () => {
                                         Inc. Fee
                                     </Label>
                                     <Input
-                                        disabled={sFields.client?.length<1}
                                         id="insurance_fee" 
                                         name="insurance_fee"
                                         className="insurance_fee"
                                         type="text" 
-                                        defaultValue={fields.insurance_fee}
+                                        // value={fields.insurance_fee}
                                         onChange={inputChange}
                                     /> 
                                 </Col>
@@ -456,7 +455,6 @@ const SpeedLoanDisburse = () => {
                                         GST
                                     </Label>
                                     <Input
-                                        disabled={sFields.client?.length<1}
                                         id="gst" 
                                         name="gst"
                                         onChange={inputChange}
@@ -471,11 +469,10 @@ const SpeedLoanDisburse = () => {
                                     </Label>
                                     <ReactSelect
                                         placeholder="Search or select"
-                                        isDisabled={sFields.client?.length<1}
                                         id="utilization" 
                                         name="utilization"
                                         className="utilization"
-                                        defaultInputValue={fields.utilization}
+                                        // value={fields.utilization}
                                         onChange={e=>setFields({...fields,utilization:e.value})}
                                         options={[{value:'Business Loan',label:'Business Loan'}]}
                                     />
@@ -503,7 +500,6 @@ const SpeedLoanDisburse = () => {
                                     <Input 
                                         type="text"
                                         placeholder="Enter no. of "
-                                        disabled={sFields.client?.length<1}
                                         id="number_of_emis" 
                                         name="number_of_emis" 
                                         className="number_of_emis" 
@@ -516,12 +512,11 @@ const SpeedLoanDisburse = () => {
                                         Payment Mode
                                     </Label>
                                     <ReactSelect
-                                        isDisabled={sFields.client?.length<1}
                                         id="payment_mode" 
                                         onChange={e=>setFields({...fields,payment_mode:e.value})}
                                         name="payment_mode"
                                         className="payment_mode"
-                                        defaultInputValue={fields.payment_mode}
+                                        // value={fields.payment_mode}
                                         options={paymentOptions}
                                     />
                                 </Col>
@@ -535,10 +530,8 @@ const SpeedLoanDisburse = () => {
                                         type="text"
                                         name="self_income"
                                         onChange={inputChange}
-                                        disabled={sFields.client?.length < 1} 
                                         placeholder="Enter self income"
                                         className="income-input"
-                                        defaultValue={fields.self_income}
                                     />
                                 </Col>
                                 <Col sm="4" md="4">
@@ -548,11 +541,9 @@ const SpeedLoanDisburse = () => {
                                     <Input 
                                         type="text"
                                         placeholder="Enter husband/son income"
-                                        disabled={sFields.client?.length<1}
                                         id="husband_income" 
                                         name="husband_income" 
                                         className="husband_income income-input" 
-                                        defaultValue={fields.husband_income}
                                         onChange={inputChange}
                                     />
                                 </Col>
@@ -562,11 +553,9 @@ const SpeedLoanDisburse = () => {
                                     </Label>
                                     <Input
                                         type="text"
-                                        disabled={sFields.client?.length<1}
                                         id="other_income" 
                                         onChange={inputChange}
                                         name="other_income" 
-                                        defaultValue={fields.other_income} 
                                         className="income-input"
                                     />
                                 </Col>
@@ -580,9 +569,7 @@ const SpeedLoanDisburse = () => {
                                         type={'text'}
                                         id="total_income"
                                         onChange={inputChange} 
-                                        disabled={sFields.client?.length<1}
                                         name="total_income" 
-                                        value={fields.total_income}
                                         readOnly 
                                     />
                                 </Col>
@@ -592,7 +579,6 @@ const SpeedLoanDisburse = () => {
                                     </Label>
                                     <Input 
                                         type="text" 
-                                        disabled={sFields.client?.length<1}
                                         id="direct_income" 
                                         name="direct_income"  
                                         value={fields.direct_income}
@@ -635,7 +621,6 @@ const SpeedLoanDisburse = () => {
                                     <Input 
                                         type="text"
                                         placeholder="Enter loan installment amount"
-                                        disabled={sFields.client?.length<1}
                                         id="loan_installment" 
                                         name="loan_installment"  
                                         defaultValue={fields.loan_installment}
@@ -666,7 +651,7 @@ const SpeedLoanDisburse = () => {
                         </CardFooter>
                     </Card>
                 </div> 
-              </div>
+              </div>}
             </Form>
         </CardBody>
         <CardFooter>
