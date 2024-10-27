@@ -67,13 +67,10 @@ const LedgerRevise = () => {
         // setClients(allData['clients'][e.value])
     }    
 
-    const doSomething = () => { }
-
     const generateLedger = (e) => {
 
         hit(true)
         e.preventDefault();
-        console.log(searchfields)
         if(!searchfields.client) {
             $('.client').css('border','1px solid red')
             return toast('Select a client first!',
@@ -389,7 +386,9 @@ const LedgerRevise = () => {
                             </tr>
                         )
                         })
-                    : null
+                    : <tr>
+                        <td><h6 className="text-center text-danger">No transactions yet!</h6></td>
+                    </tr>
                     }
                 </tbody>
                 <tfoot>

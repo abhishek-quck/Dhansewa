@@ -20,7 +20,7 @@ const SpeedLoanDisburse = () => {
     const [funders, setFunders]       = useState([{value:'',label:''}]);
     const [loanAmount, setLoanAmount] = useState('')
 	const [branches, setBranches]     = useState([])
-    const [submitted, submitForm]     = useState(false)
+    const [submitted]     = useState(false)
     const [loanProductOptions, setLoanProducts]= useState([])
     const { loanProducts } = useSelector( state => state.auth )
     
@@ -220,7 +220,7 @@ const SpeedLoanDisburse = () => {
             console.log(result)
             setErrors(result)
             let keys = Object.keys(result)
-            return toast.error(keys.length==1 ? keys[0].replace('_', ' ')+' is missing' :'Fill the required fields!')
+            return toast.error(keys.length===1 ? keys[0].replace('_', ' ')+' is missing' :'Fill the required fields!')
         }
         // setting the `enroll-id` in payload 
         let enroll_id = sFields.loan_id.split(':')[0]
