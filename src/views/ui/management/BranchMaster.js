@@ -47,6 +47,7 @@ const BranchMaster = () => {
 
     const handleSubmit = e => {
         e.preventDefault() 
+        if(branches.some( item => item.name.toLowerCase() === fields.name.toLowerCase())) return toast.error('Branch name already exists!')        
         let {shouldGo, result} = validate(fields,['branch_account','payout_month_and_year','dissolved_date','cash_account','bank_account','branch_account','loan_charge_auto','cash_balance','closing_enabled','reporting_mail','reporting_phone_sms','aadhaar_verify', 'mobile_verify','multi_loan_allowed','spml_allowed','loan_product_id'])
         if(shouldGo===false)
         {

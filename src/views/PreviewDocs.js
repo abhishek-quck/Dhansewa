@@ -20,7 +20,8 @@ const [fields, setFields]= useState({
     client:'',
 })
 const [targetInfo, setTargetInfo] = useState([])
-
+const [sanctionLetter, setSanctionLetter] = useState([])
+const [clientName, setClientName] = useState('')
 // options
 const [branches, setBranches] = useState([]);
 const [centers, setCenters] = useState([]);
@@ -81,8 +82,12 @@ const updateClient = (e) => {
 const fetch = clientID => {
     setFields({...fields, client:clientID})
     dispatch({type:'LOADING'})
-    axios.get('/get-client-documents/'+clientID )
-    .then( ({data}) => setTargetInfo(data) )
+    axios.get('get-client-documents/'+clientID )
+    .then( ({data}) => {
+        setTargetInfo(data.documents) 
+        setSanctionLetter(data.sanction)
+        setClientName(data.applicant_name)
+    })
     .catch( (err) => {
         console.log(err)
         toast.error('Something went wrong!')
@@ -128,11 +133,8 @@ return (
                         </Col>                               
                     </Row>
                     <Row className='mt-2 mb-2'>
-                        <CardText >
-                            Target Information
-                        </CardText>
-                         
-                            <Table dashed={''} bordered hover style={{fontSize:'small'}}>
+                        <CardBody>
+                        <Table dashed={''} bordered hover style={{fontSize:'small'}}>
                                 <thead>
                                     <tr>
                                         <th> TID </th>
@@ -142,12 +144,12 @@ return (
                                     </tr>
                                 </thead>
                                 <tbody>
-                            {targetInfo.length? 
-                                     targetInfo.map((row,i)=>{
+                                {
+                                    targetInfo.map((row,i)=>{
                                         return (<tr key={i}>
                                             <td>{row.id}</td>
-                                            <td>{row.client.name}</td>
-                                            <td>{getDocumentName(row.document_id)??row.file_name}</td>
+                                            <td>{clientName}</td>
+                                            <td>{row.date? 'SANCTION LETTER' :getDocumentName(row.document_id)??row.file_name}</td>
                                             <td>
                                                 <span 
                                                     className='text-decoration-none text-dark' data-id={row.id} 
@@ -155,23 +157,59 @@ return (
                                                     style={{cursor:'pointer'}}
                                                 > 
                                                     {
-                                                      (row.data).includes('application/pdf') ? 
+                                                    (row.data).includes('application/pdf') ? 
                                                         <i className='fs-3 fa-regular fa-file-pdf'/> : 
-                                                       <i className='fa fa-paperclip'/> 
+                                                    <i className='fa fa-paperclip'/> 
                                                     }
                                                 </span>
                                             </td>
                                         </tr>)
                                     })
-                                    :(<tr>
-                                        <td colSpan={4} className='text-danger text-center'> 
-                                            <h5>{fields.client ? ' No documents uploaded or needs re-upload! ': ''}</h5> 
-                                        </td>
-                                    </tr>)
+                                }
+                                </tbody>
+                            </Table>  
+                        </CardBody>  
+                    </Row>
+                    {sanctionLetter.length ? (
+                        <Row className='mt-2 mb-2'>
+                        <CardText >
+                            <h6>Sanction Letter</h6>
+                        </CardText>
+                         
+                        <CardBody>
+                        <Table dashed={''} bordered hover style={{fontSize:'small'}}>
+                                <thead>
+                                    <tr>
+                                        <th> Loan ID </th>
+                                        <th> Issued On </th> 
+                                        <th> Attachment Type </th>
+                                        <th> Preview </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {
+                                    sanctionLetter.map((row,i)=>{
+                                        return (<tr key={i}>
+                                            <td>{row.loan_id}</td>
+                                            <td>{row.date}</td>
+                                            <td>{'SANCTION LETTER'}</td>
+                                            <td>
+                                                <span 
+                                                    className='text-decoration-none text-dark' data-id={row.id} 
+                                                    onClick={()=>previewDoc([row.data], clientName)} 
+                                                    style={{cursor:'pointer'}}
+                                                > 
+                                                    <i className='fs-3 fa-regular fa-file-pdf'/> 
+                                                </span>
+                                            </td>
+                                        </tr>)
+                                    })
                                 }
                                 </tbody>
                             </Table>    
+                        </CardBody>
                     </Row>
+                    ): null}
                 </Container>
             </CardBody>
             <CardFooter>

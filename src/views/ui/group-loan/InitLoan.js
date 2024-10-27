@@ -121,7 +121,7 @@ function InitLoan() {
                                 <tr>
                                     <th> Action </th>
                                     <th> Previous </th>
-                                    <th> SR </th>
+                                    <th> Client ID </th>
                                     <th> Applicant Name </th>
                                     <th> Address </th>
                                     <th> Phone </th>
@@ -145,7 +145,7 @@ function InitLoan() {
                                     <td>
                                         <span className='text-primary' data-client_id={row.id} style={style} onClick={viewPrevious}> View </span>
                                     </td>
-                                    <td>{index+1}</td>
+                                    <td>{row.id}</td>
                                     <td>{row.applicant_name}</td>
                                     <td>{row.district??'N/A'}</td>
                                     <td>{row.phone}</td>

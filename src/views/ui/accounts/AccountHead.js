@@ -23,7 +23,7 @@ function AccountHead() {
         {value:'Expenditure',label:'Expenditure'},
         {value:'Equity',label:'Equity'},
     ]
-
+    let errFields = {name:'',group_name:'',type:''}
     const groups = [
         {value:'Branch & Division',label:'Branch & Division'},
         {value:'Capital Accounts',label:'Capital Accounts'},
@@ -61,7 +61,7 @@ function AccountHead() {
         }
         $('.group_name').css('border','')
     }
-    const [errors, setErrors] = useState({name,group_name,type})
+    const [errors, setErrors] = useState(errFields)
     const handleSubmit = e => {
         e.preventDefault();
         const {shouldGo,result} = validate({name,group_name,type})
@@ -71,11 +71,12 @@ function AccountHead() {
             for (const el in result) {
                 $(`input[name=${el}]`).addClass('placeholder-error').css('1px solid red')
             }
-            toast.error('Fill the required fields!')
-            console.log(result)
-            return 
-        }    
-        dispatch({type:'LOADING'})
+            return toast.error('Fill the required fields!')            
+        }
+        let exists = data.some( item => item.name.toLowerCase() === name.toLowerCase())
+        if(exists) return toast.error('Head name already exists!')    
+        setErrors(errFields)
+        dispatch({ type:'LOADING' })
         axios.post('/create-account-head', {
             name,
             group_name,
@@ -98,19 +99,14 @@ function AccountHead() {
     }
 
     const init = () => {
-        dispatch({type:'LOADING'})
+        dispatch({ type:'LOADING' })
         axios.get('get-account-heads')
-        .then(({data})=>{ 
-            if(typeof data==='object')
-            {
-                fillData(data)
-            }
-        })
+        .then(({data})=> fillData(data))
         .catch(err=>{
             toast.error('An error occurred!')
             console.log(err.message|err)
         })
-        .finally(()=>dispatch({type:'STOP_LOADING'}))
+        .finally(()=> dispatch({ type:'STOP_LOADING'}))
     }
     
     $('input[type=search]').on('keyup search',function () {
@@ -147,8 +143,12 @@ function AccountHead() {
                                     type='text'
                                     onChange={changeName}
                                     value={name}
+                                    min={5}
+                                    max={15}
+                                    cast={'str'}
                                     placeholder={errors.name??'Enter Name'}
                                 />
+                                <h6 className='text-danger'>{errors.name}</h6>
                             </Col>
                             <Col md={6}>
                                 <Label> A/C Nature </Label>

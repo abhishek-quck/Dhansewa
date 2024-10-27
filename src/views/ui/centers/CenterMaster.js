@@ -58,7 +58,6 @@ function CenterMaster() {
 		let {shouldGo,result} = validate(fields)
 		if(shouldGo===false)
 		{
-			toast.error('Fill the required fields')
 			for (const el in fields) {
 				if (result[el]) {
 					$(`input[name=${el}], select[name=${el}], textarea[name=${el}]`).addClass('placeholder-error').attr('placeholder', result[el]).css('border','1px solid red')
@@ -66,19 +65,20 @@ function CenterMaster() {
 					$(`input[name=${el}], select[name=${el}], textarea[name=${el}]`).removeClass('placeholder-error').css('border','') // no border on valid inputs
 				}
 			}
-			return 
+			return toast.error('Fill the required fields')
 		}
-		dispatch({type:'LOADING'})
-		axios.post('/add-center',fields)
+		let exists = fetchcenters.some( item => item.name.toLowerCase() === fields.center.toLowerCase())
+        if(exists) return toast.error('Center name already exists!');
+		dispatch({ type:'LOADING' })
+		axios.post('add-center',fields)
 		.then(({data})=> {
-			console.log(data)
 			if(data.status) toast.success(data.message);
 		})
 		.catch(({response})=> {
 			console.log(response)
 			toast.error(response.message)
 		})
-		.finally(()=> dispatch({type:'STOP_LOADING'}))
+		.finally(()=> dispatch({ type:'STOP_LOADING'}))
 	}
 	const [e,s] = useState(false) // for trying request +1more time in case failed
 	useEffect(()=>{
@@ -387,9 +387,9 @@ function CenterMaster() {
 												id="centerLeaderPhone"
 												name="centerLeaderPhone"
 												type="text" 
-												cast="num"
-												min="10"
-												max="10"
+												cast={'num'}
+												min={10}
+												max={10}
 												onChange={onChange}
 												placeholder='Enter center leader phone'
 											/>

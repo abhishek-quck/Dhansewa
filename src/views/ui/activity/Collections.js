@@ -94,6 +94,7 @@ function Collections() {
                             </tr>
                         )
                     })} 
+                    {collections.length === 0 ? <tr><td colSpan={10}><h6 className='text-center text-danger'>Day not initialized yet!</h6></td> </tr>: null}
                 </tbody>
                 <tfoot>
                    <tr>
