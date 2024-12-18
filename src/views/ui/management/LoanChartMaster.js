@@ -70,6 +70,8 @@ function LoanChartMaster() {
         }).then(({data}) => {
             toast.success('Loan products imported successfully!');
             setProducts(data)
+            axios.get('/loan-products-options')
+            .then(({data})=>setLoanProducts(data)).catch()
         }).catch((e) => {
             console.log(e.response?.data?.message)
             toast.error(e.response?.data?.message??'Something went wrong!');
