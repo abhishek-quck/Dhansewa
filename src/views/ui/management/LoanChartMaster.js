@@ -68,7 +68,7 @@ function LoanChartMaster() {
                 "Authorization":"Bearer "+localStorage.getItem('auth-token')
             }
         }).then(({data}) => {
-            console.log(data)
+            toast.success('Loan products imported successfully!');
             setProducts(data)
         }).catch((e) => {
             console.log(e.response?.data?.message)
