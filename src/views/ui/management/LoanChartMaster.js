@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Card, CardBody, CardHeader, Col, Form, Input, Label, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, Col, Form, Input, Label, Row, Table } from 'reactstrap'
 import { validate } from '../../../helpers/utils'
 
 function LoanChartMaster() {
   const dispatch = useDispatch()
   const [refresh, call] = useState(false)
+  const [file, noteFile] = useState(null)
   const [loanProducts, setLoanProducts] = useState([])
   const [products, setProducts] = useState([]);
   const [fields, setFields] = useState({
@@ -35,6 +36,48 @@ function LoanChartMaster() {
       .finally(()=>dispatch({type:'STOP_LOADING'}))
   }
 
+    function putFile(e){
+        e.preventDefault();
+        noteFile(e.target.files[0])
+    }
+    
+    function uploadFromNote(e){
+
+        e.preventDefault();
+        let fd = new FormData();
+        fd.append('file', file);
+
+        if(!file) {
+            return toast('Choose a file at first!',
+                {
+                  icon: '⚠️',
+                  style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+                }
+            );
+        }
+        dispatch({type:"LOADING"});
+
+        axios.post('upload-from-text-file', fd, {
+            headers:{ 
+                "Accept"       :"application/json",
+                "Content-Type" : "multipart/form-data",
+                "Authorization":"Bearer "+localStorage.getItem('auth-token')
+            }
+        }).then(({data}) => {
+            console.log(data)
+            setProducts(data)
+        }).catch((e) => {
+            console.log(e.response?.data?.message)
+            toast.error(e.response?.data?.message??'Something went wrong!');
+            // dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}})
+        })
+        .finally(()=>dispatch({type:"STOP_LOADING"}))
+
+    }
   useEffect(()=> {
 
       axios.get('get-loan-products')
@@ -91,44 +134,67 @@ function LoanChartMaster() {
               WIR Setting (<Link className='text-decoration-none'>Download maker</Link>)
             </CardHeader>
             <CardBody>
-              <Form onSubmit={updateProduct}>
-              <Row>
-                <Col>
-                  <Label>Product Name</Label>
-                  <Input type='select' 
-                      name='id'
-                      onChange={e=>setFields({...fields, id:e.target.value})}
-                  >
-                      <option></option>
-                      {loanProducts.map( opt =>{
-                        return <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      })}
-                  </Input>
-                </Col>
-                <Col className='d-flex'>
-                  <div>
-                    <Label> Loan Amount <small className='text-danger'>*</small> </Label>
-                    <Input 
-                      type='text'
-                      placeholder='Enter Loan Amount'
-                      name='amount'
-                      onChange={e=>setFields({...fields, amount:e.target.value})}
-                    /> 
-                  </div>
-                  {false && <button className='btn btn-primary h-50 ' style={{marginTop:'33px'}}>OK</button>}
-                </Col>
-              </Row>
-              <Row className='mt-3' style={{display:'flex',justifyContent:'space-between'}}>
-                <Col>
-                    <button className="btn btn-success"> Bulk Save </button>
-                </Col>
-                <Col>
-                    <button className="btn btn-danger"> Bulk Delete </button>
-                </Col>
-              </Row>
-              </Form>
+                <Form onSubmit={updateProduct}>
+                    <Row>
+                        <Col>
+                        <Label>Product Name</Label>
+                        <Input type='select' 
+                            name='id'
+                            onChange={e=>setFields({...fields, id:e.target.value})}
+                        >
+                            <option></option>
+                            {loanProducts.map( opt =>{
+                                return <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            })}
+                        </Input>
+                        </Col>
+                        <Col className='d-flex'>
+                        <div>
+                            <Label> Loan Amount <small className='text-danger'>*</small> </Label>
+                            <Input 
+                            type='text'
+                            placeholder='Enter Loan Amount'
+                            name='amount'
+                            onChange={e=>setFields({...fields, amount:e.target.value})}
+                            /> 
+                        </div>
+                        {false && <button className='btn btn-primary h-50 ' style={{marginTop:'33px'}}>OK</button>}
+                        </Col>
+                    </Row>
+                    <Row className='mt-3' style={{display:'flex',justifyContent:'space-between'}}>
+                        <Col>
+                            <button className="btn btn-success"> Bulk Save </button>
+                        </Col>
+                        <Col>
+                            <button className="btn btn-danger"> Bulk Delete </button>
+                        </Col>
+                    </Row>
+                </Form>
             </CardBody>
           </Card>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={8} className='offset-4'>
+            <Card>
+                <CardHeader>
+                    Direct Upload from Notepad (<a href={'/format_loan_chart_product_upload.txt'} download className='text-decoration-none'>Download Format</a>)
+                </CardHeader>
+                <CardBody>
+                    <Form onSubmit={uploadFromNote}> 
+                        <Row>
+                            <Col md={6}>
+                                <Input type='file' onChange={putFile} name='note' accept='.txt'></Input>
+                            </Col>
+                            <Col md={6}>
+                                <Button className='btn btn-success w-100'>
+                                    Upload
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Form>
+                </CardBody>
+            </Card>
         </Col>
       </Row>
     </>

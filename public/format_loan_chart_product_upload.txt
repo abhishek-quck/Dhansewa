@@ -1,0 +1,6 @@
+/*below line is not necessary in the file while uploading data*/
+
+name|amount|total-installments|type|emi-freq|flat|gst
+
+Abc|34,999|24|amount|weekly|8%|12%
+XYZ|35,242|40|amount|monthly|5%|11%
