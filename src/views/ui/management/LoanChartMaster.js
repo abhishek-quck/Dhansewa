@@ -245,13 +245,13 @@ function LoanChartMaster() {
         <Col md={8} className='offset-4'>
             <Card>
                 <CardHeader>
-                    Direct Upload from Excel (<a href='#' className='text-decoration-none'>Download Format</a>)
+                    Direct Upload from Excel (<a href={'/format_loan_products.xlsx'} download className='text-decoration-none'>Download Format</a>)
                 </CardHeader>
                 <CardBody>
                     <Form onSubmit={uploadFromExcel}> 
                         <Row>
                             <Col md={6}>
-                                <Input type='file' onChange={putFile} name='excel' accept='.xls'></Input>
+                                <Input type='file' onChange={putFile} name='excel' accept='.xls,.xlsx'></Input>
                             </Col>
                             <Col md={6}>
                                 <Button className='btn btn-success w-100'>
