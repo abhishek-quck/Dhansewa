@@ -13,6 +13,8 @@ function DayClose() {
     const [branchID, setBranch ]= useState('');
     const [branchInfo, setBranchInfo ]=useState({})
     const dispatch = useDispatch();
+    const [centerwise, setCenterWise] = useState(false);
+    const [centerCollections, setCenterCollections] = useState([])
     const containerStyle = {borderTop:'1px dashed',boxShadow:'-20px 0 10px -5px rgba(0, 0, 0, 0.1)'}
 
     // Submit Form `day-close`
@@ -24,6 +26,22 @@ function DayClose() {
         .then(({data}) => toast.success(data.message)).catch( e => toast.error(e.response?.data.message?? 'Something went wrong!'))
         .finally(() => dispatch({type:'STOP_LOADING'}));
 
+    }
+
+    function getCenterWise(e) {
+        if (!centerwise) {
+            dispatch({type:"LOADING"})
+            axios.get('get-center-wise-collection/'+ branchID)
+            .then(({data})=> {
+                console.log(Object.values(data))
+                setCenterCollections(Object.values(data))
+            })
+            .catch(err=>{})
+            .finally(()=>dispatch({type:"STOP_LOADING"}))
+        } else {
+            setCenterCollections([])
+        }
+        setCenterWise(()=>!centerwise);
     }
 
     const getBranchCollection = e => {
@@ -51,26 +69,27 @@ function DayClose() {
             <b>Day Closing:</b>
         </CardHeader>
         <CardBody>
-            <Col>
-                <Row>
+            <Col md={12}>
+            <Row>
+                <Col md={12}>
                     <Label> Branch Name </Label>
                     <div className='col-12 d-flex'> 
                         <Input 
                             type='select' 
                             onChange={getBranchCollection}
                             style={{width:'30%'}}
-                        >
+                            >
                             <option> Select Branch </option>
                             {branches.map(opt => <option key={opt.id} value={opt.id}>{opt.name}</option>)}
                         </Input>
                         <Button color="primary"> <i className='fa fa-search'/> </Button>
+                        <Button disabled={!branchID} className='btn btn-success ms-3' onClick={getCenterWise}>
+                            Center-wise
+                            <Input type='checkbox' checked={centerwise} name='centerwise' className='ms-2'></Input>
+                        </Button>
                     </div>
-                </Row>
-                <Row className={`d-flex`}>
-                    <div className='form-group'>
-
-                    </div>
-                </Row>
+                </Col>
+            </Row>
             </Col>
         </CardBody>
     </Card>
@@ -144,6 +163,39 @@ function DayClose() {
             </Row>
         </CardBody>
     </Card>
+    {
+        centerwise &&  <Card>
+        <CardBody>
+            <Row>
+            <Col md={6}>
+                <Table striped hover bordered>
+                    <thead>
+                        <tr>
+                            <th>Center ID</th>
+                            <th>Name</th>
+                            <th>Coll. Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {centerCollections.map( item => {
+                            return (<tr key={item.id}>
+                                <td>{item.id}</td>
+                                <td>{item.name}</td>
+                                <td>{item.due+` ₹`}</td>
+                                <td>
+                                    <Button className={`btn-success`}>Edit</Button>
+                                    <Button className='btn-primary ms-2 btn-rounded'>Day Close</Button>
+                                </td>
+                            </tr>)
+                        })}
+                    </tbody>
+                </Table>
+            </Col>
+            </Row>
+        </CardBody>
+    </Card>
+    }
     <Card>
         <CardBody>
             <Row className='mb-3'>
