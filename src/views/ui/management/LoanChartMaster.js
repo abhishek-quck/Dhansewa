@@ -9,7 +9,8 @@ import { validate } from '../../../helpers/utils'
 function LoanChartMaster() {
   const dispatch = useDispatch()
   const [refresh, call] = useState(false)
-  const [file, noteFile] = useState(null)
+  const [notefile, noteFile] = useState(null)
+  const [excelfile, excelFile] = useState(null)
   const [loanProducts, setLoanProducts] = useState([])
   const [products, setProducts] = useState([]);
   const [fields, setFields] = useState({
@@ -38,16 +39,21 @@ function LoanChartMaster() {
 
     function putFile(e){
         e.preventDefault();
-        noteFile(e.target.files[0])
+        if(e.target.name==='note')
+        {
+            noteFile(e.target.files[0])
+        } else {
+            excelFile(e.target.files[0])
+        }
     }
     
     function uploadFromNote(e){
 
         e.preventDefault();
         let fd = new FormData();
-        fd.append('file', file);
+        fd.append('file', notefile);
 
-        if(!file) {
+        if(!notefile) {
             return toast('Choose a file at first!',
                 {
                   icon: '⚠️',
@@ -70,6 +76,42 @@ function LoanChartMaster() {
         }).then(({data}) => {
             toast.success('Loan products imported successfully!');
             setProducts(data)
+            axios.get('/loan-products-options')
+            .then(({data})=>setLoanProducts(data)).catch()
+        }).catch((e) => {
+            console.log(e.response?.data?.message)
+            toast.error(e.response?.data?.message??'Something went wrong!');
+            // dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}})
+        })
+        .finally(()=>dispatch({type:"STOP_LOADING"}))
+
+    }
+
+    function uploadFromExcel (e){
+        e.preventDefault()
+        let fd = new FormData();
+        fd.append('file', excelfile);
+        if(!excelfile)
+        {
+            return toast('Choose a file at first!',{
+                icon: '⚠️',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                },
+            });
+        }
+
+        axios.post('upload-from-excel-file', fd, {
+            headers:{ 
+                "Accept"       :"application/json",
+                "Content-Type" : "multipart/form-data",
+                "Authorization":"Bearer "+localStorage.getItem('auth-token')
+            }
+        }).then(({data}) => {
+            toast.success('Loan products imported successfully!');
+            // setProducts(data)
             axios.get('/loan-products-options')
             .then(({data})=>setLoanProducts(data)).catch()
         }).catch((e) => {
@@ -187,6 +229,29 @@ function LoanChartMaster() {
                         <Row>
                             <Col md={6}>
                                 <Input type='file' onChange={putFile} name='note' accept='.txt'></Input>
+                            </Col>
+                            <Col md={6}>
+                                <Button className='btn btn-success w-100'>
+                                    Upload
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Form>
+                </CardBody>
+            </Card>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={8} className='offset-4'>
+            <Card>
+                <CardHeader>
+                    Direct Upload from Excel (<a href='#' className='text-decoration-none'>Download Format</a>)
+                </CardHeader>
+                <CardBody>
+                    <Form onSubmit={uploadFromExcel}> 
+                        <Row>
+                            <Col md={6}>
+                                <Input type='file' onChange={putFile} name='excel' accept='.xls'></Input>
                             </Col>
                             <Col md={6}>
                                 <Button className='btn btn-success w-100'>
