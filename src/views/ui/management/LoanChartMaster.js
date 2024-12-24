@@ -4,38 +4,39 @@ import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button, Card, CardBody, CardHeader, Col, Form, Input, Label, Row, Table } from 'reactstrap'
-import { validate } from '../../../helpers/utils'
+import { validate, Warning } from '../../../helpers/utils'
 
 function LoanChartMaster() {
-  const dispatch = useDispatch()
-  const [refresh, call] = useState(false)
-  const [notefile, noteFile] = useState(null)
-  const [excelfile, excelFile] = useState(null)
-  const [loanProducts, setLoanProducts] = useState([])
-  const [products, setProducts] = useState([]);
-  const [fields, setFields] = useState({
+    const dispatch = useDispatch()
+    const [refresh, call] = useState(false)
+    const [notefile, noteFile] = useState(null)
+    const [excelfile, excelFile] = useState(null)
+    const [loanProducts, setLoanProducts] = useState([])
+    const [products, setProducts] = useState([]);
+    const [chart, setChart] = useState([]);
+    const [fields, setFields] = useState({
     id:'',
     amount:''
-  });
+    });
 
-  const updateProduct = e => {
-      e.preventDefault()
-      const {shouldGo} = validate(fields)
-      if(shouldGo===false)
-      {
-          toast.error('Fill the required fields!')
-          return 
-      }
-      dispatch({type:'LOADING'})
-      axios.post('add-amount-on-loan-product', fields)
-      .then(({data})=>{
+    const updateProduct = e => {
+        e.preventDefault()
+        const {shouldGo} = validate(fields)
+        if(shouldGo===false)
+        {
+            toast.error('Fill the required fields!')
+            return 
+        }
+        dispatch({type:'LOADING'})
+        axios.post('add-amount-on-loan-product', fields)
+        .then(({data})=>{
         console.log(data)
         call(!refresh)
         toast.success(data.message)
-      })
-      .catch(err=>toast.error(err.message))
-      .finally(()=>dispatch({type:'STOP_LOADING'}))
-  }
+        })
+        .catch(err=>toast.error(err.message))
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
+    }
 
     function putFile(e){
         e.preventDefault();
@@ -50,21 +51,15 @@ function LoanChartMaster() {
     function uploadFromNote(e){
 
         e.preventDefault();
+        if(!fields.id) {
+            return Warning('Select a product at first!');
+        }
+        if(!notefile) {
+            return Warning('Choose a file at first!');
+        }
         let fd = new FormData();
         fd.append('file', notefile);
-
-        if(!notefile) {
-            return toast('Choose a file at first!',
-                {
-                  icon: '⚠️',
-                  style: {
-                    borderRadius: '10px',
-                    background: '#333',
-                    color: '#fff',
-                  },
-                }
-            );
-        }
+        fd.append('loan_product_id', fields.id)
         dispatch({type:"LOADING"});
 
         axios.post('upload-from-text-file', fd, {
@@ -122,21 +117,39 @@ function LoanChartMaster() {
         .finally(()=>dispatch({type:"STOP_LOADING"}))
 
     }
-  useEffect(()=> {
 
-      axios.get('get-loan-products')
-      .then(({data})=>{
-          setProducts(data)
-          axios.get('/loan-products-options')
-          .then(({data})=>{
-              console.log(data)
-              setLoanProducts(data)
-          }).catch(e => dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}}))
-      })
-      .catch(err=>toast.error(err.message))
-      .finally(()=>dispatch({type:'STOP_LOADING'}))
-      
-  },[refresh])
+    function expandChart(e){
+        setFields({...fields, id:e.target.value});
+        console.log(products)
+    }
+
+    const showChart = product => {
+        console.log(product.id)
+        dispatch({type:"LOADING"});
+        axios.get('get-loan-chart/'+product.id)
+        .then(({data})=> {
+            if(data.length===0) Warning('Chart not uploaded yet!');
+            setChart(data)
+        })
+        .catch(()=>toast.error('something went wrong!'))
+        .finally(()=> dispatch({type:"STOP_LOADING"}))
+    }
+
+    useEffect(()=> {
+
+        axios.get('get-loan-products')
+        .then(({data})=>{
+            setProducts(data)
+            axios.get('/loan-products-options')
+            .then(({data})=>{
+                console.log(data)
+                setLoanProducts(data)
+            }).catch(e => dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}}))
+        })
+        .catch(err=>toast.error(err.message))
+        .finally(()=>dispatch({type:'STOP_LOADING'}))
+        
+    },[refresh])
 
   return (
     <>
@@ -155,6 +168,7 @@ function LoanChartMaster() {
                     <th> Loan </th> 
                     <th> EMI </th>
                     <th> Terms </th>
+                    <th> </th>
                   </tr>
                 </thead>
                 <tbody> 
@@ -165,6 +179,9 @@ function LoanChartMaster() {
                         <td>{product.amount}</td>
                         <td>{product.installments}</td>
                         <td>{product.terms??'1'}</td>
+                        <td>
+                            <span onClick={() => showChart(product)} className='fa fa-gear' style={{cursor:"pointer"}}></span>
+                        </td>
                       </tr>
                   })}
                 </tbody>
@@ -184,7 +201,7 @@ function LoanChartMaster() {
                         <Label>Product Name</Label>
                         <Input type='select' 
                             name='id'
-                            onChange={e=>setFields({...fields, id:e.target.value})}
+                            onChange={expandChart}
                         >
                             <option></option>
                             {loanProducts.map( opt =>{
@@ -218,7 +235,33 @@ function LoanChartMaster() {
           </Card>
         </Col>
       </Row>
-      <Row>
+      {chart.length ? (<>
+        <Table striped bordered>
+            <thead>
+                <tr>
+                    <th>PR ID</th>
+                    <th>LOAN AMOUNT</th>
+                    <th>INS NO</th>
+                    <th>INTEREST</th>
+                    <th>PRINCIPAL</th>
+                    <th>OTHER</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {chart.map( row => <tr>
+                    <td>{row.loan_product_id}</td>
+                    <td>{row.loan_amount}</td>
+                    <td>{row.installment_no}</td>
+                    <td>{row.int_due}</td>
+                    <td>{row.pr_due}</td>
+                    <td>{row.other}</td>
+                    <td>{(parseInt(row.pr_due) + parseInt(row.int_due) + parseInt(row.other))}</td>
+                </tr>)}
+            </tbody>
+        </Table>
+      </>): (<>
+        <Row>
         <Col md={8} className='offset-4'>
             <Card>
                 <CardHeader>
@@ -264,6 +307,8 @@ function LoanChartMaster() {
             </Card>
         </Col>
       </Row>
+      </>)}
+      
     </>
   )
 }

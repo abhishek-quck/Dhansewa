@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import toast from 'react-hot-toast';
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 export const validate = (fields,exceptions=[]) => {
     let result={}
@@ -182,4 +183,17 @@ export const getDocumentName = id => {
     }
     return documents[id];
     
+}
+
+export const Warning = msg => {
+    return toast(msg,
+        {
+          icon: '⚠️',
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+        }
+    );
 }

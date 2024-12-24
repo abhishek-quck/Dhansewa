@@ -1,6 +1,6 @@
 /*below line is not necessary in the file while uploading data*/
 
-name|amount|total-installments|type|emi-freq|flat|gst
+installment_no|loanAmount|total_due|int_due|pr_due|other
 
-Abc|34,999|24|amount|weekly|8%|12%
-XYZ|35,242|40|amount|monthly|5%|11%
+1,34999,24,5,40,0
+2,35242,40,7,35,0
