@@ -180,7 +180,7 @@ function LoanChartMaster() {
                         <td>{product.installments}</td>
                         <td>{product.terms??'1'}</td>
                         <td>
-                            <span onClick={() => showChart(product)} className='fa fa-gear' style={{cursor:"pointer"}}></span>
+                            <span onClick={() => showChart(product)} className='fa fa-upload' style={{cursor:"pointer"}}></span>
                         </td>
                       </tr>
                   })}
