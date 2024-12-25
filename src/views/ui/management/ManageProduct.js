@@ -301,6 +301,7 @@ function ManageProduct() {
                                     >
                                         <option></option>
                                         <option value={'Group Loan'}> GROUP LOAN </option>
+                                        <option value={'Individual'}> INDIVIDUAL </option>
                                     </Input> 
                                         
                                 </div>
