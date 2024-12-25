@@ -245,7 +245,7 @@ function LoanChartMaster() {
                             <button className="btn btn-success"> Bulk Save </button>
                         </Col>
                         <Col>
-                            <button className="btn btn-danger"> Bulk Delete </button>
+                            <button type={'button'} className="btn btn-danger"> Bulk Delete </button>
                         </Col>
                     </Row>
                     {chart.length ? (<> 
