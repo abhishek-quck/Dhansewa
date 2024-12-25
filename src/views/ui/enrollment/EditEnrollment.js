@@ -163,7 +163,7 @@ const EditEnrollment = () => {
 				<tbody> 
 				{ showSearch ?
 					(isLoading?  <tr> <td colSpan={9} className="text-center"><Spinner/></td></tr> :
-					(data.length ? data.map((row,index)=>{
+					(data?.length ? data.map((row,index)=>{
 						return (<tr key={index}>
 							<td>
                                {hasPermission(EDIT_ENROLL,'edit') ? <button className="btn-primary btn-sm btn">
