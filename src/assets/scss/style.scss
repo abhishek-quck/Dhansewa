@@ -330,6 +330,12 @@ td button {
 .action-btn:hover {
     background-color: #bbd1c7;
 }
+.table > * > * > * {
+    padding:0.1rem 0.5rem!important;
+}
+.table > thead > * > * {
+    background-color:#e0f5fc;
+}
  
 .pdf {font-weight: 600;}
 .pdf body { margin: 20px 120px; }

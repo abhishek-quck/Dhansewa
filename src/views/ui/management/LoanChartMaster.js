@@ -1,5 +1,6 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import axios from 'axios';
+import $ from 'jquery';
+import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -8,6 +9,7 @@ import { validate, Warning } from '../../../helpers/utils'
 
 function LoanChartMaster() {
     const dispatch = useDispatch()
+    const selectRef = useRef(null)
     const [refresh, call] = useState(false)
     const [notefile, noteFile] = useState(null)
     const [excelfile, excelFile] = useState(null)
@@ -27,12 +29,21 @@ function LoanChartMaster() {
             toast.error('Fill the required fields!')
             return 
         }
+        let fd = new FormData()
+        fd.append('loan_product_id', fields.id )
+        fd.append('chart', JSON.stringify(chart))
         dispatch({type:'LOADING'})
-        axios.post('add-amount-on-loan-product', fields)
+        axios.post('update-loan-chart', fd , {
+            headers:{ 
+                "Accept"       :"application/json",
+                "Content-Type" : "multipart/form-data",
+                "Authorization":"Bearer "+localStorage.getItem('auth-token')
+            }
+        })
         .then(({data})=>{
-        console.log(data)
-        call(!refresh)
-        toast.success(data.message)
+            console.log(data)
+            call(!refresh)
+            toast.success(data.message)
         })
         .catch(err=>toast.error(err.message))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
@@ -124,7 +135,7 @@ function LoanChartMaster() {
     }
 
     const showChart = product => {
-        console.log(product.id)
+        setFields({ id:product.id, amount: product.amount})
         dispatch({type:"LOADING"});
         axios.get('get-loan-chart/'+product.id)
         .then(({data})=> {
@@ -135,6 +146,13 @@ function LoanChartMaster() {
         .finally(()=> dispatch({type:"STOP_LOADING"}))
     }
 
+    const modifyChart = (index, e) => {
+        let {name,value} = e.target
+        const updatedChart = [...chart];
+        updatedChart[index][name] = value
+        setChart(updatedChart)
+        console.log(index, name, value)
+    }
     useEffect(()=> {
 
         axios.get('get-loan-products')
@@ -195,13 +213,14 @@ function LoanChartMaster() {
               WIR Setting (<Link className='text-decoration-none'>Download maker</Link>)
             </CardHeader>
             <CardBody>
-                <Form onSubmit={updateProduct}>
+                <Form id={`loan-chart`} onSubmit={updateProduct}>
                     <Row>
                         <Col>
                         <Label>Product Name</Label>
                         <Input type='select' 
-                            name='id'
                             onChange={expandChart}
+                            defaultValue={fields.id}
+                            ref={selectRef}
                         >
                             <option></option>
                             {loanProducts.map( opt =>{
@@ -215,7 +234,6 @@ function LoanChartMaster() {
                             <Input 
                             type='text'
                             placeholder='Enter Loan Amount'
-                            name='amount'
                             onChange={e=>setFields({...fields, amount:e.target.value})}
                             /> 
                         </div>
@@ -230,37 +248,42 @@ function LoanChartMaster() {
                             <button className="btn btn-danger"> Bulk Delete </button>
                         </Col>
                     </Row>
+                    {chart.length ? (<> 
+                        <Row>
+                            <Col className={`mt-3`}>
+                                <Table className='table-bordered table-hover' style={{fontSize:'small',borderColor:'black'}}>
+                                    <thead style={{verticalAlign:'middle'}}>
+                                        <tr>
+                                            <th>PR ID</th>
+                                            <th>LOAN AMOUNT</th>
+                                            <th>INS NO</th>
+                                            <th>INTEREST</th>
+                                            <th>PRINCIPAL</th>
+                                            <th>OTHER</th>
+                                            <th>TOTAL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {chart.map( (row,ind) => <tr key={ind}>
+                                            <td><Input readOnly name={`loan_product_id`} value={row.loan_product_id} onChange={e=>modifyChart(ind,e)} /></td>
+                                            <td><Input type='number' name={`loan_amount`} value={row.loan_amount} onChange={e=>modifyChart(ind,e)} /></td>
+                                            <td><Input type='number' name={`installment_no`} value={row.installment_no} onChange={e=>modifyChart(ind,e)} /></td>
+                                            <td><Input type='number' name={`int_due`} value={row.int_due} onChange={e=>modifyChart(ind,e)} /></td>
+                                            <td><Input type='number' name={`pr_due`} value={row.pr_due} onChange={e=>modifyChart(ind,e)} /></td>
+                                            <td><Input type='number' name={`other`} value={row.other} onChange={e=>modifyChart(ind,e)} /></td>
+                                            <td><Input readOnly value={(parseInt(row.pr_due) + parseInt(row.int_due) + parseInt(row.other))}></Input></td>
+                                        </tr>)}
+                                    </tbody>
+                                </Table>
+                            </Col>
+                        </Row>
+                    </>):''}
                 </Form>
             </CardBody>
           </Card>
         </Col>
       </Row>
-      {chart.length ? (<>
-        <Table striped bordered>
-            <thead>
-                <tr>
-                    <th>PR ID</th>
-                    <th>LOAN AMOUNT</th>
-                    <th>INS NO</th>
-                    <th>INTEREST</th>
-                    <th>PRINCIPAL</th>
-                    <th>OTHER</th>
-                    <th>TOTAL</th>
-                </tr>
-            </thead>
-            <tbody>
-                {chart.map( row => <tr>
-                    <td>{row.loan_product_id}</td>
-                    <td>{row.loan_amount}</td>
-                    <td>{row.installment_no}</td>
-                    <td>{row.int_due}</td>
-                    <td>{row.pr_due}</td>
-                    <td>{row.other}</td>
-                    <td>{(parseInt(row.pr_due) + parseInt(row.int_due) + parseInt(row.other))}</td>
-                </tr>)}
-            </tbody>
-        </Table>
-      </>): (<>
+      
         <Row>
         <Col md={8} className='offset-4'>
             <Card>
@@ -307,7 +330,6 @@ function LoanChartMaster() {
             </Card>
         </Col>
       </Row>
-      </>)}
       
     </>
   )
