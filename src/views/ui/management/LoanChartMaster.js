@@ -1,5 +1,4 @@
 import axios from 'axios';
-import $ from 'jquery';
 import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
@@ -240,14 +239,7 @@ function LoanChartMaster() {
                         {false && <button className='btn btn-primary h-50 ' style={{marginTop:'33px'}}>OK</button>}
                         </Col>
                     </Row>
-                    <Row className='mt-3' style={{display:'flex',justifyContent:'space-between'}}>
-                        <Col>
-                            <button className="btn btn-success"> Bulk Save </button>
-                        </Col>
-                        <Col>
-                            <button type={'button'} className="btn btn-danger"> Bulk Delete </button>
-                        </Col>
-                    </Row>
+                    
                     {chart.length ? (<> 
                         <Row>
                             <Col className={`mt-3`}>
@@ -278,6 +270,14 @@ function LoanChartMaster() {
                             </Col>
                         </Row>
                     </>):''}
+                    <Row className='mt-3' style={{display:'flex',justifyContent:'space-between'}}>
+                        <Col>
+                            <button className="btn btn-success"> Bulk Save </button>
+                        </Col>
+                        <Col>
+                            <button type={'button'} className="btn btn-danger"> Bulk Delete </button>
+                        </Col>
+                    </Row>
                 </Form>
             </CardBody>
           </Card>
