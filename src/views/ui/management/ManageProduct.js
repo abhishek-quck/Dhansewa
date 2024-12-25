@@ -161,6 +161,8 @@ function ManageProduct() {
                                     >
                                         <option>  </option>
                                         <option value={'daily'}> Daily </option>
+                                        <option value={'fornightly'}> Fornightly </option>
+                                        <option value={'monthly'}> Monthly </option>
                                     </Input>
                                         
                                 </div>
