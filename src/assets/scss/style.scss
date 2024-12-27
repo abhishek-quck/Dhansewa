@@ -339,6 +339,15 @@ td button {
     border-right:1px solid darkgray;
     border-left:1px solid darkgray;
 }
+.table > tfoot > * > * {
+    background-color:#e0f5fc;
+    padding: 0.5rem 0.5rem!important;
+    font-weight: 600;
+    text-align: center;
+    border-top:1px solid darkgray;
+    border-right:1px solid darkgray;
+    border-left:1px solid darkgray;
+}
 .table > tbody > * > td:first-child {
     border-left: 1px solid lightgray;
 }

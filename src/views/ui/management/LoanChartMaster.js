@@ -7,6 +7,7 @@ import { Button, Card, CardBody, CardHeader, Col, Form, Input, Label, Row, Table
 import { validate, Warning } from '../../../helpers/utils'
 
 function LoanChartMaster() {
+    
     const dispatch = useDispatch()
     const selectRef = useRef(null)
     const [refresh, call] = useState(false)
@@ -15,10 +16,7 @@ function LoanChartMaster() {
     const [loanProducts, setLoanProducts] = useState([])
     const [products, setProducts] = useState([]);
     const [chart, setChart] = useState([]);
-    const [fields, setFields] = useState({
-    id:'',
-    amount:''
-    });
+    const [fields, setFields] = useState({ id:'', amount:'' });
 
     const updateProduct = e => {
         e.preventDefault()
@@ -30,6 +28,7 @@ function LoanChartMaster() {
         }
         let fd = new FormData()
         fd.append('loan_product_id', fields.id )
+        fd.append('amount', fields.amount )
         fd.append('chart', JSON.stringify(chart))
         dispatch({type:'LOADING'})
         axios.post('update-loan-chart', fd , {
@@ -98,14 +97,7 @@ function LoanChartMaster() {
         fd.append('file', excelfile);
         if(!excelfile)
         {
-            return toast('Choose a file at first!',{
-                icon: '⚠️',
-                style: {
-                    borderRadius: '10px',
-                    background: '#333',
-                    color: '#fff',
-                },
-            });
+            return Warning('Choose a file at first!');
         }
 
         axios.post('upload-from-excel-file', fd, {
@@ -120,7 +112,6 @@ function LoanChartMaster() {
             axios.get('/loan-products-options')
             .then(({data})=>setLoanProducts(data)).catch()
         }).catch((e) => {
-            console.log(e.response?.data?.message)
             toast.error(e.response?.data?.message??'Something went wrong!');
             // dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}})
         })
@@ -130,7 +121,6 @@ function LoanChartMaster() {
 
     function expandChart(e){
         setFields({...fields, id:e.target.value});
-        console.log(products)
     }
 
     const showChart = product => {
@@ -150,7 +140,6 @@ function LoanChartMaster() {
         const updatedChart = [...chart];
         updatedChart[index][name] = value
         setChart(updatedChart)
-        console.log(index, name, value)
     }
     useEffect(()=> {
 
@@ -158,10 +147,8 @@ function LoanChartMaster() {
         .then(({data})=>{
             setProducts(data)
             axios.get('/loan-products-options')
-            .then(({data})=>{
-                console.log(data)
-                setLoanProducts(data)
-            }).catch(e => dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}}))
+            .then(({data})=>setLoanProducts(data))
+            .catch(e => dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}}))
         })
         .catch(err=>toast.error(err.message))
         .finally(()=>dispatch({type:'STOP_LOADING'}))
@@ -218,7 +205,7 @@ function LoanChartMaster() {
                         <Label>Product Name</Label>
                         <Input type='select' 
                             onChange={expandChart}
-                            defaultValue={fields.id}
+                            value={fields.id}
                             ref={selectRef}
                         >
                             <option></option>
@@ -233,6 +220,7 @@ function LoanChartMaster() {
                             <Input 
                             type='text'
                             placeholder='Enter Loan Amount'
+                            value={fields.amount??''}
                             onChange={e=>setFields({...fields, amount:e.target.value})}
                             /> 
                         </div>
@@ -266,6 +254,17 @@ function LoanChartMaster() {
                                             <td><Input readOnly value={(parseInt(row.pr_due) + parseInt(row.int_due) + parseInt(row.other))}></Input></td>
                                         </tr>)}
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td>{chart[0].loan_amount}</td>
+                                            <td>{chart.reduce((acc,row)=> acc + 1,0)}</td>
+                                            <td>{chart.reduce((acc,row)=> acc + parseInt(row.int_due),0)}</td>
+                                            <td>{chart.reduce((acc,row)=> acc + parseInt(row.pr_due),0)}</td>
+                                            <td>{chart.reduce((acc,row)=> acc + parseInt(row.other),0)}</td>
+                                            <td>{chart.reduce((acc,row)=> acc + (parseInt(row.int_due)+parseInt(row.pr_due)+parseInt(row.other)),0)}</td>
+                                        </tr>
+                                    </tfoot>
                                 </Table>
                             </Col>
                         </Row>
