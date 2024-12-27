@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react"; 
+import React, { useEffect, useState } from "react"; 
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { 
@@ -15,9 +15,11 @@ import {
   Button
 } from "reactstrap";
 import { validate } from "../../../helpers/utils";
+import { useNavigate } from "react-router-dom";
 let initial ={}, bankInitial ={}, NomineeInitial ={}
 const AddEnrollment = () => { 
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 	const [branches, setBranches] = useState([])
 	const [docs, setDocuments] = useState([])
 	const [KYCdoc, setKYCdoc] = useState(null)
@@ -84,7 +86,7 @@ const AddEnrollment = () => {
 		e.target.style.border=''
 		const {name, value} = e.target;
 		if(name==='verification_type') {
-			if(value == 2) {
+			if(value === 2) {
 				document.querySelector('input[name=verification]').max = 12
 				document.querySelector('input[name=verification]').min = 12
 			} else {
@@ -118,8 +120,8 @@ const AddEnrollment = () => {
 		}
 		dispatch({type:'LOADING'})
 		let fd = new FormData()
-		for (const key in fields) {
-			fd.append(key, fields[key])
+		for (const key in finalObj) {
+			fd.append(key, finalObj[key])
 		}
 		fd.append('kyc', KYCdoc )
 		fd.append('passbook', passbook )
@@ -132,9 +134,11 @@ const AddEnrollment = () => {
 			}
 		})
 		.then(({data})=>{ 
-			toast.success(data.message)
+			toast.success(data.message??'Success')
 			reset()
-			// hit(!submitted)
+			setTimeout(() => {
+				navigate('/cgt-entry')
+			}, 1000);
 		}).catch(({response})=> {
 			console.log(response.data);	
 			toast.error('Something went wrong')
@@ -928,6 +932,7 @@ const AddEnrollment = () => {
 							<Input
 								type="file"
 								name='doc'
+								accept=".docx, .pdf, image/*"
 								onChange={handleFile}
 								style={{border:errors.verification ?'1px solid red':''}}
 							/>

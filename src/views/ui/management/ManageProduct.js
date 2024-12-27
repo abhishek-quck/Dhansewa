@@ -2,12 +2,13 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Card, CardBody, CardFooter, CardHeader,  Col, Container, Form, Input, Label, Row } from 'reactstrap';
 import { validate } from '../../../helpers/utils'
 
 function ManageProduct() {
     const dispatch = useDispatch()
+    const navigator = useNavigate()
     const [fields, setFields] = useState({
         name:'',
         installments:'',
@@ -39,7 +40,7 @@ function ManageProduct() {
     const {id} = useParams();
     const handleSubmit = e => {
         e.preventDefault()
-        const {shouldGo, result} = validate(fields,['reducing'])
+        const {shouldGo, result} = validate(fields,['reducing','amount'])
         if(shouldGo===false)
         {
             console.log(result)
@@ -50,7 +51,10 @@ function ManageProduct() {
         dispatch({type:'LOADING'})
         axios.post('manage-product/'+id, fields)
         .then(({data})=>{
-            toast.success(data.message)
+            toast.success(data.message);
+            setTimeout(() => {
+                navigator('/loan-products')
+            }, 1000);
         })
         .catch(err=>toast.error(err.message))
         .finally(()=>dispatch({type:'STOP_LOADING'}))

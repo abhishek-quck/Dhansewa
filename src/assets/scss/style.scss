@@ -331,10 +331,19 @@ td button {
     background-color: #bbd1c7;
 }
 .table > * > * > * {
-    padding:0.1rem 0.5rem!important;
+    padding:0.3rem 0.5rem!important;
 }
 .table > thead > * > * {
     background-color:#e0f5fc;
+    border-top:1px solid darkgray;
+    border-right:1px solid darkgray;
+    border-left:1px solid darkgray;
+}
+.table > tbody > * > td:first-child {
+    border-left: 1px solid lightgray;
+}
+.table > tbody > * > td:last-child {
+    border-right:1px solid lightgray;
 }
  
 .pdf {font-weight: 600;}
