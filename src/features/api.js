@@ -4,7 +4,7 @@ const head = axios.defaults.headers.common
 
 export const apiSlice = createApi({
   reducerPath:'api',
-  baseQuery: fetchBaseQuery({ baseUrl:process.env.REACT_APP_BACKEND_URI ,
+  baseQuery: fetchBaseQuery({ baseUrl:'https://demoapi.dhanseva.co.in/public/api' ,
     prepareHeaders: ( headers, { getState }) => { 
       for(let key in head)
       {

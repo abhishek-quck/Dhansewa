@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const commonApiSlice = createApi({
 	reducerPath:'commonApi',
-	baseQuery: fetchBaseQuery({ baseUrl:process.env.REACT_APP_BACKEND_URI ,
+	baseQuery: fetchBaseQuery({ baseUrl:'https://demoapi.dhanseva.co.in/public/api' ,
 	  prepareHeaders: ( headers, { getState }) => {   
 		headers.set('Accept','application/json' ) 
 		headers.set('Content-Type', 'application/json') 
