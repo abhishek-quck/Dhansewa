@@ -164,7 +164,7 @@ function ManageProduct() {
                                         style={{border:errors.emi_frequency ?'1px solid red':''}}
                                     >
                                         <option>  </option>
-                                        <option value={'daily'}> Daily </option>
+                                        <option value={'weekly'}> Weekly </option>
                                         <option value={'fornightly'}> Fornightly </option>
                                         <option value={'monthly'}> Monthly </option>
                                     </Input>
