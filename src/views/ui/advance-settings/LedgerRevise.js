@@ -6,15 +6,16 @@ import { useDispatch } from "react-redux";
 import ReactSelect from "react-select";
 import { Card, CardBody, Form, FormGroup, Label, Input, Row, Col, CardFooter, CardHeader, Table } from "reactstrap";
 
+let searched = false
 const LedgerRevise = () => { 
-
     const [hitSearch, hit]            = useState(false)
     const [branches, setBranches ]    = useState([]);
     const [centers, setCenters ]      = useState([]);
     const [clients, setClients ]      = useState([]);
-    const [ledgerContent, setContent] = useState([]) 
+    const [ledgerContent, setContent] = useState([]);
+    const [loans, setLoans] = useState([]);
     const [searchfields, setSearchFields] = useState({ client:null, loan_id:null })
-
+    const [accounts, setLoanAccounts] = useState([])
     const [view, setView] = useState({
         id:'',
         client_id:'',
@@ -38,7 +39,24 @@ const LedgerRevise = () => {
     const dispatch = useDispatch();
     const [fields, setFields] = useState({ })
     const checkStyle = { marginTop:'10px', marginRight:'8px' };
-    const setSearchInputs = e => setSearchFields({...searchfields, [e.target.name]:e.target.value })
+
+    const modifyLedger = (index, e) => {
+        let {name,value} = e.target
+        const updatedChart = [...ledgerContent];
+        updatedChart[index][name] = value
+        setContent(updatedChart)
+    }
+
+    const setSearchInputs = e => {
+        setView(loans[e.value]);
+        setSearchFields({...searchfields, loan_id:e.value })
+        const clr = setInterval(()=> {
+            document.querySelector('.ledge')?.click();
+            if(searched) { // if button clicked just clear the interval
+                clearInterval(clr)
+            }
+        },500);
+    }
     const handleChange = e => setFields({...fields, [e.target.name]:e.target.value})
 
     const updateBranch = (e) => {
@@ -68,7 +86,7 @@ const LedgerRevise = () => {
     }    
 
     const generateLedger = (e) => {
-
+        searched = true;
         hit(true)
         e.preventDefault();
         if(!searchfields.client) {
@@ -100,7 +118,8 @@ const LedgerRevise = () => {
 
         axios.get('get-disbursement-details/'+clientID)
         .then(({data})=>{
-            setView(data);
+            setLoans(data.data);
+            setLoanAccounts(data.options)
             setSearchFields({...searchfields, client: clientID, loan_id :data.loan_id });
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}));
@@ -109,6 +128,7 @@ const LedgerRevise = () => {
     const udpateLedger = e => {
  
         const {name, value, dataset} = e.target;
+        modifyLedger(dataset.index, e);
         dispatch({ type:'LOADING' })
         
         axios.put('update-client-ledger', {
@@ -145,7 +165,7 @@ const LedgerRevise = () => {
             <b className="mt-2 mb-2"> LOAN LEDGER REVISE </b> 
         </CardHeader>
         <CardBody className="bg-gray-300">
-            <Form onSubmit={generateLedger}>
+            <Form onSubmit={generateLedger} id="ledger-form">
                 <FormGroup>
                 <Row className="mt-2">
                     <Col md="3">
@@ -177,18 +197,11 @@ const LedgerRevise = () => {
                     </div>
                     </Col > 
                     <Col md="3">
-                    <Label size={'sm'} for="exampleEmail"> Loan Accounts </Label>
-                    <div className="d-flex">
-                        <Input
-                            id="exampleSelectMulti" 
-                            name="branch"
-                            type="select"
+                        <Label size={'sm'} for="exampleEmail"> Loan Accounts </Label>
+                        <ReactSelect
+                            options={accounts}  
                             onChange={setSearchInputs}
-                            className="col-1" 
-                        > 
-                            <option> --SELECT LOAN A/C-- </option>
-                        </Input>
-                    </div>
+                        />
                     </Col > 
                 </Row>   
                 </FormGroup> 
@@ -319,7 +332,7 @@ const LedgerRevise = () => {
                         {view.id && <CardFooter>
                             <h5>Ledger Information</h5>
                             <div className="resultArea"></div>
-                            <button className="btn btn-rounded btn-success"> Ledger Regenerate </button>
+                            <button className="btn btn-rounded btn-success ledge"> Ledger Regenerate </button>
                         </CardFooter> }
                     </Card>
                 </div> 
@@ -371,16 +384,16 @@ const LedgerRevise = () => {
                                     <div className="d-flex" >
                                         <div> <b className="p-2">{ row.emi_no }</b> </div>      
                                         <div> {row.transaction_date}</div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="pr_due" defaultValue={ row.pr_due } /> </div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="int_due" defaultValue={ row.int_due } /> </div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="total_due" defaultValue={ row.total_due } /> </div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="pr_collected" defaultValue={ row.pr_collected } /> </div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="int_collected" defaultValue={ row.int_collected } /> </div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="total_collected" defaultValue={ row.total_collected } /> </div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="attend" defaultValue={ row.attend } /> </div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="receipt_no" defaultValue={ row.receipt_no } /> </div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="staff_id" defaultValue={ row.staff_id } /> </div>
-                                        <div> <Input type="text" data-id={row.id} onBlur={udpateLedger} name="other" defaultValue={ row.other??'' } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="pr_due" defaultValue={ row.pr_due } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="int_due" defaultValue={ row.int_due } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} disabled name={'total_due'} value={ parseInt(row.pr_due) + parseInt(row.int_due) } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="pr_collected" defaultValue={ row.pr_collected } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="int_collected" defaultValue={ row.int_collected } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} disabled value={ row.total_collected } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="attend" defaultValue={ row.attend } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="receipt_no" defaultValue={ row.receipt_no } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="staff_id" defaultValue={ row.staff_id } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="other" defaultValue={ row.other??'' } /> </div>
                                     </div>
                                 </td>
                             </tr>

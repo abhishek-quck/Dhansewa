@@ -6,7 +6,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import $ from 'jquery'
 import { useDispatch, useSelector } from "react-redux";
-import { formatDate, getCurrentDate, validate } from "../../../helpers/utils";
+import { formatDate, getCurrentDate, validate, Warning } from "../../../helpers/utils";
 import { Link } from "react-router-dom";
  
 const SpeedLoanDisburse = () => { 
@@ -201,18 +201,8 @@ const SpeedLoanDisburse = () => {
     const handleSubmit = async e => {
 
         e.preventDefault()
-        if(!sFields.loan_id)
-        {
-            return toast('Select a loan ID to get started!',
-                {
-                  icon: '⚠️',
-                  style: {
-                    borderRadius: '10px',
-                    background: '#333',
-                    color: '#fff',
-                  },
-                }
-            );
+        if(!sFields.loan_id) {
+            return Warning('Select a loan ID to get started!');
         }
         let {shouldGo, result} = validate(fields)
         if(shouldGo===false)
@@ -220,22 +210,23 @@ const SpeedLoanDisburse = () => {
             console.log(result)
             setErrors(result)
             let keys = Object.keys(result)
+            // make it easy for them when only single field remains...
             return toast.error(keys.length===1 ? keys[0].replace('_', ' ')+' is missing' :'Fill the required fields!')
         }
         // setting the `enroll-id` in payload 
         let enroll_id = sFields.loan_id.split(':')[0]
         setSearchField({...sFields, enroll_id})
 
-        dispatch({type:'LOADING'})
+        dispatch({ type:'LOADING' })
         const formData = Object.assign({}, fields, sFields);
-        axios.post('/speed-loan-disburse',formData)
+        axios.post('/speed-loan-disburse/'+fields.loan_product,formData)
         .then(({data})=>{
             toast.success('Loan disbursed successfully!')
             // Now Remove the selected Loan ID ;
             localStorage.removeItem('loanProductID')
             dispatch({type:'LOADING'})
             setTimeout(() => window.location.reload(), 1000 );
-            // this is proper reset
+            // this is the actual reset
         }).catch(err=>{
             console.log(err);
             toast.error('Something went wrong!')

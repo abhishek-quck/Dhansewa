@@ -277,23 +277,6 @@ function ManageProduct() {
                             <Row className="mt-2">
                                 <Col md="12">
                                 <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="linked_ac_number"> Link A/C Number </Label>
-                                    <Input
-                                        id="linked_ac_number" 
-                                        name="linked_ac_number"
-                                        type="text"
-                                        onChange={change}
-                                        defaultValue={fields.linked_ac_number}
-                                        placeholder="0"
-                                        style={{border:errors.linked_ac_number ?'1px solid red':''}}
-                                    /> 
-                                        
-                                </div>
-                                </Col > 
-                            </Row>
-                            <Row className="mt-2">
-                                <Col md="12">
-                                <div className="d-flex">
                                     <Label className="col-4"  size={'sm'} for="category"> Product Category </Label>
                                     <Input
                                         id="category" 
@@ -374,22 +357,6 @@ function ManageProduct() {
                                         onChange={change}
                                         defaultValue={fields.year_tenure}
                                         style={{border:errors.year_tenure ?'1px solid red':''}}
-                                    /> 
-                                        
-                                </div>
-                                </Col > 
-                            </Row>
-                            <Row className="mt-2">
-                                <Col md="12">
-                                <div className="d-flex">
-                                    <Label className="col-4"  size={'sm'} for="removal_date"> Removal Date </Label>
-                                    <Input
-                                        id="removal_date" 
-                                        name="removal_date"
-                                        type="date"
-                                        onChange={change}
-                                        defaultValue={fields.removal_date}
-                                        style={{border:errors.removal_date ?'1px solid red':''}}
                                     /> 
                                         
                                 </div>

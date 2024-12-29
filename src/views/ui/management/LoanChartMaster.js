@@ -256,8 +256,8 @@ function LoanChartMaster() {
                                     </tbody>
                                     <tfoot>
                                         <tr>
+                                            <td><strong>TOTAL</strong></td>
                                             <td></td>
-                                            <td>{chart[0].loan_amount}</td>
                                             <td>{chart.reduce((acc,row)=> acc + 1,0)}</td>
                                             <td>{chart.reduce((acc,row)=> acc + parseInt(row.int_due),0)}</td>
                                             <td>{chart.reduce((acc,row)=> acc + parseInt(row.pr_due),0)}</td>
