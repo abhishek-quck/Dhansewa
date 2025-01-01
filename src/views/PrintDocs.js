@@ -25,13 +25,13 @@ function PrintDocs() {
     // options
     const [branches, setBranches] = useState([]);
     const [centers, setCenters] = useState([]);
-    const [groups, setGroups] = useState([]);
     const [clients, setClients] = useState([]);
 
-    const printPassbook = async() => {
+    const printPassbook = async(e) => {
+
         dispatch({type:'LOADING'})
- 
-        return axios.get('print-passbook/'+fields.client,
+        let loan = e.target.dataset.loan
+        return axios.get(`print-passbook/${fields.client}/${loan}`,
             {
             responseType:'blob',
             headers:{
@@ -301,7 +301,7 @@ function PrintDocs() {
                                                 </Link> 
                                             </td>
                                             <td> 
-                                                <Link to='#' onClick={printPassbook} className='text-decoration-none'>
+                                                <Link to='#' data-loan={row.loan_id} onClick={printPassbook} className='text-decoration-none'>
                                                     Print Passbook
                                                 </Link> 
                                             </td>
