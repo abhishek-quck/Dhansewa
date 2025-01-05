@@ -119,7 +119,16 @@ function PrintDocs() {
             document.body.removeChild(link)
             URL.revokeObjectURL(href)
         })
-        .catch(()=> toast.error('File not found!'))
+        .catch(()=> toast('In progress.. Will be available soon!',
+            {
+                icon: '⚠️',
+                style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+                },
+            }
+        ))
         .finally( ()=> dispatch({type:'STOP_LOADING'}))
     }
 
