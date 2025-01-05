@@ -42,7 +42,7 @@ function PrintDocs() {
             const href = URL.createObjectURL(data)
             const link = document.createElement('a')
             link.href  = href 
-            link.download='_blank.pdf' // Don't ignore <3
+            link.download= "Client "+fields.client+'-passbook.pdf' // Don't ignore <3
             document.body.appendChild(link)
             link.click()
             document.body.removeChild(link)
