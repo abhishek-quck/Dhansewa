@@ -87,9 +87,9 @@ const CGTEntry = () => {
     }
 
     const uploadCGT = e => {  // upload CGT form
-
+        console.log(askImage, client)
         e.preventDefault();
-        if( askImage.first || client===null || client===undefined )
+        if( !askImage.first || !client )
         {
             return toast(client===undefined? 'Select the client first' :'Upload first day image first!',
                 {
@@ -305,7 +305,7 @@ const CGTEntry = () => {
         </Card>
         <Modal isOpen={modal} toggle={toggleModal} > 
             <Form onSubmit={uploadCGT} >
-                <ModalHeader toggle={toggleModal}> Upload CGT </ModalHeader>
+                <ModalHeader toggle={toggleModal}> {(askImage.first && askImage.second) ? 'View CGT' : 'Upload CGT'}  </ModalHeader>
                     <ModalBody>
                         <Container>
                             <Row>
@@ -334,7 +334,7 @@ const CGTEntry = () => {
                                     {!askImage.second && <Input 
                                         type='file'
                                         name='second_day'
-                                        accept='image/*'
+                                        accept='image/jpeg, image/png, image/jpg'
                                         onChange={handleFile}
                                         disabled={askImage.second}
                                     />}
@@ -353,7 +353,7 @@ const CGTEntry = () => {
                         </Container>
                     </ModalBody>
                 <ModalFooter>
-                    {(!askImage.first || !askImage.first )  && !['approved','reject'].includes(sFields.process) &&
+                    {(!askImage.first || !askImage.second )  && !['approved','reject'].includes(sFields.process) &&
                         isAdmin &&
                         <button className="btn btn-success" type="submit">
                             Save

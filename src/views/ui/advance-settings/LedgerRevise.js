@@ -6,7 +6,27 @@ import { useDispatch } from "react-redux";
 import ReactSelect from "react-select";
 import { Card, CardBody, Form, FormGroup, Label, Input, Row, Col, CardFooter, CardHeader, Table } from "reactstrap";
 
-let searched = false
+let searched = false;
+let initial = {
+    id:'',
+    client_id:'',
+    loan_date:'',
+    loan_amount:'',
+    loan_fee:'',
+    insurance_fee:'',
+    gst:'',
+    loan_product:'',
+    bank_name:'',
+    funding_by:'',
+    policy:'',
+    utilization:'',
+    first_installment:'',
+    number_of_emis:'',
+    payment_mode:'',
+    schedule_recurring:'',
+    cross_sale_products:'',
+}
+
 const LedgerRevise = () => { 
     const [hitSearch, hit]            = useState(false)
     const [branches, setBranches ]    = useState([]);
@@ -16,25 +36,7 @@ const LedgerRevise = () => {
     const [loans, setLoans] = useState([]);
     const [searchfields, setSearchFields] = useState({ client:null, loan_id:null })
     const [accounts, setLoanAccounts] = useState([])
-    const [view, setView] = useState({
-        id:'',
-        client_id:'',
-        loan_date:'',
-        loan_amount:'',
-        loan_fee:'',
-        insurance_fee:'',
-        gst:'',
-        loan_product:'',
-        bank_name:'',
-        funding_by:'',
-        policy:'',
-        utilization:'',
-        first_installment:'',
-        number_of_emis:'',
-        payment_mode:'',
-        schedule_recurring:'',
-        cross_sale_products:'',
-    });
+    const [view, setView] = useState(initial);
 
     const dispatch = useDispatch();
     const [fields, setFields] = useState({ })
@@ -65,6 +67,9 @@ const LedgerRevise = () => {
         axios.get('get-branch-centers/'+ e.value).then(({data})=> {
             setCenters(data.map(item => ({ value: item.id, label: item.name})))
             setClients([])
+            setContent([]);
+            setView(initial);
+            setLoanAccounts([]);
         }).catch(err => {
             console.log(err.message)
             setCenters([])
@@ -82,6 +87,9 @@ const LedgerRevise = () => {
             toast.error('Something went wrong!');
             setClients([])
         }).finally(()=>dispatch({type:'STOP_LOADING'}))
+        setContent([]);
+        setView(initial);
+        setLoanAccounts([]);
         // setClients(allData['clients'][e.value])
     }    
 
@@ -123,6 +131,9 @@ const LedgerRevise = () => {
             setSearchFields({...searchfields, client: clientID, loan_id :data.loan_id });
         })
         .finally(()=>dispatch({type:'STOP_LOADING'}));
+        setContent([]);
+        setView(initial);
+        setLoanAccounts([]);
     }
 
     const udpateLedger = e => {
