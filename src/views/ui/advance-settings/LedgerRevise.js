@@ -1,3 +1,4 @@
+/* eslint-disable no-sequences */
 import $ from "jquery";
 import axios from "axios";
 import React, { useEffect, useState } from "react"; 
@@ -5,6 +6,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import ReactSelect from "react-select";
 import { Card, CardBody, Form, FormGroup, Label, Input, Row, Col, CardFooter, CardHeader, Table } from "reactstrap";
+import { Link } from "react-router-dom";
 
 let searched = false;
 let initial = {
@@ -37,7 +39,9 @@ const LedgerRevise = () => {
     const [searchfields, setSearchFields] = useState({ client:null, loan_id:null })
     const [accounts, setLoanAccounts] = useState([])
     const [view, setView] = useState(initial);
-
+    const [loanProduct, setLoanProduct] = useState({name:''})
+    const collectedPrincipal = ledgerContent.reduce((acc,row)=> acc + parseInt(row.pr_collected),0)
+    const collectedInterest = ledgerContent.reduce((acc,row)=> acc + parseInt(row.int_collected),0)
     const dispatch = useDispatch();
     const [fields, setFields] = useState({ })
     const checkStyle = { marginTop:'10px', marginRight:'8px' };
@@ -113,7 +117,7 @@ const LedgerRevise = () => {
         dispatch({type:'LOADING'});
 
         axios.post('/get-client-ledger',searchfields)
-        .then(({data})=> setContent(data) )
+        .then(({data})=> (setContent(data.ledger), setLoanProduct(data.product), setView({...view, expectedPaidUp:data.expected_paid_up, loan_duration:data.loan_duration,expected_interest:data.expected_interest})))
         .catch(() => toast.error('Something went wrong!'))
         .finally(() => dispatch({type:'STOP_LOADING'}));
 
@@ -251,7 +255,8 @@ const LedgerRevise = () => {
                                                  Loan Product
                                             </td>
                                             <td colSpan={3}>
-                                                 <b>{view.loan_product}</b> : (View Chart)
+                                                <b>{loanProduct.name}</b> : 
+                                                <Link className={`text-decoration-none`} to={`/loan-chart-master/${loanProduct.id}`}>(View Chart)</Link>
                                             </td> 
                                         </tr>
                                         <tr>
@@ -270,16 +275,16 @@ const LedgerRevise = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                 Loan Duration
+                                                Loan Duration
                                             </td>
                                             <td >
-                                                <b className="mt-1"> N/A </b>
+                                                <b className="mt-1"> {view.loan_duration??'N/A'} </b>
                                             </td>
                                             <td >
                                                  Expected Paidup Date
                                             </td>
                                             <td>
-                                                <b className="mt-1"> N/A </b>
+                                                <b className="mt-1"> {view.expectedPaidUp??'N/A'} </b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -305,7 +310,7 @@ const LedgerRevise = () => {
                                                 Total Interest Expected 
                                             </td>
                                             <td>
-                                                <b className="mt-1"> N/A </b>
+                                                <b className="mt-1"> {view.expected_interest?? 'N/A' } </b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -313,13 +318,13 @@ const LedgerRevise = () => {
                                                 Principal Outstanding 
                                             </td>
                                             <td >
-                                                <b className="mt-1"> N/A </b>
+                                                <b className="mt-1"> {view.loan_amount? view.loan_amount - collectedPrincipal: 0} </b>
                                             </td>
                                             <td >
                                                 Interest Outstanding 
                                             </td>
                                             <td>
-                                                <b className="mt-1"> N/A </b>
+                                                <b className="mt-1"> {view.expected_interest ? view.expected_interest - collectedInterest :'N/A'} </b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -424,9 +429,9 @@ const LedgerRevise = () => {
                                 <div> <b>{''}</b> </div>
                                 <div> <b>{''}</b> </div>
                                 <div> <b>{''}</b> </div>
-                                <div> <b>{''}</b> </div>
-                                <div> <b>{''}</b> </div>
-                                <div> <b>{''}</b> </div>
+                                <div> <b>{collectedPrincipal}</b> </div>
+                                <div> <b>{collectedInterest}</b> </div>
+                                <div> <b>{}</b> </div>
                                 <div> <b> Pending:0 </b> </div>
                                 <div> <b>{''}</b> </div>
                                 <div> <b>{''}</b> </div>

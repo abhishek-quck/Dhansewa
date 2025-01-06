@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Button, Card, CardBody, CardHeader, Col, Form, Input, Label, Row, Table } from 'reactstrap'
 import { validate, Warning } from '../../../helpers/utils'
 
@@ -17,7 +17,8 @@ function LoanChartMaster() {
     const [products, setProducts] = useState([]);
     const [chart, setChart] = useState([]);
     const [fields, setFields] = useState({ id:'', amount:'' });
-
+    const {product} = useParams();
+   
     const updateProduct = e => {
         e.preventDefault()
         const {shouldGo} = validate(fields)
@@ -151,7 +152,10 @@ function LoanChartMaster() {
             .catch(e => dispatch({ type:'ERROR', payload:{code:e.response.status, error:e.message}}))
         })
         .catch(err=>toast.error(err.message))
-        .finally(()=>dispatch({type:'STOP_LOADING'}))
+        .finally(()=>dispatch({type:'STOP_LOADING'}));
+        if(product) { 
+            showChart({id:product, amount:''});
+        }    
         
     },[refresh])
 
