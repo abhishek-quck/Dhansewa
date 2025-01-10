@@ -428,9 +428,9 @@ const LedgerRevise = () => {
                             <div className="d-flex" style={{height:'30px'}}>
                                 <div> <b> Total </b> </div>
                                 <div> <b> Count: {ledgerContent.length}</b> </div>
-                                <div> <b>{''}</b> </div>
-                                <div> <b>{''}</b> </div>
-                                <div> <b>{''}</b> </div>
+                                <div> <b>{ledgerContent.reduce((a,t)=> a + t.pr_due,0)}</b> </div>
+                                <div> <b>{ledgerContent.reduce((a,t)=> a + t.int_due,0)}</b> </div>
+                                <div> <b>{ledgerContent.reduce((a,t)=> a + (parseInt(t.pr_due) + parseInt(t.int_due)),0)}</b> </div>
                                 <div> <b>{collectedPrincipal}</b> </div>
                                 <div> <b>{collectedInterest}</b> </div>
                                 <div> <b>{}</b> </div>
