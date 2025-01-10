@@ -430,14 +430,15 @@ const LedgerRevise = () => {
                                 <div> <b> Count: {ledgerContent.length}</b> </div>
                                 <div> <b>{ledgerContent.reduce((a,t)=> a + t.pr_due,0)}</b> </div>
                                 <div> <b>{ledgerContent.reduce((a,t)=> a + t.int_due,0)}</b> </div>
-                                <div> <b>{ledgerContent.reduce((a,t)=> a + (parseInt(t.pr_due) + parseInt(t.int_due)),0)}</b> </div>
+                                <div><b>{ledgerContent.reduce((a,t)=>a+(parseInt(t.pr_due)+parseInt(t.int_due)),0)}</b></div>
                                 <div> <b>{collectedPrincipal}</b> </div>
                                 <div> <b>{collectedInterest}</b> </div>
-                                <div> <b>{}</b> </div>
+                                <div><b>{ledgerContent.reduce((a,t)=>a+(parseInt(t.int_collected)+parseInt(t.pr_collected)),0)}</b></div>
                                 <div> <b> Pending:0 </b> </div>
-                                <div> <b>{''}</b> </div>
-                                <div> <b>{''}</b> </div>
-                                <div> <b> 0 </b> </div>   
+                                <div></div>
+                                <div></div>
+                                <div><b>0</b></div>   
+                                <div></div>
                             </div>
                         </td>
                     </tr>
