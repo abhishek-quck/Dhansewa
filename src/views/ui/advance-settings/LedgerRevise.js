@@ -411,7 +411,7 @@ const LedgerRevise = () => {
                                         <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="receipt_no" defaultValue={ row.receipt_no } /> </div>
                                         <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="staff_id" defaultValue={ row.staff_id } /> </div>
                                         <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="other" defaultValue={ row.other??'' } /> </div>
-                                        <div> <Input type={'date'} data-id={row.id} data-index={index} name="timestamp" defaultValue={row.transaction_date} /></div>
+                                        <div> <Input type={'date'} data-id={row.id} data-index={index} name="paid" defaultValue={row.transaction_date} /></div>
                                     </div>
                                 </td>
                             </tr>
