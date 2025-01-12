@@ -220,13 +220,12 @@ const LedgerRevise = () => {
                     </Col > 
                 </Row>   
                 </FormGroup> 
-                <div className="d-flex"> 
                 <div className="col-md-7">
                     <Card>
                         <CardHeader>
                             <b> Loan Information </b>
                         </CardHeader>
-                        <CardBody>
+                        <CardBody className="table-responsive">
                             <Row className="container">
                                 <table className="table table-bordered">
                                     <tbody> 
@@ -252,7 +251,7 @@ const LedgerRevise = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                 Loan Product
+                                                Loan Product
                                             </td>
                                             <td colSpan={3}>
                                                 <b>{loanProduct.name}</b> : 
@@ -261,13 +260,13 @@ const LedgerRevise = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                 Disbursement Date
+                                                Disbursement Date
                                             </td>
                                             <td >
                                                 <b className="mt-1">{view.created_at} </b>
                                             </td>
                                             <td >
-                                                 Loan amount
+                                                Loan amount
                                             </td>
                                             <td>
                                                 <b className="mt-1">{view.loan_amount} &#8377;</b> 
@@ -281,7 +280,7 @@ const LedgerRevise = () => {
                                                 <b className="mt-1"> {view.loan_duration??'N/A'} </b>
                                             </td>
                                             <td >
-                                                 Expected Paidup Date
+                                                Expected Paidup Date
                                             </td>
                                             <td>
                                                 <b className="mt-1"> {view.expectedPaidUp??'N/A'} </b>
@@ -289,7 +288,7 @@ const LedgerRevise = () => {
                                         </tr>
                                         <tr>
                                             <td>
-                                                 Actual Paidup Date
+                                                Actual Paidup Date
                                             </td>
                                             <td >
                                                 {view.id && 
@@ -352,24 +351,10 @@ const LedgerRevise = () => {
                         </CardFooter> }
                     </Card>
                 </div> 
-                <div className="col-md-4 offset-1">
-                    <Card className="mx-1">
-                        <CardHeader>
-                            <b> ENTRY </b>
-                        </CardHeader>
-                        <CardBody>
-                            
-                        </CardBody>
-                        <CardFooter>
-                                
-                        </CardFooter>
-                    </Card>
-                </div>
-                </div>
             </Form>
         </CardBody>
         <CardFooter>
-            <div className="mt-3" id="resultArea">  
+            <div className="mt-3 table-responsive" id="resultArea">  
             { hitSearch ?
             <Table hover bordered dashed={'true'} className="ledger-table" style={{fontSize:'small'}}>
                 <thead style={{fontSize:'smaller'}}>

@@ -104,7 +104,7 @@ const Enrollment = () => {
 				</Row>
 				</FormGroup> 
 			</Form>
-			<div className="mt-3" id="resultArea">  
+			<div className="mt-3 table-responsive" id="resultArea">  
 				<Table
 					bordered 
 					hover

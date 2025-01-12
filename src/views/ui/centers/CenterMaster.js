@@ -6,8 +6,8 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
-import { useSearchCentersQuery } from '../../../features/centerSlice';
-import { validate } from '../../../helpers/utils';
+import { useGetCentersQuery, useSearchCentersQuery } from '../../../features/centerSlice';
+import { capitalFirst, validate } from '../../../helpers/utils';
 
 function CenterMaster() {
 	const dispatch = useDispatch();
@@ -20,8 +20,8 @@ function CenterMaster() {
 		axios.get('get-branch-centers/'+ e.target.value)
 		.then(({data})=>setCenter(data))
 	}
-	const debouncedSearchQuery = useDebounce(search, 500);
-	const { data, isLoading } = useSearchCentersQuery(debouncedSearchQuery,{skip:search===''})
+	// const debouncedSearchQuery = useDebounce(search, 500);
+	const { data, isSuccess } = useGetCentersQuery()
 	const [fetchcenters, setCenter] = useState([]);
 	const [fields, setFields] = useState({
 		branch:'',
@@ -67,8 +67,7 @@ function CenterMaster() {
 			}
 			return toast.error('Fill the required fields')
 		}
-		let exists = fetchcenters.some( item => item.name.toLowerCase() === fields.center.toLowerCase())
-        if(exists) return toast.error('Center name already exists!');
+        if(fetchcenters.some( item =>item.name.toLowerCase()===fields.center.toLowerCase())) return toast.error('Center name already exists!');
 		dispatch({ type:'LOADING' })
 		axios.post('add-center',fields)
 		.then(({data})=> {
@@ -79,6 +78,7 @@ function CenterMaster() {
 			toast.error(response.message)
 		})
 		.finally(()=> dispatch({ type:'STOP_LOADING'}))
+
 	}
 	const [e,s] = useState(false) // for trying request +1more time in case failed
 	useEffect(()=>{
@@ -95,7 +95,13 @@ function CenterMaster() {
 			console.log(err.message)
 			s(true)
 		})
+		return () => null
 	},[e])
+
+	useEffect(()=> {
+		if(isSuccess) setCenter(data)
+		return () => null
+	},[data, isSuccess])
 
 	return (
 	<>
@@ -125,7 +131,7 @@ function CenterMaster() {
 						</Row>
 						<Row>
 							<div className="mt-3" id="resultArea"/>   
-							<Container>
+							<Container className='table-responsive'>
 							<Table bordered hover style={{fontSize:'small'}}>
 								<thead>
 									<tr>
@@ -133,7 +139,7 @@ function CenterMaster() {
 										<th> Center Name </th>
 										<th> Day Name </th>
 										<th> L.c </th>
-										<th> Staff ID </th>
+										<th> Staff </th>
 										<th> Action </th>
 									</tr>
 								</thead>
@@ -142,9 +148,10 @@ function CenterMaster() {
 										return (<tr key={row.id}>
 											<td>{row.id}</td> 
 											<td>{row.name}</td> 
-											<td>{row.meeting_days}</td> 
-											<td>{row.id+1}</td> 
-											<td>.</td> 
+											<td>{capitalFirst(row.meeting_days)}</td> 
+											<td>{row.lc}</td> 
+											<td>{row.staff}</td> 
+											<td><i className='fa fa-edit'/></td> 
 										</tr>)
 									})}
 									<tr></tr>

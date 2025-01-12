@@ -5,7 +5,6 @@
   flex-grow: 1;
 }
 .wrapper {
-  max-width: 1300px;
   margin: 0 auto;
 }
 .card {
@@ -35,4 +34,29 @@
 }
 .table-borderless>:not(:first-child) {
   border-top-width: 0;
+}
+@media (max-width:500px) 
+{
+  .contentArea {
+    margin-left: 0px!important;
+  }
+  .navbar {
+    top:5px;
+  }
+  .row {
+    flex-direction: column;
+    > * {
+      width:100%;
+      margin-top:10px;
+    }
+  }
+  .w-50.btn.btn-success.btn-sm{
+    left: 25%!important;
+  }
+  .navbar.navbar-expand-md.bg-light {
+      z-index: 887!important;
+  }
+  .showSidebar {
+    z-index: 888;
+  }
 }

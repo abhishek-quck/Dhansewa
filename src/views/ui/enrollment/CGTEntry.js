@@ -230,7 +230,7 @@ const CGTEntry = () => {
                     </Form>
                 </Row>
                 <Row>
-                    <Container>
+                    <Container className='table-responsive'>
                         <Table>
                             <thead>
                                 <tr>

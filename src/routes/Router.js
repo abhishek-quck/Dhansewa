@@ -421,7 +421,7 @@ const ThemeRoutes = [
         )
       },
       { 
-        path: "/loan-chart-master", 
+        path: "/loan-chart-master/:product?", 
         exact: true, 
         element: (
         <ProtectedRoute permission={constant.MASTER_LOAN}>

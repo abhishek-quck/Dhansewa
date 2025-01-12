@@ -111,7 +111,7 @@ const AddEnrollment = () => {
                         </Col > 
                         <Col md="5">
                         <Label size={'sm'} for="search"> Search </Label>
-                        <div className="d-flex">
+                        <div className="d-md-flex">
                             <Input
                                 id="search" 
                                 name="name"
@@ -121,56 +121,58 @@ const AddEnrollment = () => {
                                 placeholder="Search Name / Aadhaar"
                                 onChange={setChange}
                             />
-                            <button id="getGRTs" className="btn btn-sm btn-danger mx-4"> Pending GRT </button>
+                            <button id="getGRTs" className="btn btn-sm btn-danger mx-md-4"> Pending GRT </button>
                         </div>
                         </Col > 
                     </Row>   
                     </FormGroup> 
                 </Form>
-                <Table bordered hover style={{fontSize:'small'}}>
-                    <thead>
-                        <tr>
-                            <th> SN </th>
-                            <th> Date </th>
-                            <th> Full Name </th>
-                            <th> Address </th>
-                            <th> Mobile </th>
-                            <th> Member ID </th>
-                            <th> Status </th>
-                            <th> Action </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {responseData.length ? 
-                            responseData.map((row,index)=>{
-                            return <tr key={index}>
-                                <td>{index+1}</td>
-                                <td>{row['Date']}</td>
-                                <td>{row['Fullname']}</td>
-                                <td>{row['address']}</td>
-                                <td>{row['phone']}</td>
-                                <td>{row['memberID']}</td>
-                                <td>{row['status']}</td>
-                                <td>
-                                    <Link 
-                                        className="text-decoration-none" 
-                                        to={'/review-client/'+row['id']}
-                                    >
-                                        Review
-                                    </Link>
+                <div className="table-responsive">
+                    <Table bordered hover style={{fontSize:'small'}}>
+                        <thead>
+                            <tr>
+                                <th> SN </th>
+                                <th> Date </th>
+                                <th> Full Name </th>
+                                <th> Address </th>
+                                <th> Mobile </th>
+                                <th> Member ID </th>
+                                <th> Status </th>
+                                <th> Action </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {responseData.length ? 
+                                responseData.map((row,index)=>{
+                                return <tr key={index}>
+                                    <td>{index+1}</td>
+                                    <td>{row['Date']}</td>
+                                    <td>{row['Fullname']}</td>
+                                    <td>{row['address']}</td>
+                                    <td>{row['phone']}</td>
+                                    <td>{row['memberID']}</td>
+                                    <td>{row['status']}</td>
+                                    <td>
+                                        <Link 
+                                            className="text-decoration-none" 
+                                            to={'/review-client/'+row['id']}
+                                        >
+                                            Review
+                                        </Link>
+                                    </td>
+                                </tr>
+                            }):
+                            searched ? 
+                            <tr className="text-center">
+                                <td colSpan={8} className="text-danger fs-4">
+                                    No records found!
                                 </td>
                             </tr>
-                        }):
-                        searched ? 
-                        <tr className="text-center">
-                            <td colSpan={8} className="text-danger fs-4">
-                                No records found!
-                            </td>
-                        </tr>
-                        :null
-                    }
-                    </tbody>
-                </Table>
+                            :null
+                        }
+                        </tbody>
+                    </Table>
+                </div>
             </CardBody>
             <CardFooter>
                 <div className="mt-3" id="resultArea">  

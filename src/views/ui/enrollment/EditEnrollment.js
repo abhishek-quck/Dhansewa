@@ -119,7 +119,7 @@ const EditEnrollment = () => {
 					<Col xs="6" >
 						<Button 
 							type="button" 
-							className={`btn mt-4 offset-8 ${showSearch?'resubmit':'btn-primary'}`}
+							className={`btn mt-4 offset-md-8 ${showSearch?'resubmit':'btn-primary'}`}
 							onClick={showSearch? fetchReSubmit: ()=>searchRef.current.click()}
 						>
 							{showSearch? 'Re-submit List':'Show Updated'}
@@ -141,7 +141,7 @@ const EditEnrollment = () => {
 				</Row>
 				</FormGroup> 
 			</Form>
-			<div className="mt-3" id="resultArea">  
+			<div className="mt-3 table-responsive" id="resultArea">  
 				<Table
 					bordered 
 					hover
