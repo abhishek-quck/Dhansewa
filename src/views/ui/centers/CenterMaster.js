@@ -1,4 +1,3 @@
-import { useDebounce } from '@uidotdev/usehooks';
 import axios from 'axios';
 // eslint-disable-next-line
 import $ from 'jquery';
@@ -6,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
-import { useGetCentersQuery, useSearchCentersQuery } from '../../../features/centerSlice';
+import { useGetCentersQuery } from '../../../features/centerSlice';
 import { capitalFirst, validate } from '../../../helpers/utils';
 
 function CenterMaster() {
@@ -55,7 +54,7 @@ function CenterMaster() {
 	const handleSubmit = e => 
 	{
 		e.preventDefault();
-		let {shouldGo,result} = validate(fields)
+		let {shouldGo,result} = validate(fields,['advisor'])
 		if(shouldGo===false)
 		{
 			for (const el in fields) {

@@ -10,7 +10,7 @@ import { Toaster } from "react-hot-toast";
 const FullLayout = () => { 
   // eslint-disable-next-line
   let navigate = useNavigate()
-  const sidebarStyle = { position:'fixed', overflow:'scroll' }
+  const sidebarStyle = { position:'fixed', overflow:'scroll', zIndex:777 }
   const {userToken, companyID} = useSelector(state=>state.auth)
   let isLoading = useSelector(state => state.auth.loading)
   let isLoggedIn = userToken && (companyID || localStorage.getItem('companyID'))
