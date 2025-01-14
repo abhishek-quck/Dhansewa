@@ -391,7 +391,7 @@ const LedgerRevise = () => {
                                         <div> <Input type="text" data-id={row.id} data-index={index} disabled name={'total_due'} value={ parseInt(row.pr_due) + parseInt(row.int_due) } /> </div>
                                         <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="pr_collected" defaultValue={ row.pr_collected } /> </div>
                                         <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="int_collected" defaultValue={ row.int_collected } /> </div>
-                                        <div> <Input type="text" data-id={row.id} data-index={index} disabled value={ row.total_collected } /> </div>
+                                        <div> <Input type="text" data-id={row.id} data-index={index} disabled value={parseInt(row.pr_collected)+parseInt(row.int_collected)} /> </div>
                                         <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="attend" defaultValue={ row.attend } /> </div>
                                         <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="receipt_no" defaultValue={ row.receipt_no } /> </div>
                                         <div> <Input type="text" data-id={row.id} data-index={index} onBlur={udpateLedger} name="staff_id" defaultValue={ row.staff_id } /> </div>
