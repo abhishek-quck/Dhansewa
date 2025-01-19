@@ -26,7 +26,7 @@ function DayClose() {
     const [ attachments, setAttachments ] = useState(initial);
 
     const containerStyle = {borderTop:'1px dashed',boxShadow:'-20px 0 10px -5px rgba(0, 0, 0, 0.1)'}
-
+    const btnStyle = {borderRadius:'8px!important'}
     // Submit Form `day-close`
     const closeDay = e => {
 
@@ -236,8 +236,8 @@ function DayClose() {
                                 <td>{item.name}</td>
                                 <td>{item.due+` ₹`}</td>
                                 <td>
-                                    <Button className={`btn-success`} data-id={item.id} data-name={item.name} onClick={initUpload}> Upload </Button>
-                                    <Button className='btn-primary ms-2 btn-rounded'>Day Close</Button>
+                                    <Button className={`btn-success`} data-id={item.id} data-name={item.name} style={btnStyle} onClick={initUpload}> Upload </Button>
+                                    <Button className='btn-primary ms-2 btn-rounded' style={btnStyle} disabled={!attachments.bankSlip || !attachments.cashBook || !attachments.meetingPhoto}>Day Close</Button>
                                 </td>
                             </tr>)
                         })}
