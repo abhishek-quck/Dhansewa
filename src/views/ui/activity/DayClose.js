@@ -2,9 +2,14 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Table } from 'reactstrap'
-import { formatDate, getCurrentDay, getCurrentTime } from '../../../helpers/utils';
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap'
+import { formatDate, getCurrentDay, getCurrentTime, Warning } from '../../../helpers/utils';
 
+let initial = {
+    cashBook: null,
+    bankSlip: null,
+    meetingPhoto: null
+}
 function DayClose() {
 
     const [branches, setBranches] = useState([]);
@@ -14,7 +19,12 @@ function DayClose() {
     const [branchInfo, setBranchInfo ]=useState({})
     const dispatch = useDispatch();
     const [centerwise, setCenterWise] = useState(false);
-    const [centerCollections, setCenterCollections] = useState([])
+    const [centerCollections, setCenterCollections] = useState([]);
+    const [modal, setModal] = useState(false);
+    const [ actingCenter, setActingCenter ] = useState({id:'', name:''});
+
+    const [ attachments, setAttachments ] = useState(initial);
+
     const containerStyle = {borderTop:'1px dashed',boxShadow:'-20px 0 10px -5px rgba(0, 0, 0, 0.1)'}
 
     // Submit Form `day-close`
@@ -60,6 +70,48 @@ function DayClose() {
     useEffect(() => {
         axios.get('get-branches').then(({data})=>setBranches(data)).catch(e=>console.log(e.message))
     },[])
+
+    const initUpload = e => {
+        let {id, name}  = e.target.dataset;
+        setActingCenter({id, name});
+        setModal(!modal)
+    }
+
+    const handleFile = e => {
+        let file = e.target.files[0];
+		let name = e.target.name;
+        var reader = new FileReader();
+        reader.readAsDataURL(file); 
+        reader.onload = function() {
+            setAttachments({...attachments, [name]:file});
+        };         
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        let fd= new FormData();
+        if(!attachments.cashBook || !attachments.bankSlip || !attachments.meetingPhoto) {
+            return Warning("Upload all the details to proceed")
+        }
+        dispatch({ type:"LOADING" })
+        
+        fd.append('cashbook', attachments.cashBook);
+        fd.append('bank_slip', attachments.bankSlip);
+        fd.append('meeting_photo', attachments.meetingPhoto);
+        axios.post('center-day-close/'+actingCenter,  fd, {
+            headers: {
+                "Accept"       :"application/json",
+                "Content-Type" : "multipart/form-data",
+                "Authorization":"Bearer "+localStorage.getItem('auth-token')
+            }
+        }).then(({data}) => {
+            console.log(data);
+            toast.success('Day closed for center '+ actingCenter.name)
+            setAttachments(initial);
+        }).catch(()=> toast.error('Something went wrong!'))
+        .finally(()=>dispatch({ type:"STOP_LOADING" }))
+        
+    }
 
   return (
     <>
@@ -184,7 +236,7 @@ function DayClose() {
                                 <td>{item.name}</td>
                                 <td>{item.due+` ₹`}</td>
                                 <td>
-                                    <Button className={`btn-success`}>Edit</Button>
+                                    <Button className={`btn-success`} data-id={item.id} data-name={item.name} onClick={initUpload}> Upload </Button>
                                     <Button className='btn-primary ms-2 btn-rounded'>Day Close</Button>
                                 </td>
                             </tr>)
@@ -232,6 +284,43 @@ function DayClose() {
             </Container>
         </CardBody>
     </Card>
+    <Modal isOpen={modal} >
+        <Form onSubmit={handleSubmit}>
+            <ModalHeader>
+                <p>Upload Attachments</p>
+            </ModalHeader>
+            <ModalBody>
+                <Row>
+                    <FormGroup>
+                        <Label>
+                            Cashbook
+                        </Label>
+                        <Input type='file' name='cashbook' onChange={handleFile}/>
+                    </FormGroup>
+                </Row>
+                <Row className='mt-2'>
+                    <FormGroup>
+                        <Label>
+                            Bank Slip
+                        </Label>
+                        <Input type='file' name='bank_slip' onChange={handleFile}/>
+                    </FormGroup>
+                </Row>
+                <Row className='mt-2'>
+                    <FormGroup>
+                        <Label>
+                            Meeting Photo
+                        </Label>
+                        <Input type='file' accept='image/*' name='meeting_photo' onChange={handleFile}/>
+                    </FormGroup>
+                </Row>
+            </ModalBody>
+            <ModalFooter>
+                <button className='btn btn-light' onClick={()=>setModal(!modal)}> Close </button>
+                <button className='btn btn-success'> Submit </button>
+            </ModalFooter>
+        </Form>
+    </Modal>
     </>
   )
 }
