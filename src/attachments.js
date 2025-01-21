@@ -7,7 +7,7 @@ import jsPDF from 'jspdf';
 var Attachments =
 {
     messageOrigin: null,
-    preview: function(hasData, filename, clientID)
+    preview: function(hasData, filename, path)
     {
         // Remove existing elements, we already faced enough errors
         let cModalBody=document.body.querySelectorAll('.attachment-viewer.d-none');
@@ -52,7 +52,7 @@ var Attachments =
                 //     .catch(err=>console.log(err.message))
                 return ;
             }
-            Attachments.events.previewCallback(hasData)
+            Attachments.events.previewCallback(hasData, path)
         } 
         else {
                 
@@ -76,11 +76,11 @@ var Attachments =
     },
     events:
     {
-        previewCallback: function (data)
+        previewCallback: function (data, onDisk)
         {
             let oModalBody=document.querySelector('.attachment-viewer.d-none');
             let oUL=document.querySelector('.attachment-viewer.d-none ul');
-
+            const path = process.env.REACT_APP_BACKEND_URI.replace('/api','/storage/')
             if (data.length === 0)
             {
                 toast.error('Attachment not found!');
@@ -88,6 +88,13 @@ var Attachments =
         
             for (let i = 0; i < data.length; i++)
             {
+                if(data[i].slice(data[i].length -4)==='.pdf') {
+                    let a = document.createElement('a');
+                    a.href = path + data[i];
+                    a.target= "_blank";
+                    a.click();
+                    continue;
+                }
                 let oImg=oUL.appendChild(document.createElement('li')).appendChild(document.createElement('img'));
                 oImg.className='rotate-0';
                 oImg.id='image-'+i;
@@ -126,7 +133,11 @@ var Attachments =
                 oImg.onerror = function() {
                     toast.error('Incorrect file format!');
                 };
-                oImg.src=data[i];
+                if(onDisk) {
+                    oImg.src= path + data[i];
+                } else {
+                    oImg.src = data[i];
+                }
             }
         },
         load: function()
@@ -189,9 +200,9 @@ var Attachments =
     }
 }
 
-function preview(hasData=null,filename=null, clientID=null)
+function preview(hasData=null,filename=null, path=false)
 {   
-    Attachments.preview( hasData, filename, clientID );
+    Attachments.preview( hasData, filename, path );
 }
  
 export { preview }

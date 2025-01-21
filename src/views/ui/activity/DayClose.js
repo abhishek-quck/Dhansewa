@@ -4,30 +4,30 @@ import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap'
 import { formatDate, getCurrentDay, getCurrentTime, Warning } from '../../../helpers/utils';
+import { preview } from '../../../attachments';
 
 let initial = {
-    cashBook: null,
-    bankSlip: null,
-    meetingPhoto: null
+    cashbook: null,
+    bank_slip: null,
+    meeting_photo: []
 }
 function DayClose() {
 
+    const dispatch = useDispatch();
     const [branches, setBranches] = useState([]);
     const [collection, setCollection] = useState([]);
+    const [modal, setModal] = useState(false); 
     const [checked, setChecked ]= useState(false);
+    const [centerwise, setCenterWise] = useState(false);
     const [branchID, setBranch ]= useState('');
     const [branchInfo, setBranchInfo ]=useState({})
-    const dispatch = useDispatch();
-    const [centerwise, setCenterWise] = useState(false);
     const [centerCollections, setCenterCollections] = useState([]);
-    const [modal, setModal] = useState(false);
-    const [ actingCenter, setActingCenter ] = useState({id:'', name:''});
-
+    const [docs, setDocs ] = useState({}); 
     const [ attachments, setAttachments ] = useState(initial);
 
     const containerStyle = {borderTop:'1px dashed',boxShadow:'-20px 0 10px -5px rgba(0, 0, 0, 0.1)'}
     const btnStyle = {borderRadius:'8px!important'}
-    // Submit Form `day-close`
+
     const closeDay = e => {
 
         e.preventDefault()
@@ -42,10 +42,7 @@ function DayClose() {
         if (!centerwise) {
             dispatch({type:"LOADING"})
             axios.get('get-center-wise-collection/'+ branchID)
-            .then(({data})=> {
-                console.log(Object.values(data))
-                setCenterCollections(Object.values(data))
-            })
+            .then(({data})=> setCenterCollections(Object.values(data)))
             .catch(err=>{})
             .finally(()=>dispatch({type:"STOP_LOADING"}))
         } else {
@@ -69,51 +66,61 @@ function DayClose() {
 
     useEffect(() => {
         axios.get('get-branches').then(({data})=>setBranches(data)).catch(e=>console.log(e.message))
+        axios.get('get-collection-documents').then(({data})=> setDocs(data));
     },[])
 
-    const initUpload = e => {
-        let {id, name}  = e.target.dataset;
-        setActingCenter({id, name});
-        setModal(!modal)
-    }
+    const initUpload = e => setModal(!modal)
 
     const handleFile = e => {
-        let file = e.target.files[0];
-		let name = e.target.name;
-        var reader = new FileReader();
-        reader.readAsDataURL(file); 
-        reader.onload = function() {
-            setAttachments({...attachments, [name]:file});
-        };         
+        let name = e.target.name;
+        if(name!== 'meeting_photo[]') {
+            let file = e.target.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file); 
+            reader.onload = function() {
+                setAttachments({...attachments, [name]:file});
+            };         
+        } else {  
+            let {files} = e.target;
+            setAttachments({...attachments, meeting_photo: files })           
+        }
     }
 
     const handleSubmit = e => {
         e.preventDefault();
         let fd= new FormData();
-        if(!attachments.cashBook || !attachments.bankSlip || !attachments.meetingPhoto) {
-            return Warning("Upload all the details to proceed")
+        if(!attachments.meeting_photo) {
+            return Warning("Upload all the details to proceed!");
+        }
+        if(Object.keys(docs).length===0 && (!attachments.cashbook || !attachments.bank_slip) ) {
+            return Warning("Upload all the details to proceed!");
         }
         dispatch({ type:"LOADING" })
         
-        fd.append('cashbook', attachments.cashBook);
-        fd.append('bank_slip', attachments.bankSlip);
-        fd.append('meeting_photo', attachments.meetingPhoto);
-        axios.post('center-day-close/'+actingCenter,  fd, {
+        fd.append('cashbook', attachments.cashbook);
+        fd.append('bank_slip', attachments.bank_slip);
+        for(let i=0; i < (attachments.meeting_photo).length; i++) {
+            fd.append(`meeting_photo[${i}]`, attachments.meeting_photo[i] );
+        }
+        axios.post('upload-day-close-attachments',  fd, {
             headers: {
-                "Accept"       :"application/json",
+                "Accept" : "*",
                 "Content-Type" : "multipart/form-data",
                 "Authorization":"Bearer "+localStorage.getItem('auth-token')
             }
         }).then(({data}) => {
             console.log(data);
-            toast.success('Day closed for center '+ actingCenter.name)
-            setAttachments(initial);
+            toast.success('Attachments uploaded!');
+            // setAttachments(initial);
         }).catch(()=> toast.error('Something went wrong!'))
         .finally(()=>dispatch({ type:"STOP_LOADING" }))
         
     }
 
-  return (
+    const previewDoc = (dataArr, filename, onDisk) => {
+        preview(dataArr, filename, onDisk)
+    }
+    return (
     <>
     <Card>
         <CardHeader>
@@ -137,7 +144,7 @@ function DayClose() {
                         <Button color="primary"> <i className='fa fa-search'/> </Button>
                         <Button disabled={!branchID} className='btn btn-success ms-3' onClick={getCenterWise}>
                             Center-wise
-                            <Input type='checkbox' checked={centerwise} name='centerwise' className='ms-2'></Input>
+                            <Input type='checkbox' checked={centerwise} onChange={()=>{}} name='centerwise' className='ms-2'></Input>
                         </Button>
                     </div>
                 </Col>
@@ -236,13 +243,15 @@ function DayClose() {
                                 <td>{item.name}</td>
                                 <td>{item.due+` ₹`}</td>
                                 <td>
-                                    <Button className={`btn-success`} data-id={item.id} data-name={item.name} style={btnStyle} onClick={initUpload}> Upload </Button>
-                                    <Button className='btn-primary ms-2 btn-rounded' style={btnStyle} disabled={!attachments.bankSlip || !attachments.cashBook || !attachments.meetingPhoto}>Day Close</Button>
+                                    <Button className='btn-primary ms-2 btn-rounded' style={btnStyle} disabled={!attachments.bank_slip || !attachments.cashbook || !attachments.meeting_photo}>Day Close</Button>
                                 </td>
                             </tr>)
                         })}
                     </tbody>
                 </Table>
+            </Col>
+            <Col md={3} style={{maxHeight:75}} className={`btn-outline-primary btn text-center align-content-center`} onClick={initUpload}>
+                Upload Attachments 
             </Col>
             </Row>
         </CardBody>
@@ -295,7 +304,10 @@ function DayClose() {
                         <Label>
                             Cashbook
                         </Label>
-                        <Input type='file' name='cashbook' onChange={handleFile}/>
+                        
+                        {docs.cash_book ? <button type='button' className='btn btn-light ms-5' onClick={()=>previewDoc([docs.cash_book],'', true)}>
+                            <i className='fa fa-paperclip' /> Preview
+                        </button> : <Input type='file' name='cashbook' onChange={handleFile}/>}
                     </FormGroup>
                 </Row>
                 <Row className='mt-2'>
@@ -303,7 +315,10 @@ function DayClose() {
                         <Label>
                             Bank Slip
                         </Label>
-                        <Input type='file' name='bank_slip' onChange={handleFile}/>
+                        
+                        {docs.bank_slip ? <button type='button' className='btn btn-light ms-5' onClick={()=>previewDoc([docs.bank_slip],'', true)}>
+                            <i className='fa fa-paperclip' /> Preview
+                        </button> : <Input type='file' name='bank_slip' onChange={handleFile}/>}
                     </FormGroup>
                 </Row>
                 <Row className='mt-2'>
@@ -311,18 +326,21 @@ function DayClose() {
                         <Label>
                             Meeting Photo
                         </Label>
-                        <Input type='file' accept='image/*' name='meeting_photo' onChange={handleFile}/>
+                        {docs.meeting_photo && <button type="button" className='btn btn-light ms-5' onClick={()=> previewDoc(docs.meeting_photo, '', true)}>
+                            <i className='fa fa-paperclip'/> Preview    
+                        </button>}
+                        <Input type='file' accept='image/*' multiple name='meeting_photo[]' onChange={handleFile}/>
                     </FormGroup>
                 </Row>
             </ModalBody>
             <ModalFooter>
-                <button className='btn btn-light' onClick={()=>setModal(!modal)}> Close </button>
+                <button className='btn btn-light' type='button' onClick={()=>setModal(!modal)}> Close </button>
                 <button className='btn btn-success'> Submit </button>
             </ModalFooter>
         </Form>
     </Modal>
     </>
-  )
+    )
 }
 
 export default DayClose
