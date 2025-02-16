@@ -119,16 +119,18 @@ function PrintDocs() {
             document.body.removeChild(link)
             URL.revokeObjectURL(href)
         })
-        .catch(()=> toast('In progress.. Will be available soon!',
-            {
-                icon: '⚠️',
-                style: {
-                borderRadius: '10px',
-                background: '#333',
-                color: '#fff',
-                },
-            }
-        ))
+        .catch((e)=> {
+            toast('In progress.. Will be available soon!',
+                {
+                    icon: '⚠️',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            )
+        })
         .finally( ()=> dispatch({type:'STOP_LOADING'}))
     }
 
