@@ -165,15 +165,15 @@ function CenterCollection() {
                                             <td><span> {item.id} </span></td>
                                             <td><span> {item.name} </span></td>
                                             <td><span> {item.staff} </span></td>
+                                            <td><span> {item.pr_due} </span></td>
+                                            <td><span> {item.pr_coltd} </span></td>
+                                            <td><span> {item.int_due} </span></td>
+                                            <td><span> {item.int_coltd} </span></td>
+                                            <td><span> {item.total_due} </span></td>
+                                            <td><span> {item.other_coltd} </span></td>
+                                            <td><span> {item.total_coltd} </span></td>
                                             <td><span> {item.id} </span></td>
-                                            <td><span> {item.id} </span></td>
-                                            <td><span> {item.id} </span></td>
-                                            <td><span> {item.id} </span></td>
-                                            <td><span> {item.id} </span></td>
-                                            <td><span> {item.id} </span></td>
-                                            <td><span> {item.id} </span></td>
-                                            <td><span> {item.id} </span></td>
-                                            <td><span> {item.id} </span></td>
+                                            <td><span> {0} </span></td>
                                         </tr>
                                     )
                                 })}
