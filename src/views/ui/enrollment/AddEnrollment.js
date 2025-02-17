@@ -261,7 +261,7 @@ const AddEnrollment = () => {
 							type="text"
 							min="10"
 							max="10"
-							cast={fields.verification_type == 2 ? 'num': 'str'}
+							cast={fields.verification_type == 2 ? 'num': ''}
 							onChange={onChange}
 							placeholder="Enter KYC No"
 							defaultValue={fields.verification}
