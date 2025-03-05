@@ -130,8 +130,8 @@ export const navigation= [
             href: "/speed-loan-disburse",
         },
         {
-            title: "Proposal Revise",
-            href: "#",
+            title: "Upload Sanction",
+            href: "/upload-sanction",
         },
         {
             title: "Loan Switching",
