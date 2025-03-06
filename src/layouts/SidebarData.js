@@ -39,6 +39,10 @@ export const navigation= [
           href: "/manage-client-passbook",
         },
         {
+          title: "RTGS",
+          href: "/rtgs",
+        },
+        {
           title: "Speed Enrollments",
           href: "#",
         },

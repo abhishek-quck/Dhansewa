@@ -9,6 +9,11 @@ import { preview } from '../../../attachments'
 import docEnum from '../../../enums/documentEnum'
 
 var allData = {branch:{}, center:{}, clients:{}}
+const classes = {
+    1 :'approved',
+    2 :'rejected',
+    3 :'further',
+}
 function ManagePassbook() {
 
     const {isAdmin} = useSelector( state => state.auth )
@@ -60,6 +65,8 @@ function ManagePassbook() {
 
     }
 
+    const u = str => str.toUpperCase()
+
     const updateBranch = (e) => {
         setFields({...fields, branch:e.value})
         clientRef.current?.clearValue()
@@ -101,6 +108,7 @@ function ManagePassbook() {
         dispatch({type:'LOADING'})
         axios.post('/search-enrolled/'+clientID+'/'+ POST_APPRAISAL_DOC )
         .then( ({data}) => {
+            console.log(data)
             setTargetInfo(data?.data)
         })
         .catch( (err) => {
@@ -210,47 +218,49 @@ function ManagePassbook() {
                                             <th> TID </th>
                                             <th> Target Name </th> 
                                             <th> Attachment Type </th>
+                                            <th> Status </th>
                                             <th> Action </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                 { targetInfo.length? 
-                                            targetInfo.map((row,i)=>{
-                                            return (<tr key={i}>
-                                                <td>{row.id}</td>
-                                                <td>{row.applicant_name}</td>
-                                                <td>{'Passbook'}</td>
-                                                <td>
-                                                    { row.documents.length ? (
-                                                        <>
-                                                        <button 
-                                                            className='btn text-dark' data-id={row.id} 
-                                                            onClick={()=>previewDoc([row.documents[0].data], row.documents[0].file_name)} 
-                                                            style={{cursor:'pointer',border:'1px dashed'}}
-                                                        > 
-                                                            Preview &nbsp;
-                                                            {
-                                                                (row.documents[0].data).includes('application/pdf') ? 
-                                                                <i className='fs-3 fa-regular fa-file-pdf'/> : 
-                                                                <i className='fa fa-paperclip'/> 
-                                                            }
-                                                        </button> &nbsp;&nbsp;
-                                                        <Button className='btn-light action-btn' onClick={toggleModal}> Manage </Button>
-                                                        </>
-                                                    ) : (
-                                                        <Button className='btn-primary' onClick={toggleModal} > Upload </Button>
-                                                    )}
-                                                </td>
-                                            </tr>)
-                                        })
-                                        :(<tr>
-                                            <td colSpan={4} className='text-danger text-center'> 
-                                                <h5>{fields.client ? ' No documents uploaded or needs re-upload! ': ''}</h5> 
+                                    targetInfo.map((row,i)=>{
+                                        return (<tr key={i} className={`${row.passbook ? classes[row.passbook.status]:''}`}>
+                                            <td>{row.id}</td>
+                                            <td>{row.applicant_name}</td>
+                                            <td>{'Passbook'}</td>
+                                            <td>{row.passbook? u(classes[row.passbook.status]) : "None" }</td>
+                                            <td>
+                                                { row.documents.length ? (
+                                                    <>
+                                                    <button 
+                                                        className='btn text-dark' data-id={row.id} 
+                                                        onClick={()=>previewDoc([row.documents[0].data], row.documents[0].file_name)} 
+                                                        style={{cursor:'pointer',border:'1px dashed'}}
+                                                    > 
+                                                        Preview &nbsp;
+                                                        {
+                                                            (row.documents[0].data).includes('application/pdf') ? 
+                                                            <i className='fs-3 fa-regular fa-file-pdf'/> : 
+                                                            <i className='fa fa-paperclip'/> 
+                                                        }
+                                                    </button> &nbsp;&nbsp;
+                                                    {row.passbook == null && <Button className='btn-light action-btn' onClick={toggleModal}> Manage </Button>}
+                                                    </>
+                                                ) : (
+                                                    <Button className='btn-primary' onClick={toggleModal} > Upload </Button>
+                                                )}
                                             </td>
                                         </tr>)
-                                    }
-                                    </tbody>
-                                </Table>    
+                                    })
+                                    :(<tr>
+                                        <td colSpan={4} className='text-danger text-center'> 
+                                            <h5>{fields.client ? ' No documents uploaded or needs re-upload! ': ''}</h5> 
+                                        </td>
+                                    </tr>)
+                                }
+                                </tbody>
+                            </Table>    
                         </Row>
                     </Container>
                 </CardBody>

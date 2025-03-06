@@ -62,8 +62,10 @@ function ManageClient() {
                 for(let key in data.data[0]) {
                     if(typeof data.data[0][key] === 'object')
                     { 
-                        for(let k in data.data[0][key]) {
-                            stack[key=='other_info'? k: key+'_'+k] = data.data[0][key][k]
+                        if(key!=='passbook') {
+                            for(let k in data.data[0][key]) {
+                                stack[key==='other_info'? k: key+'_'+k] = data.data[0][key][k]
+                            }
                         }
                     } else stack[key] = data.data[0][key]
                 }
