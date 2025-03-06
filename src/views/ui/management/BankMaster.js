@@ -1,43 +1,63 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { Button, Card, CardBody, CardHeader, Col, Form, Input, Row, Table } from 'reactstrap'
 
 function BankMaster() {
     const dispatch = useDispatch()
-    const [rAdded, addR] = useState(false)
-
-    const addRow = () => {}
-
-    const [fields, setFields] = useState({
-        name:[''],
-    })
+    
+    const [fields, setFields] = useState([{ name:"", branch:"", ifsc:"", accountNumber:"", accountCode:"" }])
+    
+    const addRow = () =>
+    {
+        setFields([...fields, { name:"", branch:"", ifsc:"", accountNumber:"", accountCode:"" }])
+    }
 
     const handleChange = e => {
-
+        let {index} = e.target.dataset
+        let {name, value} = e.target
+        setFields(fields.map( (field, i) => 
+            i === parseInt(index) ? {...field, [name]: value} : field
+        ))
     }
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault()
-        axios.post('/')
-    }
-
-    const deletRow = (e) => {
-        let index = e.target.dataset.index
-        let obj = fields
-        for(let K in obj)
-        {
-            if(typeof obj[K]=='object')
-            {
-                obj[K].splice(index,1)
-            } 
+        console.log(fields)
+        const {data} = await axios.post('/save-bank-accounts', fields)
+        if(data.status) {
+            toast.success(data.message)
+            setFields(data.data)
+        } else {
+            toast.error(data.message)
         }
-        addR(!rAdded)
     }
 
-    useEffect(()=>{
+    const deletRow = async e => {
+        const {id, index} = e.target.dataset
+        if(id && window.confirm("Are you sure?")) {
+            const {data} = await axios.get(`/remove-bank-account/${id}`)
+            if(data.status) {
+                setFields(fields.splice(index,1))
+                return toast.success(data.message)
+            } 
+            toast.error(data.message)
+        } else {
+            setFields(fields.splice(index,1))
+            toast.success("Account removed")
+        }
+        // addR(!rAdded)
+    }
 
-    },[rAdded])
+    useEffect(() => {
+        axios.get(`/bank-accounts`).then(({data}) => {
+            if(data.length) {
+                setFields(data)
+            }
+        })
+        return () => null
+    },[])
 
     return (
     <Card>
@@ -53,65 +73,26 @@ function BankMaster() {
                         <thead>
                             <tr>
                                 <th> BANK </th>
-                                <th> IFSC </th>
                                 <th> BRANCH </th>
+                                <th> IFSC </th>
                                 <th> A/C NO </th>
                                 <th> A/C CODE </th>
                                 <th> : </th>
                             </tr>
                         </thead>
                         <tbody>
-                            { fields.name.map((row,i)=>{
+                            { fields.map((row,i)=>{
                                 return <tr key={i}>
-                                <td>
-                                    <Input
-                                    type='select' 
-                                    onChange={handleChange} 
-                                    name='bank'>
-                                        <option> Select Category </option>
-                                        <option value={'Home Appliances'}> 
-                                            Home Appliances 
-                                        </option>
-                                    </Input>
-                                </td>
-                                <td>
-                                    <Input 
-                                        type='text' 
+                                 {Object.keys(row).map( (col) => col!=='id' && <td key={col}>
+                                     <Input
+                                        value={row[col]}
+                                        onChange={handleChange}
                                         data-index={i} 
-                                        onChange={handleChange} 
-                                        name='ifsc_code'
-                                        placeholder='Enter IFSC'
+                                        name={col}
                                     />
-                                </td>
+                                </td>)}
                                 <td>
-                                    <Input 
-                                        type='text' 
-                                        data-index={i} 
-                                        onChange={handleChange} 
-                                        name='branch'
-                                        placeholder='Enter Branch'
-                                    />
-                                </td>
-                                <td>
-                                    <Input 
-                                        type='text' 
-                                        data-index={i} 
-                                        onChange={handleChange} 
-                                        name='account_no'
-                                        placeholder='Enter Account Number'
-                                    />
-                                </td>
-                                <td>
-                                    <Input 
-                                        type='text' 
-                                        data-index={i} 
-                                        onChange={handleChange} 
-                                        name='account_code'
-                                        placeholder='Enter Code'
-                                    />
-                                </td>
-                                <td>
-                                    <Button color='danger' data-index={i} onClick={deletRow}>
+                                    <Button color='danger' data-row={row.id} data-index={i} onClick={deletRow}>
                                         Delete
                                     </Button>
                                 </td>

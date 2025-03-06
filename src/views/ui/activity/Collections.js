@@ -5,28 +5,7 @@ import { Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
 import { getCurrentDate } from '../../../helpers/utils';
 
 function Collections() {
-    const [collections, setCollections] = useState([
-        { 
-            branch: 'Jacob',
-            date: 'Thornton',
-            dues : 'Thornton',
-            collected: 'Thornton',
-            center: 'Thornton',
-            client: 'fat',
-            DBC: 'fat',
-            disb: 'fat',  
-        },
-        {   
-            branch: 'Jacob',
-            date: 'Thornton',
-            dues : 'Thornton',
-            collected: 'Thornton',
-            center: 'Thornton',
-            client: 'fat',
-            DBC: 'fat',
-            disb: 'fat' 
-        }
-    ]);
+    const [collections, setCollections] = useState([]);
     const currentDate = getCurrentDate();
     const [totals, setTotals] = useState({ due:0, collected:0, center:0, client:0, DBC:0, disb:0 })
     useEffect(()=>{
@@ -82,7 +61,7 @@ function Collections() {
                         return (
                             <tr key={i}>
                                 <td>{i+1}</td>                    
-                                <td>{row.branch.name}</td>
+                                <td>{row.name}</td>
                                 <td>{row.date??currentDate}</td>
                                 <td>{row.due??0}</td>
                                 <td>{row.collected??0}</td>

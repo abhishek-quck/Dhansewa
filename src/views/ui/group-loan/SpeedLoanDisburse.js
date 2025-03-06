@@ -188,11 +188,6 @@ const SpeedLoanDisburse = () => {
 
     }
 
-    const isOpenDay = date => {
-        const day = date.getDay();
-        return day===days.indexOf(meetingDay)
-    }
-
     const handleDate = date => {
         setDate(date)
         setFields({...fields, first_installment: formatDate(date) })
@@ -620,7 +615,6 @@ const SpeedLoanDisburse = () => {
           </div> 
         </CardFooter>
       </Card> 
-      
     </div>
   );
 };

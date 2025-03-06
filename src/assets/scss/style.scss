@@ -424,3 +424,6 @@ td button {
 .fa-circle-question {
     cursor: pointer!important;
 }
+tr.approved > * {background-color: #d7e4cb} 
+tr.rejected > * {background-color: #d9b8bb}
+tr.further > * {background-color: #f5e3a5}
