@@ -264,7 +264,7 @@ export default function SanctionUpload() {
                     </Row>
                 </CardBody>
             </Card>
-            <Modal isOpen={open} > 
+            <Modal isOpen={open} size='sm'> 
                 <Form onSubmit={uploadSanction} >
                     <ModalHeader> Upload Sanction Letter </ModalHeader>
                         <ModalBody>
