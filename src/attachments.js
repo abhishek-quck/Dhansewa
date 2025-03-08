@@ -40,12 +40,21 @@ var Attachments =
                 URL.revokeObjectURL(href)
                 return ;
             }
-            if(typeof hasData==='string') {
+            if(typeof hasData==='string' && hasData.indexOf('application/pdf')=== -1) {
                 let a = document.createElement('a')
                 a.href = pathName + hasData
                 a.download = filename
                 a.target = '_blank'
                 return a.click()
+            } 
+            if(typeof hasData==='string' && hasData.indexOf('application/pdf')!== -1){
+                let file = dataURLtoFile(hasData,'letter_sanction.pdf') 
+                const href = URL.createObjectURL(file)
+                const link = document.createElement('a')
+                link.href  = href 
+                link.download='letter_sanction.pdf' // Don't ignore <3
+                link.click()
+                return ;
             }
             Attachments.events.previewCallback(hasData, path)
         } 
