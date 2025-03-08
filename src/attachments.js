@@ -4,6 +4,7 @@ import axios from 'axios';
 import { dataURLtoFile } from './helpers/utils';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+const pathName = process.env.REACT_APP_BACKEND_URI.replace('/api','/storage/')
 var Attachments =
 {
     messageOrigin: null,
@@ -26,31 +27,25 @@ var Attachments =
         oUL.id='images';
         if(hasData)
         {
-            if(hasData[0].includes('application/pdf'))
+            if(typeof hasData==='object' && hasData.indexOf('application/pdf')!==-1)
             {
                 let file = dataURLtoFile(hasData[0],'abc.pdf') 
                 const href = URL.createObjectURL(file)
                 const link = document.createElement('a')
                 link.href  = href 
-                link.download=filename // Don't ignore <3
+                link.download='generated.pdf' // Don't ignore <3
                 document.body.appendChild(link)
                 link.click()
                 document.body.removeChild(link)
                 URL.revokeObjectURL(href)
-                //     let payload = new FormData();
-                //     payload.append('doc', file);
-                //     axios.post('convert-file', payload, {
-                //         headers:{
-                //             "Accept":"application/json",
-                //             "Content-Type": "multipart/form-data",
-                //             "Authorization":"Bearer "+localStorage.getItem('auth-token')
-                //         }
-                //     })
-                //     .then(({data})=>{
-                //         console.log(data)
-                //     })
-                //     .catch(err=>console.log(err.message))
                 return ;
+            }
+            if(typeof hasData==='string') {
+                let a = document.createElement('a')
+                a.href = pathName + hasData
+                a.download = filename
+                a.target = '_blank'
+                return a.click()
             }
             Attachments.events.previewCallback(hasData, path)
         } 
@@ -80,7 +75,6 @@ var Attachments =
         {
             let oModalBody=document.querySelector('.attachment-viewer.d-none');
             let oUL=document.querySelector('.attachment-viewer.d-none ul');
-            const path = process.env.REACT_APP_BACKEND_URI.replace('/api','/storage/')
             if (data.length === 0)
             {
                 toast.error('Attachment not found!');
@@ -90,7 +84,7 @@ var Attachments =
             {
                 if(data[i].slice(data[i].length -4)==='.pdf') {
                     let a = document.createElement('a');
-                    a.href = path + data[i];
+                    a.href = pathName + data[i];
                     a.target= "_blank";
                     a.click();
                     continue;
@@ -134,7 +128,7 @@ var Attachments =
                     toast.error('Incorrect file format!');
                 };
                 if(onDisk) {
-                    oImg.src= path + data[i];
+                    oImg.src= pathName + data[i];
                 } else {
                     oImg.src = data[i];
                 }
