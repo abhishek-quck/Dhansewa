@@ -271,7 +271,6 @@ export default function SanctionUpload() {
                             <Container>
                                 <Row>
                                     <FormGroup>
-                                        <Label> Choose File </Label>
                                         <Input
                                             type='file'
                                             name='first_day'
