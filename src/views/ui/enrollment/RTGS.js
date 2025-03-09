@@ -19,22 +19,42 @@ function RTGS() {
     
     const toggleModal = () => setModal(!modal);
 
-    const generateRTGS = e => {
+    const generateRTGS = async e => {
 
-        let {client_id} = e.target.dataset
+        let {client_id, name} = e.target.dataset
         dispatch({ type:'LOADING' });
-        axios.get('generate-rtgs/'+ client_id, )
-        .then(({ data }) => {
-            if(data.status) {
-                toast.success(data.message)
-            } else {
-                toast.error(data.message)
-            }
-        }).catch( e => {
-            console.log(e.message)
-            dispatch({ type:'ERROR', payload:{ error:e.message }})
-        }).finally(()=> dispatch({ type:'STOP_LOADING' }))
 
+        return axios.get('generate-rtgs/'+ client_id,
+        {
+            responseType:'blob',
+            headers:{
+                "Content-Type": "multipart/form-data",
+                "Authorization":"Bearer "+localStorage.getItem('auth-token')
+            }}
+        ).then(({data}) => {
+            const href = URL.createObjectURL(data)
+            const link = document.createElement('a')
+            link.href  = href 
+            link.download='RTGS_'+name+'.xlsx' 
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(href)
+        })
+        .catch((e)=> {
+            toast('In progress.. Will be available soon!',
+                {
+                    icon: '⚠️',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            )
+        })
+        .finally( ()=> dispatch({type:'STOP_LOADING'}))
+    
     }
 
     const viewPrevious = e => {
@@ -137,6 +157,7 @@ function RTGS() {
                                             onClick={generateRTGS} 
                                             className="text-primary"
                                             data-client_id={row.id}
+                                            data-name={row.applicant_name}
                                         > 
                                             RTGS
                                         </span>
