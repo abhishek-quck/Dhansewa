@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux'
 import ReactSelect from 'react-select';
-import { Card, CardBody, CardHeader, Col, Container, Form, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
 
 function RTGS() {
 
@@ -15,17 +15,17 @@ function RTGS() {
     const [clients, setClients]  = useState([]);
     const [search, setSearch]    = useState(false);
     const [previous,setPrevious] = useState([]);
-    const style = { cursor:'pointer' }
-    
+    const [multiples, setMultiples ] = useState([]);
     const toggleModal = () => setModal(!modal);
 
+    const iStyle = {height:'1.5rem',width:'1.5rem'}
     const generateRTGS = async e => {
 
         let {client_id, name} = e.target.dataset
         dispatch({ type:'LOADING' });
 
         return axios.get('generate-rtgs/'+ client_id,
-        {
+            {
             responseType:'blob',
             headers:{
                 "Content-Type": "multipart/form-data",
@@ -55,6 +55,55 @@ function RTGS() {
         })
         .finally( ()=> dispatch({type:'STOP_LOADING'}))
     
+    }
+
+    const generateRTGSmultiple = () => {
+        
+        dispatch({ type:'LOADING' });
+        const client=[];
+        multiples.forEach( c => {
+            client.push(clients[c].id)
+        })
+        return axios.post('generate-multiple-rtgs', {clients:client},
+            {
+            responseType:'blob',
+            headers:{
+                "Content-Type": "multipart/form-data",
+                "Authorization":"Bearer "+localStorage.getItem('auth-token')
+            }}
+        ).then(({data}) => {
+            const href = URL.createObjectURL(data)
+            const link = document.createElement('a')
+            link.href  = href 
+            link.download='RTGS_.xlsx' 
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(href)
+        })
+        .catch((e)=> {
+            toast('In progress.. Will be available soon!',
+                {
+                    icon: '⚠️',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                }
+            )
+        })
+        .finally( ()=> dispatch({type:'STOP_LOADING'}))
+    
+    }
+
+    const addTo = event => {
+        const {index} = event.target.dataset
+        if(event.target.checked) {
+            setMultiples([...multiples, index])
+        } else {
+            setMultiples(multiples.filter( item => item!== index))
+        }
     }
 
     const viewPrevious = e => {
@@ -111,6 +160,9 @@ function RTGS() {
             <Card>
                 <CardHeader>
                     <b> RTGS </b>
+                    {multiples.length ? <Button className='btn-success ms-5' 
+                        type='button' 
+                        onClick={generateRTGSmultiple}> Generate </Button> : null }
                 </CardHeader>
                 <CardBody>
                     <Row>
@@ -128,7 +180,10 @@ function RTGS() {
                                 onChange={updateCenter}
                                 options={centers}
                             />
-                        </Col>                            
+                        </Col>     
+                        <Col md={3}>
+                            
+                        </Col>                    
                     </Row>
                     <Container>
                     <Row className='mt-4'>
@@ -139,6 +194,7 @@ function RTGS() {
                         >
                             <thead className='bg-blue'>
                                 <tr>
+                                    <th>  </th>
                                     <th> Action </th>
                                     <th> Client ID </th>
                                     <th> Applicant Name </th>
@@ -152,6 +208,7 @@ function RTGS() {
                         <tbody> 
                             {  clients.map((row,index) => {
                                 return (<tr key={index}>
+                                    <td><input type={'checkbox'} data-index={index} onClick={addTo} style={iStyle}/></td>
                                     <td>
                                         <span 
                                             onClick={generateRTGS} 
