@@ -157,9 +157,10 @@ function RTGS() {
                                             onClick={generateRTGS} 
                                             className="text-primary"
                                             data-client_id={row.id}
+                                            style={{cursor:'pointer'}}
                                             data-name={row.applicant_name}
                                         > 
-                                            RTGS
+                                            Generate
                                         </span>
                                     </td>
                                     <td>{row.id}</td>

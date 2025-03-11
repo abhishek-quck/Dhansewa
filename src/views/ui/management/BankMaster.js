@@ -8,7 +8,7 @@ function BankMaster() {
     const dispatch = useDispatch()
     
     const [fields, setFields] = useState([{ name:"", branch:"", ifsc:"", accountNumber:"", accountCode:"" }])
-    
+    const [updated, setUpdated] = useState(false);
     const addRow = () =>
     {
         setFields([...fields, { name:"", branch:"", ifsc:"", accountNumber:"", accountCode:"" }])
@@ -35,17 +35,15 @@ function BankMaster() {
     }
 
     const deletRow = async e => {
-        const {id, index} = e.target.dataset
-        if(id && window.confirm("Are you sure?")) {
-            const {data} = await axios.get(`/remove-bank-account/${id}`)
+        const {row, index} = e.target.dataset
+        if(row && window.confirm("Are you sure?")) {
+            const {data} = await axios.get(`/remove-bank-account/${row}`)
             if(data.status) {
                 setFields(fields.splice(index,1))
+                setUpdated(!updated)
                 return toast.success(data.message)
             } 
             toast.error(data.message)
-        } else {
-            setFields(fields.splice(index,1))
-            toast.success("Account removed")
         }
         // addR(!rAdded)
     }
@@ -57,7 +55,7 @@ function BankMaster() {
             }
         })
         return () => null
-    },[])
+    },[updated])
 
     return (
     <Card>
@@ -68,7 +66,7 @@ function BankMaster() {
             <Form onSubmit={handleSubmit}>
             <Row>
                 <Col>
-                    <button className='btn btn-outline-success btn-sm mb-3' type='button' onClick={addRow}> +Add </button>
+                    <button className='btn btn-outline-success btn-sm mb-3 d-none' type='button' onClick={addRow}> +Add </button>
                     <Table bordered hover style={{fontSize:'small'}}>
                         <thead>
                             <tr>
